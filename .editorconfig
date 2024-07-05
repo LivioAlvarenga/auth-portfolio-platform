@@ -1,7 +1,0 @@
-# root = true is needed to stop looking for .editorconfig files in parent directories
-root = true
-
-# [*] means all files
-[*]
-indent_style = space
-indent_size = 2
