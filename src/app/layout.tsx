@@ -1,11 +1,11 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import type { Metadata } from 'next'
+import { Inter } from 'next/font/google'
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: "Área administrativa Produtivese",
-  description: "Área administrativa do Produtivese",
+  title: 'Área administrativa Produtivese',
+  description: 'Área administrativa do Produtivese',
   robots: {
     index: false,
     follow: false,
@@ -15,18 +15,18 @@ export const metadata: Metadata = {
       'max-video-preview': -1,
       'max-image-preview': 'large',
       'max-snippet': -1,
-    }
-  }
-};
+    },
+  },
+}
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode
 }>) {
   return (
-    <html lang="pt">
+    <html lang="pt-BR">
       <body className={inter.className}>{children}</body>
     </html>
-  );
+  )
 }
