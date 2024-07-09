@@ -33,8 +33,8 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "src/tests/sum.test.ts",
-    "src/models/calculadora.ts"
+    "src/tests/**/*.test.ts",
+    "src/models/**/*.ts"
   ],
   "exclude": [
     "node_modules"
