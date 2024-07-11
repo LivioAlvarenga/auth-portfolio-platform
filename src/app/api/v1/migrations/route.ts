@@ -9,7 +9,7 @@ async function migrations(req: NextRequest) {
     dbClient, // when pass db connection with dbClient option, it will not close the connection
     migrationsTable: 'pg_migrations',
     dryRun: true, // This will not run the migrations, just show what would be run
-    dir: join('src', 'infra', 'migrations'), // Work in all systems
+    dir: join(process.cwd(), 'src', 'infra', 'migrations'), // Work in all systems
     direction: 'up',
     verbose: true,
   }
