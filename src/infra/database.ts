@@ -28,6 +28,19 @@ async function getNewClient() {
 
   await client.connect()
 
+  const schemaDatabase = process.env.POSTGRES_SCHEMA
+
+  const validSchemas = ['public', 'staging']
+  if (!validSchemas.includes(schemaDatabase as string)) {
+    throw new Error(
+      `💥Invalid schema ${schemaDatabase}. Valid schemas are ${validSchemas.join(
+        ', ',
+      )}`,
+    )
+  }
+
+  await client.query(`SET search_path TO "${schemaDatabase}"`)
+
   return client
 }
 
