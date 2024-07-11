@@ -4,6 +4,12 @@ import migrationRunner, { RunnerOption } from 'node-pg-migrate'
 import { join } from 'node:path'
 
 async function migrations(req: NextRequest) {
+  console.log('😐Current directory:', process.cwd())
+  console.log(
+    '🌈Migrations path:',
+    join(process.cwd(), 'src', 'infra', 'migrations'),
+  )
+
   const dbClient = await database.getNewClient()
   const defaultMigrationsOptions: RunnerOption = {
     dbClient, // when pass db connection with dbClient option, it will not close the connection
