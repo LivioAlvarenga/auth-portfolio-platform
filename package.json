@@ -15,13 +15,14 @@
     "services:up": "docker compose -f src/infra/compose.yaml up -d",
     "services:stop": "docker compose -f src/infra/compose.yaml stop",
     "services:down": "docker compose -f src/infra/compose.yaml down",
-    "test": "jest",
-    "test:watch": "jest --watchAll",
+    "test": "jest --runInBand",
+    "test:watch": "jest --watchAll --runInBand",
     "migration:create": "node-pg-migrate --migrations-dir src/infra/migrations create",
     "migration:up": "node-pg-migrate --migrations-dir src/infra/migrations --envPath .env.development up"
   },
   "dependencies": {
     "dotenv": "^16.4.5",
+    "dotenv-expand": "^11.0.6",
     "next": "14.2.4",
     "node-pg-migrate": "^7.5.2",
     "pg": "^8.12.0",
