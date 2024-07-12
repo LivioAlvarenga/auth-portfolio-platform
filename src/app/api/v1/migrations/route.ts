@@ -2,40 +2,61 @@ import { database } from '@/infra/database'
 import { NextResponse, type NextRequest } from 'next/server'
 import migrationRunner, { RunnerOption } from 'node-pg-migrate'
 import { join } from 'node:path'
+import { Client } from 'pg'
 
 async function migrations(req: NextRequest) {
-  const dbClient = await database.getNewClient()
-  const defaultMigrationsOptions: RunnerOption = {
-    dbClient, // when pass db connection with dbClient option, it will not close the connection
-    migrationsTable: 'pg_migrations',
-    dryRun: true, // This will not run the migrations, just show what would be run
-    dir: join(process.cwd(), 'src', 'infra', 'migrations'), // Work in all systems
-    direction: 'up',
-    verbose: true,
+  const allowedMethods = ['GET', 'POST']
+  if (!allowedMethods.includes(req.method)) {
+    return NextResponse.json(
+      { error: `method "${req.method}" not allowed` },
+      { status: 405 },
+    )
   }
 
-  if (req.method === 'GET') {
-    const pendingMigrations = await migrationRunner(defaultMigrationsOptions)
+  let dbClient: Client | null = null
 
-    await dbClient.end() // We need to close the connection here, because we are passing the dbClient to the migrationRunner
+  try {
+    dbClient = await database.getNewClient()
 
-    return NextResponse.json(pendingMigrations, { status: 200 })
-  } else if (req.method === 'POST') {
-    const migratedMigrations = await migrationRunner({
-      ...defaultMigrationsOptions,
-      dryRun: false,
-    })
-
-    await dbClient.end()
-
-    if (migratedMigrations.length > 0) {
-      return NextResponse.json(migratedMigrations, { status: 201 })
+    const defaultMigrationsOptions: RunnerOption = {
+      dbClient, // when pass db connection with dbClient option, it will not close the connection
+      migrationsTable: 'pg_migrations',
+      dryRun: true, // This will not run the migrations, just show what would be run
+      dir: join(process.cwd(), 'src', 'infra', 'migrations'), // Work in all systems
+      direction: 'up',
+      verbose: true,
     }
 
-    return NextResponse.json(migratedMigrations, { status: 200 })
-  }
+    if (req.method === 'GET') {
+      const pendingMigrations = await migrationRunner(defaultMigrationsOptions)
 
-  return NextResponse.json({ message: 'method not allowed' }, { status: 405 })
+      return NextResponse.json(pendingMigrations, { status: 200 })
+    } else if (req.method === 'POST') {
+      const migratedMigrations = await migrationRunner({
+        ...defaultMigrationsOptions,
+        dryRun: false,
+      })
+
+      if (migratedMigrations.length > 0) {
+        return NextResponse.json(migratedMigrations, { status: 201 })
+      }
+
+      return NextResponse.json(migratedMigrations, { status: 200 })
+    }
+  } catch (error) {
+    console.error('💥Error running migrations', error)
+    throw error
+  } finally {
+    if (dbClient) {
+      await dbClient.end() // We need to close the connection here, because we are passing the dbClient to the migrationRunner
+    }
+  }
 }
 
-export { migrations as GET, migrations as POST }
+export {
+  migrations as DELETE,
+  migrations as GET,
+  migrations as PATCH,
+  migrations as POST,
+  migrations as PUT,
+}
