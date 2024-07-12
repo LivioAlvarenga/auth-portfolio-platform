@@ -2,6 +2,14 @@ import { database } from '@/infra/database'
 import { NextResponse, type NextRequest } from 'next/server'
 
 async function status(req: NextRequest) {
+  const allowedMethods = ['GET']
+  if (!allowedMethods.includes(req.method)) {
+    return NextResponse.json(
+      { error: `method "${req.method}" not allowed` },
+      { status: 405 },
+    )
+  }
+
   if (req.method === 'GET') {
     const updatedAt = new Date().toISOString()
 
@@ -35,9 +43,13 @@ async function status(req: NextRequest) {
       },
       { status: 200 },
     )
-  } else {
-    return NextResponse.json({ message: 'method not allowed' }, { status: 405 })
   }
 }
 
-export { status as GET }
+export {
+  status as DELETE,
+  status as GET,
+  status as PATCH,
+  status as POST,
+  status as PUT,
+}
