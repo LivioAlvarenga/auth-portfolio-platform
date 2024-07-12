@@ -19,7 +19,7 @@ async function migrations(req: NextRequest) {
     dbClient = await database.getNewClient()
 
     const defaultMigrationsOptions: RunnerOption = {
-      dbClient, // when pass db connection with dbClient option, it will not close the connection
+      dbClient, // when pass db connection with dbClient option, it will not close the connection. We need to close it manually in the finally block
       migrationsTable: 'pg_migrations',
       dryRun: true, // This will not run the migrations, just show what would be run
       dir: join(process.cwd(), 'src', 'infra', 'migrations'), // Work in all systems
@@ -48,7 +48,7 @@ async function migrations(req: NextRequest) {
     throw error
   } finally {
     if (dbClient) {
-      await dbClient.end() // We need to close the connection here, because we are passing the dbClient to the migrationRunner
+      await dbClient.end() // We need to close the connection here, because we are passing the dbClient to the migrationRunner, and it will not close the connection. It will be our responsibility to close it
     }
   }
 }
