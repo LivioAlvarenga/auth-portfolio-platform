@@ -6,7 +6,7 @@
   "license": "UNLICENSED",
   "private": true,
   "scripts": {
-    "dev": "npm run services:up && next dev",
+    "dev": "npm run services:up && npm run wait-for-postgres && npm run migration:up && next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -18,7 +18,8 @@
     "test": "jest --runInBand",
     "test:watch": "jest --watchAll --runInBand",
     "migration:create": "node-pg-migrate --migrations-dir src/infra/migrations create",
-    "migration:up": "node-pg-migrate --migrations-dir src/infra/migrations --envPath .env.development up"
+    "migration:up": "node-pg-migrate --migrations-dir src/infra/migrations --envPath .env.development up",
+    "wait-for-postgres": "ts-node src/infra/scripts/wait-for-postgres.ts"
   },
   "dependencies": {
     "dotenv": "^16.4.5",
