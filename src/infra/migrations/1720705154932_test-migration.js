@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /**
  * @type {import('node-pg-migrate').ColumnDefinitions | undefined}
  */
