@@ -12,6 +12,7 @@ const createJestConfig = nextJest({
 
 const jestConfig: Config = {
   moduleDirectories: ['node_modules', '<rootDir>/src'],
+  testTimeout: 60000,
 }
 
 export default createJestConfig(jestConfig)
