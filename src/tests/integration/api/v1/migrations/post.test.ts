@@ -1,10 +1,10 @@
 import { database } from '@/infra/database'
+import { orchestrator } from '@/tests/orchestrator'
 
-beforeAll(clearDatabase)
-
-async function clearDatabase() {
+beforeAll(async () => {
+  await orchestrator.waitForAllServices()
   await database.query('drop schema public cascade; create schema public;')
-}
+})
 
 test('POST to /api/v1/migrations should return 200', async () => {
   // first migrate the database responseBody.length > 0, because we have migrations
