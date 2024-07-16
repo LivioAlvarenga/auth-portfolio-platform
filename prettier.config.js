@@ -1,5 +1,6 @@
 module.exports = {
-  plugins: ['prettier-plugin-tailwindcss', 'prettier-plugin-organize-imports'],
+  plugins: ['prettier-plugin-organize-imports', 'prettier-plugin-tailwindcss'],
+  tailwindFunctions: ['tw', 'clsx', 'twMerge', 'cva', 'cn'],
   printWidth: 80, // Limite de colunas
   tabWidth: 2, // Tamanho da tabulação
   singleQuote: true, // Usa aspas simples
