@@ -1,0 +1,63 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* SCROLLBAR - style for firefox */
+* {
+  scrollbar-color: #0866ff #1d1d1b; /* scroll thumb and track color */
+}
+
+/* SCROLLBAR - style for chrome */
+::-webkit-scrollbar {
+  @apply h-1 w-1 rounded-full;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-primary;
+}
+::-webkit-scrollbar-track {
+  @apply bg-dark;
+}
+
+/* SCROLLBAR - hide scrollbar for chrome and firefox */
+.hiddenScrollbar::-webkit-scrollbar {
+  display: none; /* Chrome Safari */
+}
+.hiddenScrollbarFirefox {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+/* style of autofill input to Chrome, Edge, Safari */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0px 1000px #efefef inset; /* background color with automatic filled of browser */
+  -webkit-text-fill-color: #1d1d1b !important; /* text color with automatic filled of browser */
+}
+
+/* style of autofill input to Firefox */
+input:-moz-autofill,
+input:-moz-autofill:hover,
+input:-moz-autofill:focus {
+  background-color: #efefef !important; /* Cor de fundo para campos autofill */
+  color: #1d1d1b !important; /* Cor do texto para campos autofill */
+}
