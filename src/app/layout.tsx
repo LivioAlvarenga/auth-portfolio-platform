@@ -1,9 +1,7 @@
+import { sans400, sans500, sans700 } from '@/styles/fonts'
 import '@/styles/globals.css'
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
 import { ReactNode } from 'react'
-
-const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'Área administrativa Produtivese',
@@ -28,7 +26,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR">
-      <body className={inter.className}>{children}</body>
+      <body
+        className={`${sans400.variable} ${sans700.variable} ${sans500.variable} min-h-screen overflow-x-hidden scroll-smooth bg-background font-sans400 text-[16px] leading-[24px] tracking-[0.5px] text-foreground antialiased selection:bg-primary selection:text-white`}
+      >
+        {children}
+      </body>
     </html>
   )
 }
