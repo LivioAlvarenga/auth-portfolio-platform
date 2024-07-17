@@ -3,27 +3,73 @@
 @tailwind utilities;
 
 @layer base {
-  * {
-    @apply border-border;
+  :root {
+    --background: 0 0% 100%; /* #FFFFFF */
+    --foreground: 222.2 84% 4.9%; /* #010816 */
+    --card: 0 0% 100%; /* #FFFFFF */
+    --card-foreground: 222.2 84% 4.9%; /* #010816 */
+    --popover: 0 0% 100%; /* #FFFFFF */
+    --popover-foreground: 222.2 84% 4.9%; /* #010816 */
+    --primary: 217 100% 52%; /* #0866FF */
+    --primary-foreground: 0 0% 100%; /* #FFFFFF */
+    --secondary: 210 40% 96.1%; /* #F1F5F9 */
+    --secondary-foreground: 222.2 47.4% 11.2%; /* #0F172A */
+    --muted: 210 40% 96.1%; /* #F1F5F9 */
+    --muted-foreground: 215.4 16.3% 46.9%; /* #64748B */
+    --accent: 210 40% 96.1%; /* #F1F5F9 */
+    --accent-foreground: 222.2 47.4% 11.2%; /* #0F172A */
+    --destructive: 0 72% 51%; /* #DC2626 */
+    --destructive-foreground: 0 0% 100%; /* #FFFFFF */
+    --border: 214.3 31.8% 91.4%; /* #E2E8F0 */
+    --input: 214.3 31.8% 91.4%; /* #E2E8F0 */
+    --ring: 217 100% 52%; /* #0866FF */
+    --chart-1: 12 76% 61%; /* #E76E4F */
+    --chart-2: 173 58% 39%; /* #299D8F */
+    --chart-3: 197 37% 24%; /* #264753 */
+    --chart-4: 43 74% 66%; /* #E8C468 */
+    --chart-5: 27 87% 67%; /* #F4A361 */
   }
-  body {
-    -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
-  }
-}
 
-@layer base {
+  .dark {
+    --background: 240 10% 4%; /* #09090B */
+    --foreground: 210 40% 98%; /* #F7F9FB */
+    --card: 222.2 84% 4.9%; /* #010816 */
+    --card-foreground: 210 40% 98%; /* #F7F9FB */
+    --popover: 222.2 84% 4.9%; /* #010816 */
+    --popover-foreground: 210 40% 98%; /* #F7F9FB */
+    --primary: 217.2 91.2% 59.8%; /* #3B82F5 */
+    --primary-foreground: 222.2 47.4% 11.2%; /* #0F172A */
+    --secondary: 217.2 32.6% 17.5%; /* #1E293B */
+    --secondary-foreground: 210 40% 98%; /* #F7F9FB */
+    --muted: 217.2 32.6% 17.5%; /* #1E293B */
+    --muted-foreground: 215 20.2% 65.1%; /* #94A3B7 */
+    --accent: 217.2 32.6% 17.5%; /* #1E293B */
+    --accent-foreground: 210 40% 98%; /* #F7F9FB */
+    --destructive: 0 62.8% 30.6%; /* #7F1D1D */
+    --destructive-foreground: 210 40% 98%; /* #F7F9FB */
+    --border: 217.2 32.6% 17.5%; /* #1E293B */
+    --input: 217.2 32.6% 17.5%; /* #1E293B */
+    --ring: 224.3 76.3% 48%; /* #1D4DD7 */
+    --chart-1: 220 70% 50%; /* #2661D8 */
+    --chart-2: 160 60% 45%; /* #2DB789 */
+    --chart-3: 30 80% 55%; /* #E88C30 */
+    --chart-4: 280 65% 60%; /* #AF56DB */
+    --chart-5: 340 75% 55%; /* #E2366F */
+  }
+
   * {
     @apply border-border;
   }
   body {
     @apply bg-background text-foreground;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
   }
 }
 
 /* SCROLLBAR - style for firefox */
 * {
-  scrollbar-color: #0866ff #1d1d1b; /* scroll thumb and track color */
+  scrollbar-color: var(--primary) var(--background); /* scroll thumb and track color */
 }
 
 /* SCROLLBAR - style for chrome */
@@ -34,7 +80,7 @@
   @apply bg-primary;
 }
 ::-webkit-scrollbar-track {
-  @apply bg-dark;
+  @apply bg-background;
 }
 
 /* SCROLLBAR - hide scrollbar for chrome and firefox */
@@ -50,14 +96,18 @@
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus {
-  -webkit-box-shadow: 0 0 0px 1000px #efefef inset; /* background color with automatic filled of browser */
-  -webkit-text-fill-color: #1d1d1b !important; /* text color with automatic filled of browser */
+  -webkit-box-shadow: 0 0 0px 1000px var(--background) inset; /* background color with automatic filled of browser */
+  -webkit-text-fill-color: var(
+    --foreground
+  ) !important; /* text color with automatic filled of browser */
 }
 
 /* style of autofill input to Firefox */
 input:-moz-autofill,
 input:-moz-autofill:hover,
 input:-moz-autofill:focus {
-  background-color: #efefef !important; /* Cor de fundo para campos autofill */
-  color: #1d1d1b !important; /* Cor do texto para campos autofill */
+  background-color: var(
+    --background
+  ) !important; /* Cor de fundo para campos autofill */
+  color: var(--foreground) !important; /* Cor do texto para campos autofill */
 }
