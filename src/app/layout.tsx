@@ -50,7 +50,7 @@ export default function RootLayout({
         <meta name="msapplication-TileColor" content="#ffffff" />
       </head>
       <body
-        className={`${sans400.variable} ${sans700.variable} ${sans500.variable} min-h-screen overflow-x-hidden scroll-smooth bg-background font-sans400 text-[16px] leading-[24px] tracking-[0.5px] text-foreground antialiased selection:bg-primary selection:text-foreground`}
+        className={`${sans400.variable} ${sans700.variable} ${sans500.variable} min-h-screen overflow-x-hidden scroll-smooth bg-background font-sans400 text-[16px] leading-[24px] tracking-[0.5px] text-foreground antialiased selection:bg-primary selection:text-primary-foreground`}
       >
         <AppProviders>
           <div className="relative flex min-h-screen flex-col bg-background">
