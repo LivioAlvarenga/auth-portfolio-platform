@@ -1,59 +1,44 @@
 export const colors = {
-  background: '#EFEFEF', // bg-background - Cor de fundo padrão.
-  foreground: '#000000', // text-foreground - Cor de texto padrão.
-  dark: '#1D1D1B', // text-dark - Cor de texto escura alternativa.
-  darker: '#181818', // text-darker - Cor de texto mais escura alternativa.
+  background: 'hsl(var(--background))', // bg-background - Cor de fundo padrão.
+  foreground: 'hsl(var(--foreground))', // text-foreground - Cor de texto padrão.
 
   primary: {
-    DEFAULT: '#0866FF',
-    foreground: '#FFFFFF',
+    DEFAULT: 'hsl(var(--primary))',
+    foreground: 'hsl(var(--primary-foreground))',
   },
 
   secondary: {
-    DEFAULT: '#001f2a',
-    foreground: '#ffffff',
+    DEFAULT: 'hsl(var(--secondary))',
+    foreground: 'hsl(var(--secondary-foreground))',
   },
 
-  'tertiary-100': '#EFEFEF',
-  'tertiary-200': '#DCDCDC',
-
   destructive: {
-    DEFAULT: '#DC2626',
-    foreground: '#FFFFFF',
+    DEFAULT: 'hsl(var(--destructive))',
+    foreground: 'hsl(var(--destructive-foreground))',
   },
 
   muted: {
-    DEFAULT: '#d9d9d9',
-    foreground: 'rgba(0, 0, 0, 0.6)',
+    DEFAULT: 'hsl(var(--muted))',
+    foreground: 'hsl(var(--muted-foreground))',
   }, // Planos de fundo silenciados, como <TabsList />, <Skeleton /> e <Switch /> desativado.
 
-  border: 'rgba(8, 102, 255, 0.3)',
-  input: 'rgba(8, 102, 255, 0.3)',
-  ring: '#0866FF',
+  border: 'hsl(var(--border))',
+  input: 'hsl(var(--input))',
+  ring: 'hsl(var(--ring))',
 
   accent: {
-    DEFAULT: '#25D366',
-    foreground: '#000000',
+    DEFAULT: 'hsl(var(--accent))',
+    foreground: 'hsl(var(--accent-foreground))',
   }, // warning using this like a primary color, ex: is color is hover in ghost button
 
   card: {
-    DEFAULT: '#ffffff', // bg-card - Cor de fundo de cartões.
-    foreground: '#000000', // text-card - Cor de texto de cartões.
+    DEFAULT: 'hsl(var(--card))', // bg-card - Cor de fundo de cartões.
+    foreground: 'hsl(var(--card-foreground))', // text-card - Cor de texto de cartões.
   },
 
   popover: {
-    DEFAULT: '#ffffff', // bg-popover - Cor de fundo para popovers como <DropdownMenu />, <HoverCard />, <Popover />
-    foreground: '#000000',
-  },
-
-  header: {
-    DEFAULT: '#ffffff', // bg-header - Cor de fundo do cabeçalho.
-    foreground: '#000000', // text-header - Cor de texto do cabeçalho.
-  },
-
-  footer: {
-    DEFAULT: '#0866FF', // bg-footer - Cor de fundo do rodapé.
-    foreground: '#FFFFFF', // text-footer - Cor de texto do rodapé.
+    DEFAULT: 'hsl(var(--popover))', // bg-popover - Cor de fundo para popovers como <DropdownMenu />, <HoverCard />, <Popover />
+    foreground: 'hsl(var(--popover-foreground))',
   },
 }
 
