@@ -3,14 +3,6 @@
 @tailwind utilities;
 
 @layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
-    -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
-  }
   :root {
     --background: 0 0% 100%; /* #FFFFFF */
     --foreground: 222.2 84% 4.9%; /* #010816 */
@@ -63,6 +55,15 @@
     --chart-3: 30 80% 55%; /* #E88C30 */
     --chart-4: 280 65% 60%; /* #AF56DB */
     --chart-5: 340 75% 55%; /* #E2366F */
+  }
+
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
   }
 }
 

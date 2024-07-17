@@ -1,3 +1,4 @@
+import { ButtonThemeToggle } from '@/components/ButtonThemeToggle'
 import { Text } from '@/components/Text'
 import { Button } from '@/components/ui/button'
 import { HomeIcon } from 'lucide-react'
@@ -13,7 +14,8 @@ export default function Home() {
   ] as const
   const buttonSizes = ['sm', 'default', 'lg', 'icon'] as const
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
+    <div className="my-10 overflow-hidden py-2 wrapper">
+      <ButtonThemeToggle />
       <Text as="h1" variant="advertence-32-72-700">
         adm.produtivese.com.br
       </Text>
@@ -35,6 +37,6 @@ export default function Home() {
           </div>
         )),
       )}
-    </main>
+    </div>
   )
 }

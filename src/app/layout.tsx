@@ -1,3 +1,4 @@
+import AppProviders from '@/contexts/AppProviders'
 import { sans400, sans500, sans700 } from '@/styles/fonts'
 import '@/styles/globals.css'
 import type { Metadata } from 'next'
@@ -51,7 +52,13 @@ export default function RootLayout({
       <body
         className={`${sans400.variable} ${sans700.variable} ${sans500.variable} min-h-screen overflow-x-hidden scroll-smooth bg-background font-sans400 text-[16px] leading-[24px] tracking-[0.5px] text-foreground antialiased selection:bg-primary selection:text-foreground`}
       >
-        {children}
+        <AppProviders>
+          <div className="relative flex min-h-screen flex-col bg-background">
+            {/* <Header /> */}
+            <main className="flex-1">{children}</main>
+            {/* <Footer /> */}
+          </div>
+        </AppProviders>
       </body>
     </html>
   )
