@@ -1,66 +1,168 @@
-import Link from 'next/link'
+'use client'
 
 import { Button } from '@/components/ui/button'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import { cn } from '@/lib/shadcn-ui'
+import { emailValidation, passwordValidation } from '@/validation/schemas'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { CheckCircle2, XCircle } from 'lucide-react'
+import Link from 'next/link'
+import React, { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
+import { z } from 'zod'
 import { GoogleIcon } from './svg/google-icon'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from './ui/form'
 
-export function LoginForm() {
+const loginFormSchema = z.object({
+  email: emailValidation,
+  password: passwordValidation,
+})
+
+type LoginFormSchemaProps = z.infer<typeof loginFormSchema>
+
+type LoginFormProps = React.HTMLAttributes<HTMLFormElement> & {
+  className?: string
+}
+
+export function LoginForm({ className, ...props }: LoginFormProps) {
+  const [isLoading, setIsLoading] = useState(false)
+
+  const form = useForm<LoginFormSchemaProps>({
+    resolver: zodResolver(loginFormSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  })
+
+  async function onSubmit(values: z.infer<typeof loginFormSchema>) {
+    setIsLoading(true)
+
+    try {
+      console.log('💌💌💌 - ', values)
+      // const response = await fetch(`/api/...`, {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //   },
+      //   body: JSON.stringify({
+      //     email: values.email,
+      //     password: values.password,
+      //   }),
+      // })
+
+      // if (!response.ok) {
+      //   throw new Error('Falha ao realizar login.')
+      // }
+
+      toast('Login realizado com sucesso!', {
+        className:
+          'flex items-center justify-start space-x-1 bg-card text-card-foreground border border-border',
+        duration: 4000,
+        icon: <CheckCircle2 className="mr-10 fill-green-600 text-card" />,
+        closeButton: true,
+        classNames: {
+          closeButton: 'bg-background border-border hover:dark:text-background',
+        },
+      })
+
+      // form.reset()
+      // redirect to home
+    } catch (error) {
+      console.error(
+        '💥 Erro ao realizar o Login com senha e password - ',
+        error,
+      )
+      toast('Falha ao realizar login.', {
+        className:
+          'flex items-center justify-start space-x-1 bg-card text-card-foreground border border-border',
+        duration: 5000,
+        icon: <XCircle className="mr-10 fill-red-500 text-card" />,
+        closeButton: true,
+        classNames: {
+          closeButton: 'bg-background border-border hover:dark:text-background',
+        },
+      })
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  function handleGoogleLogin() {
+    console.log('🔑🔑🔑 - Login com Google')
+  }
+
   return (
-    <Card className="mx-auto max-w-sm">
-      <CardHeader>
-        <CardTitle className="text-2xl">Entrar</CardTitle>
-        <CardDescription>
-          Insira seu e-mail abaixo para acessar sua conta
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="grid gap-4">
-          <div className="grid gap-2">
-            <Label htmlFor="email">E-mail</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="seu_email@exemplo.com.br"
-              required
-            />
-          </div>
-          <div className="grid gap-2">
-            <div className="flex items-center">
-              <Label htmlFor="password">Senha</Label>
-              <Link
-                href="#"
-                className="ml-auto inline-block rounded-sm text-sm underline ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-              >
-                Esqueceu sua senha?
-              </Link>
-            </div>
-            <Input id="password" type="password" required />
-          </div>
-          <Button type="submit" className="w-full">
-            Entrar
-          </Button>
-          <Button variant="outline" className="w-full">
-            <GoogleIcon className="mr-4 w-5" />
-            Entrar com Google
-          </Button>
-        </div>
-        <div className="mt-4 flex items-center justify-center text-sm">
-          Não tem uma conta?{' '}
-          <Button asChild variant="link">
-            <Link href="#" className="underline">
-              Cadastre-se
-            </Link>
-          </Button>
-        </div>
-      </CardContent>
-    </Card>
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className={cn('grid gap-4', className)}
+        {...props}
+      >
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem className="grid gap-1">
+              <FormLabel>E-mail</FormLabel>
+              <FormControl>
+                <Input
+                  type="text"
+                  autoComplete="email"
+                  placeholder="Digite seu e-mail"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="password"
+          render={({ field }) => (
+            <FormItem className="grid gap-1">
+              <div className="flex items-center">
+                <FormLabel>Senha</FormLabel>
+                <Link
+                  href="#"
+                  className="ml-auto inline-block rounded-sm text-sm underline ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                >
+                  Esqueceu sua senha?
+                </Link>
+              </div>
+              <FormControl>
+                <Input type="password" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Button
+          type="submit"
+          disabled={form.formState.isSubmitting || isLoading}
+          className="w-full"
+        >
+          {isLoading ? 'Carregando...' : 'Entrar'}
+        </Button>
+      </form>
+      <Button
+        variant="outline"
+        className="mt-4 w-full"
+        onClick={handleGoogleLogin}
+      >
+        <GoogleIcon className="mr-4 w-5" />
+        {isLoading ? 'Carregando...' : 'Entrar com Google'}
+      </Button>
+    </Form>
   )
 }

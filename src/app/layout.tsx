@@ -3,6 +3,7 @@ import { sans400, sans500, sans700 } from '@/styles/fonts'
 import '@/styles/globals.css'
 import type { Metadata } from 'next'
 import { ReactNode } from 'react'
+import { Toaster } from 'sonner'
 
 export const metadata: Metadata = {
   title: 'Área administrativa Produtivese',
@@ -59,6 +60,7 @@ export default function RootLayout({
             {/* <Footer /> */}
           </div>
         </AppProviders>
+        <Toaster />
       </body>
     </html>
   )
