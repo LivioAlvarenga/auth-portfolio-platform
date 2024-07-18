@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { GoogleIcon } from './svg/google-icon'
 
 export function LoginForm() {
   return (
@@ -27,14 +28,17 @@ export function LoginForm() {
             <Input
               id="email"
               type="email"
-              placeholder="m@example.com"
+              placeholder="seu_email@exemplo.com.br"
               required
             />
           </div>
           <div className="grid gap-2">
             <div className="flex items-center">
               <Label htmlFor="password">Senha</Label>
-              <Link href="#" className="ml-auto inline-block text-sm underline">
+              <Link
+                href="#"
+                className="ml-auto inline-block rounded-sm text-sm underline ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              >
                 Esqueceu sua senha?
               </Link>
             </div>
@@ -44,14 +48,17 @@ export function LoginForm() {
             Entrar
           </Button>
           <Button variant="outline" className="w-full">
+            <GoogleIcon className="mr-4 w-5" />
             Entrar com Google
           </Button>
         </div>
-        <div className="mt-4 text-center text-sm">
+        <div className="mt-4 flex items-center justify-center text-sm">
           Não tem uma conta?{' '}
-          <Link href="#" className="underline">
-            Cadastre-se
-          </Link>
+          <Button asChild variant="link">
+            <Link href="#" className="underline">
+              Cadastre-se
+            </Link>
+          </Button>
         </div>
       </CardContent>
     </Card>
