@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/shadcn-ui'
 import { emailValidation, passwordValidation } from '@/validation/schemas'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { CheckCircle2, XCircle } from 'lucide-react'
+import { CheckCircle2, Eye, EyeOff, XCircle } from 'lucide-react'
 import Link from 'next/link'
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -34,6 +34,7 @@ type LoginFormProps = React.HTMLAttributes<HTMLFormElement> & {
 
 export function LoginForm({ className, ...props }: LoginFormProps) {
   const [isLoading, setIsLoading] = useState(false)
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false)
 
   const form = useForm<LoginFormSchemaProps>({
     resolver: zodResolver(loginFormSchema),
@@ -141,12 +142,39 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
                 </Link>
               </div>
               <FormControl>
-                <Input type="password" {...field} />
+                <div className="relative">
+                  <Button
+                    type="button"
+                    variant={'ghost'}
+                    size={'icon'}
+                    onClick={() => setIsPasswordVisible((prev) => !prev)}
+                    className="absolute right-0 text-muted-foreground/50 hover:bg-transparent hover:text-muted-foreground"
+                  >
+                    {isPasswordVisible ? (
+                      <>
+                        <Eye size={20} />
+                        <span className="sr-only">Ocultar senha</span>
+                      </>
+                    ) : (
+                      <>
+                        <EyeOff size={20} />
+                        <span className="sr-only">Mostrar senha</span>
+                      </>
+                    )}
+                  </Button>
+                  <Input
+                    type={isPasswordVisible ? 'text' : 'password'}
+                    {...field}
+                    className="pr-10"
+                  />
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
+
+        {/* Submit button */}
         <Button
           type="submit"
           disabled={form.formState.isSubmitting || isLoading}
@@ -154,15 +182,18 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
         >
           {isLoading ? 'Carregando...' : 'Entrar'}
         </Button>
+
+        {/* Login with Google */}
+        <Button
+          variant="outline"
+          className="w-full"
+          onClick={handleGoogleLogin}
+          type="button"
+        >
+          <GoogleIcon className="mr-4 w-5" />
+          {isLoading ? 'Carregando...' : 'Entrar com Google'}
+        </Button>
       </form>
-      <Button
-        variant="outline"
-        className="mt-4 w-full"
-        onClick={handleGoogleLogin}
-      >
-        <GoogleIcon className="mr-4 w-5" />
-        {isLoading ? 'Carregando...' : 'Entrar com Google'}
-      </Button>
     </Form>
   )
 }
