@@ -1,3 +1,4 @@
 export const backgroundImage = {
-  hero: `url('https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/imagem-abstrata-tecnologia-produtividade-azul-branco.webp')`,
+  loginImage: `url('https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/login-left-container-image.svg')`,
+  registerImage: `url('https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/register-left-container-image.svg')`,
 }
