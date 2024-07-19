@@ -46,6 +46,8 @@ export const text = tv({
         'font-sans400 text-[16px] leading-[24px] tracking-[0.5px] lg:text-[18px] lg:tracking-[0.15px]',
       'body-16-16-400':
         'font-sans400 text-[16px] leading-[24px] tracking-[0.5px]',
+      'label-14-14-400':
+        'font-sans400 text-[14px] leading-[20px] tracking-[0.1px]',
       'button-14-14-500':
         'font-sans500 text-[14px] leading-[20px] tracking-[0.1px]',
     },

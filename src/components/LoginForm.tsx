@@ -136,7 +136,7 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
                 <FormLabel>Senha</FormLabel>
                 <Link
                   href="#"
-                  className="ml-auto inline-block rounded-sm text-sm underline ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  className="ml-auto inline-block rounded-sm text-[14px] leading-[20px] tracking-[0.1px] underline ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 >
                   Esqueceu sua senha?
                 </Link>

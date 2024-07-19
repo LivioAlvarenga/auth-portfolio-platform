@@ -2,14 +2,9 @@ import { ButtonThemeToggle } from '@/components/ButtonThemeToggle'
 import { LoginForm } from '@/components/LoginForm'
 import { LogoHorizontal } from '@/components/svg/logo-horizontal'
 import { LogoVertical } from '@/components/svg/logo-vertical'
+import { Text } from '@/components/Text'
 import { Button } from '@/components/ui/button'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import Link from 'next/link'
 
 export default function Login() {
@@ -42,15 +37,19 @@ export default function Login() {
         {/* Card with login form */}
         <Card className="mx-auto max-w-sm">
           <CardHeader>
-            <CardTitle className="text-2xl">Entrar</CardTitle>
-            <CardDescription>
+            <Text as="h1" variant={'title-22-32-500'}>
+              Entrar
+            </Text>
+            <Text variant={'label-14-14-400'} className="text-muted-foreground">
               Insira seu e-mail abaixo para acessar sua conta
-            </CardDescription>
+            </Text>
           </CardHeader>
           <CardContent>
             <LoginForm />
             <div className="mt-4 flex items-center justify-center text-sm">
-              Não tem uma conta?{' '}
+              <Text as="span" variant={'label-14-14-400'}>
+                Não tem uma conta?{' '}
+              </Text>
               <Button asChild variant="link">
                 <Link href="#" className="underline">
                   Cadastre-se
