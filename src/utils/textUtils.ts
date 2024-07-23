@@ -1,4 +1,4 @@
-import { prepositions } from '@/validation/textValidations'
+import { prepositions } from '@/schemas/textValidations'
 
 export function transformTextIntoCapitalized(str: string) {
   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()

@@ -3,7 +3,7 @@
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/shadcn-ui'
-import { emailValidation, passwordValidation } from '@/validation/schemas'
+import { emailValidation, passwordValidation } from '@/schemas'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { CheckCircle2, Eye, EyeOff, XCircle } from 'lucide-react'
 import Link from 'next/link'
