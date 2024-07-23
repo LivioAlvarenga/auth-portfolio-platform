@@ -8,14 +8,13 @@ import {
   fullNameValidation,
   nickNameValidation,
   passwordValidation,
-} from '@/validation/schemas'
+} from '@/schemas'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { CheckCircle2, Eye, EyeOff, XCircle } from 'lucide-react'
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
-import { GoogleIcon } from './svg/google-icon'
 import {
   Form,
   FormControl,
@@ -102,10 +101,6 @@ export function RegisterForm({ className, ...props }: RegisterFormProps) {
     } finally {
       setIsLoading(false)
     }
-  }
-
-  function handleRegisterWithGoogle() {
-    console.log('🔑🔑🔑 - Registrar com Google')
   }
 
   return (
@@ -222,17 +217,6 @@ export function RegisterForm({ className, ...props }: RegisterFormProps) {
           className="w-full"
         >
           {isLoading ? 'Carregando...' : 'Registrar'}
-        </Button>
-
-        {/* Register with Google */}
-        <Button
-          variant="outline"
-          className="w-full"
-          onClick={handleRegisterWithGoogle}
-          type="button"
-        >
-          <GoogleIcon className="mr-4 w-5" />
-          {isLoading ? 'Carregando...' : 'Registrar com Google'}
         </Button>
       </form>
     </Form>
