@@ -1,4 +1,3 @@
-import { transformTextIntoCapitalizedWords } from '@/utils/textUtils'
 import { z } from 'zod'
 
 export const emailValidation = z
@@ -32,12 +31,12 @@ export const fullNameValidation = z
   })
   .max(150, 'O nome completo é muito longo.')
   .regex(/^[a-zA-Z\s]*$/, 'Deve conter apenas letras.')
-  .transform(transformTextIntoCapitalizedWords)
+  .toLowerCase()
 
 export const nickNameValidation = z
   .string()
   .trim()
   .max(150, 'O apelido é muito longo.')
   .regex(/^[a-zA-Z\s]*$/, 'Deve conter apenas letras.')
-  .transform(transformTextIntoCapitalizedWords)
+  .toLowerCase()
   .optional()
