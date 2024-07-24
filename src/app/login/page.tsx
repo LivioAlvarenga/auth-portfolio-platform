@@ -7,7 +7,14 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import Link from 'next/link'
 
-export default function Login() {
+interface LoginPageProps {
+  searchParams: {
+    email?: string
+  }
+}
+
+export default function Login({ searchParams }: LoginPageProps) {
+  const email = searchParams.email || ''
   return (
     <div className="grid grid-cols-1 items-center overflow-hidden lg:grid-cols-2">
       {/* grid left - only in desktop */}
@@ -46,7 +53,7 @@ export default function Login() {
             </Text>
           </CardHeader>
           <CardContent>
-            <LoginForm />
+            <LoginForm email={email} />
             <div className="mt-4 flex items-center justify-center text-sm">
               <Text as="span" variant={'label-14-14-400'}>
                 Não tem uma conta?{' '}

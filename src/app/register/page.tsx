@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import Link from 'next/link'
 
-export default function Login() {
+export default function Register() {
   return (
     <div className="grid grid-cols-1 items-center overflow-hidden lg:grid-cols-2">
       {/* grid left - only in desktop */}

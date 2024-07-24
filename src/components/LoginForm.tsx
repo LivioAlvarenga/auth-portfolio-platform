@@ -30,16 +30,18 @@ type LoginFormSchemaProps = z.infer<typeof loginFormSchema>
 
 type LoginFormProps = React.HTMLAttributes<HTMLFormElement> & {
   className?: string
+  email?: string
 }
 
-export function LoginForm({ className, ...props }: LoginFormProps) {
+export function LoginForm({ className, email, ...props }: LoginFormProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
+  const [emailValue] = useState(email)
 
   const form = useForm<LoginFormSchemaProps>({
     resolver: zodResolver(loginFormSchema),
     defaultValues: {
-      email: '',
+      email: emailValue || '',
       password: '',
     },
   })
