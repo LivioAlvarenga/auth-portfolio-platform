@@ -1,5 +1,6 @@
 'use client'
 
+import { CreateUser } from '@/@types/user'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/shadcn-ui'
@@ -10,11 +11,12 @@ import {
   passwordValidation,
 } from '@/schemas'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { CheckCircle2, Eye, EyeOff, XCircle } from 'lucide-react'
+import { Eye, EyeOff } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { toast } from 'sonner'
 import { z } from 'zod'
+import { showToast } from './ShowToast'
 import {
   Form,
   FormControl,
@@ -40,6 +42,7 @@ type RegisterFormProps = React.HTMLAttributes<HTMLFormElement> & {
 export function RegisterForm({ className, ...props }: RegisterFormProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
+  const router = useRouter()
 
   const form = useForm<RegisterFormSchemaProps>({
     resolver: zodResolver(registerFormSchema),
@@ -51,52 +54,83 @@ export function RegisterForm({ className, ...props }: RegisterFormProps) {
     },
   })
 
+  function handleGoToLogin(email: string) {
+    router.push(`/login?email=${email}`)
+  }
+
+  function handleGoToForgotPassword(email: string) {
+    console.log('❗❗❗ ~ handleGoToForgotPassword', email)
+  }
+
+  function handleResendVerificationEmail(email: string) {
+    console.log('❗❗❗ ~ handleResendVerificationEmail', email)
+  }
+
   async function onSubmit(values: z.infer<typeof registerFormSchema>) {
     setIsLoading(true)
 
     try {
-      console.log('💌💌💌 - ', values)
-      // const response = await fetch(`/api/...`, {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
-      //   body: JSON.stringify({
-      //     fullName: values.fullName,
-      //     nickName: values.nickName,
-      //     email: values.email,
-      //     password: values.password,
-      //   }),
-      // })
+      const newUser: CreateUser = {
+        email: values.email,
+        password: values.password,
+        name: values.fullName,
+        nickName: values.nickName,
+      }
 
-      // if (!response.ok) {
-      //   throw new Error('Falha ao registrar.')
-      // }
-
-      toast('Usuário registrado com sucesso.', {
-        className:
-          'flex items-center justify-start space-x-1 bg-card text-card-foreground border border-border',
-        duration: 4000,
-        icon: <CheckCircle2 className="mr-10 fill-green-600 text-card" />,
-        closeButton: true,
-        classNames: {
-          closeButton: 'bg-background border-border hover:dark:text-background',
+      const response = await fetch('/api/v1/user', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
+        body: JSON.stringify(newUser),
+      })
+      const responseBody = await response.json()
+
+      if (!response.ok) {
+        if (responseBody.message === 'E-mail já cadastrado.') {
+          form.setError('email', {
+            message: 'E-mail já cadastrado.',
+          })
+
+          showToast({
+            message:
+              'Este email já se encontra cadastrado. Por favor, utilize outro email ou recupere a senha se necessário.',
+            duration: Infinity,
+            variant: 'warning',
+            textFirstButton: 'Fazer Login',
+            variantFirstButton: 'ghost',
+            onClickFirstButton: () => handleGoToLogin(values.email),
+            textSecondButton: 'Recuperar senha',
+            variantSecondButton: 'default',
+            onClickSecondButton: () => handleGoToForgotPassword(values.email),
+          })
+          return
+        }
+
+        throw new Error(responseBody.message)
+      }
+
+      showToast({
+        message: `Usuário registrado com sucesso! Para fazer login, por favor, confirme o email enviado para ${values.email} antes de realizar o login.
+        `,
+        duration: Infinity,
+        variant: 'success',
+        textFirstButton: 'Não recebi o e-mail',
+        variantFirstButton: 'ghost',
+        onClickFirstButton: () => handleResendVerificationEmail(values.email),
+        textSecondButton: 'Fazer Login',
+        variantSecondButton: 'default',
+        onClickSecondButton: () => handleGoToLogin(values.email),
       })
 
-      // form.reset()
-      // redirect to login
+      form.reset()
     } catch (error) {
-      console.error('💥 Erro ao registrar usuário', error)
-      toast('Falha ao registrar usuário.', {
-        className:
-          'flex items-center justify-start space-x-1 bg-card text-card-foreground border border-border',
-        duration: 5000,
-        icon: <XCircle className="mr-10 fill-red-500 text-card" />,
-        closeButton: true,
-        classNames: {
-          closeButton: 'bg-background border-border hover:dark:text-background',
-        },
+      console.error('💥 Falha ao registrar usuário.', error)
+
+      showToast({
+        message: 'Falha ao registrar usuário.',
+        duration: Infinity,
+        variant: 'error',
       })
     } finally {
       setIsLoading(false)
