@@ -62,10 +62,6 @@ export function RegisterForm({ className, ...props }: RegisterFormProps) {
     console.log('❗❗❗ ~ handleGoToForgotPassword', email)
   }
 
-  function handleResendVerificationEmail(email: string) {
-    console.log('❗❗❗ ~ handleResendVerificationEmail', email)
-  }
-
   async function onSubmit(values: z.infer<typeof registerFormSchema>) {
     setIsLoading(true)
 
@@ -97,12 +93,16 @@ export function RegisterForm({ className, ...props }: RegisterFormProps) {
               'Este email já se encontra cadastrado. Por favor, utilize outro email ou recupere a senha se necessário.',
             duration: Infinity,
             variant: 'warning',
-            textFirstButton: 'Fazer Login',
-            variantFirstButton: 'ghost',
-            onClickFirstButton: () => handleGoToLogin(values.email),
-            textSecondButton: 'Recuperar senha',
-            variantSecondButton: 'default',
-            onClickSecondButton: () => handleGoToForgotPassword(values.email),
+            firstButton: {
+              text: 'Fazer Login',
+              variant: 'ghost',
+              onClick: () => handleGoToLogin(values.email),
+            },
+            secondButton: {
+              text: 'Recuperar Senha',
+              variant: 'default',
+              onClick: () => handleGoToForgotPassword(values.email),
+            },
           })
           return
         }
@@ -111,16 +111,18 @@ export function RegisterForm({ className, ...props }: RegisterFormProps) {
       }
 
       showToast({
-        message: `Usuário registrado com sucesso! Para fazer login, por favor, confirme o email enviado para ${values.email} antes de realizar o login.
-        `,
+        message: `Usuário registrado com sucesso! Para fazer login, por favor, confirme o email enviado para ${values.email}.`,
         duration: Infinity,
         variant: 'success',
-        textFirstButton: 'Não recebi o e-mail',
-        variantFirstButton: 'ghost',
-        onClickFirstButton: () => handleResendVerificationEmail(values.email),
-        textSecondButton: 'Fazer Login',
-        variantSecondButton: 'default',
-        onClickSecondButton: () => handleGoToLogin(values.email),
+        firstButton: {
+          text: 'Fazer Login Agora',
+          variant: 'default',
+          onClick: () => handleGoToLogin(values.email),
+        },
+        redirect: {
+          path: `/login?email=${values.email}`,
+          countdownSeconds: 7,
+        },
       })
 
       form.reset()
