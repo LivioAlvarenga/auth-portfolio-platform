@@ -10,8 +10,9 @@ import {
   nickNameValidation,
   passwordValidation,
 } from '@/schemas'
+import { generatePassword } from '@/utils/password'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Eye, EyeOff } from 'lucide-react'
+import { Copy, Eye, EyeOff } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -60,6 +61,29 @@ export function RegisterForm({ className, ...props }: RegisterFormProps) {
 
   function handleGoToForgotPassword(email: string) {
     console.log('❗❗❗ ~ handleGoToForgotPassword', email)
+  }
+
+  function handleCopyPassword() {
+    const password = form.getValues('password')
+    if (password) {
+      navigator.clipboard.writeText(password)
+      showToast({
+        message: 'Senha copiada para a área de transferência.',
+        duration: 5000,
+        variant: 'info',
+      })
+    } else {
+      showToast({
+        message: 'Falha ao copiar a senha.',
+        duration: 3000,
+        variant: 'error',
+      })
+    }
+  }
+
+  function handleGeneratePassword() {
+    const password = generatePassword(16)
+    form.setValue('password', password)
   }
 
   async function onSubmit(values: z.infer<typeof registerFormSchema>) {
@@ -212,11 +236,41 @@ export function RegisterForm({ className, ...props }: RegisterFormProps) {
           name="password"
           render={({ field }) => (
             <FormItem className="grid gap-1">
-              <FormLabel>Senha</FormLabel>
+              <div className="flex items-center justify-between">
+                <FormLabel>Senha</FormLabel>
+                <div className="flex items-center gap-2">
+                  <Button
+                    type="button"
+                    variant={'ghost'}
+                    onClick={handleGeneratePassword}
+                    className="text-muted-foreground/50 hover:text-muted-foreground"
+                  >
+                    Gerar Senha
+                  </Button>
+                  {field.value && (
+                    <Button
+                      type="button"
+                      title="Copiar Senha"
+                      variant={'ghost'}
+                      size={'icon'}
+                      onClick={handleCopyPassword}
+                    >
+                      <Copy
+                        size={20}
+                        className="text-muted-foreground/50 hover:text-muted-foreground"
+                      />
+                      <span className="sr-only">Copiar Senha</span>
+                    </Button>
+                  )}
+                </div>
+              </div>
               <FormControl>
                 <div className="relative">
                   <Button
                     type="button"
+                    title={
+                      isPasswordVisible ? 'Ocultar senha' : 'Mostrar senha'
+                    }
                     variant={'ghost'}
                     size={'icon'}
                     onClick={() => setIsPasswordVisible((prev) => !prev)}
