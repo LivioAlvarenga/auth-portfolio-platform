@@ -1,4 +1,4 @@
-import { Client } from 'pg'
+import { Client, Pool } from 'pg'
 
 async function query(queryObject: any) {
   let client
@@ -31,6 +31,16 @@ async function getNewClient() {
   return client
 }
 
-const database = { query, getNewClient }
+const pool = new Pool({
+  host: process.env.POSTGRES_HOST,
+  user: process.env.POSTGRES_USER,
+  password: process.env.POSTGRES_PASSWORD,
+  database: process.env.POSTGRES_DB,
+  max: 20,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 2000,
+})
+
+const database = { query, getNewClient, pool }
 
 export { database }
