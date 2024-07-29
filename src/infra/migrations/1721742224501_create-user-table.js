@@ -9,6 +9,9 @@ exports.shorthands = undefined
  * @returns {Promise<void> | void}
  */
 exports.up = (pgm) => {
+  // Cria o tipo enum para a coluna role
+  pgm.createType('user_role', ['admin', 'user'])
+
   pgm.createTable('users', {
     // It must need to integrate with the Auth.js
     id: {
@@ -36,9 +39,15 @@ exports.up = (pgm) => {
       unique: true,
     },
 
-    // A column emailVerified with timestamp
-    email_verified: {
+    // A column emailVerified with timestamp. It must need to integrate with the Auth.js
+    emailVerified: {
       type: 'timestamp',
+      notNull: false,
+    },
+
+    // Provider that verified the email
+    email_verified_provider: {
+      type: 'varchar(255)',
       notNull: false,
     },
 
@@ -52,6 +61,12 @@ exports.up = (pgm) => {
     password_hash: {
       type: 'varchar(60)',
       notNull: false,
+    },
+
+    role: {
+      type: 'user_role',
+      notNull: true,
+      default: 'user',
     },
 
     // Why "with timezone"? https://stackoverflow.com/a/20713587
@@ -75,5 +90,8 @@ exports.up = (pgm) => {
  * @returns {Promise<void> | void}
  */
 exports.down = (pgm) => {
-  pgm.dropTable('User')
+  // Remove a tabela users
+  pgm.dropTable('users')
+  // Remove o tipo enum user_role
+  pgm.dropType('user_role')
 }
