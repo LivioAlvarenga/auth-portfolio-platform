@@ -94,7 +94,7 @@ export function RegisterForm({ className, ...props }: RegisterFormProps) {
         email: values.email,
         password: values.password,
         name: values.fullName,
-        nickName: values.nickName,
+        nick_name: values.nickName,
       }
 
       const response = await fetch('/api/v1/user', {

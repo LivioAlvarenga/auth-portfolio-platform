@@ -11,7 +11,7 @@ import { z } from 'zod'
 
 const userSchema = z.object({
   name: fullNameValidation.optional(),
-  nickName: nickNameValidation.optional(),
+  nick_name: nickNameValidation.optional(),
   email: emailValidation,
   password: passwordValidation.optional(),
 })
@@ -32,14 +32,37 @@ async function user(req: NextRequest) {
       // 1. useCase - sanitize body
       const parsedData = userSchema.parse(body)
 
-      // 2. useCase - check if email already exists
+      // 2. useCase - check if email already exists to credential provider
       const { email } = parsedData
-      const userEmailResult = await database.query({
-        text: 'SELECT * FROM users WHERE email = $1',
+      const userAndProvidersByEmailResult = await database.query({
+        text: `
+          SELECT
+            u.id,
+            u.name,
+            u.nick_name,
+            u.email,
+            u."emailVerified",
+            u.email_verified_provider,
+            u.image,
+            u.password_hash,
+            u.role,
+            u.created_at,
+            u.updated_at,
+            json_agg(a.provider) AS providers
+          FROM users u
+          LEFT JOIN accounts a ON u.id = a."userId"
+          WHERE u.email = $1
+          GROUP BY u.id
+        `,
         values: [email],
       })
 
-      if (userEmailResult.rows.length > 0) {
+      const userAndProvidersByEmail = userAndProvidersByEmailResult.rows[0]
+
+      if (
+        userAndProvidersByEmail &&
+        userAndProvidersByEmail.providers.includes('credential')
+      ) {
         return NextResponse.json(
           { message: 'E-mail já cadastrado.' },
           { status: 400 },
@@ -58,12 +81,40 @@ async function user(req: NextRequest) {
         )
       }
 
-      const userResult = await database.query({
-        text: `INSERT INTO users (email, password_hash, name, nick_name) VALUES ($1, $2, $3, $4) RETURNING id, email, name, nick_name`,
-        values: [email, hashedPassword, parsedData.name, parsedData.nickName],
-      })
+      // 5. useCase - insert user to database if user does not exist Or update user if user exists (if user start with provider !== credential)
+      let userResult
+      if (userAndProvidersByEmail) {
+        userResult = await database.query({
+          text: `UPDATE users SET password_hash = $2, name = $3, nick_name = $4 WHERE email = $1 RETURNING id, email, name, nick_name`,
+          values: [
+            email,
+            hashedPassword,
+            parsedData.name,
+            parsedData.nick_name,
+          ],
+        })
+      } else {
+        userResult = await database.query({
+          text: `INSERT INTO users (email, password_hash, name, nick_name) VALUES ($1, $2, $3, $4) RETURNING id, email, name, nick_name`,
+          values: [
+            email,
+            hashedPassword,
+            parsedData.name,
+            parsedData.nick_name,
+          ],
+        })
+      }
 
+      // 6. useCase - Create account for user with provider credential in accounts table
       const newUser = userResult.rows[0]
+
+      const accountResult = await database.query({
+        text: `
+          INSERT INTO accounts ("userId", type, provider, "providerAccountId")
+          VALUES ($1, $2, $3, $4) RETURNING id
+        `,
+        values: [newUser.id, 'credential', 'credential', newUser.id],
+      })
 
       return NextResponse.json(
         {
@@ -72,7 +123,11 @@ async function user(req: NextRequest) {
             id: newUser.id,
             email: newUser.email,
             name: newUser.name,
-            nickName: newUser.nick_name,
+            nick_name: newUser.nick_name,
+          },
+          account: {
+            id: accountResult.rows[0].id,
+            provider: 'credential',
           },
         },
         { status: 201 },

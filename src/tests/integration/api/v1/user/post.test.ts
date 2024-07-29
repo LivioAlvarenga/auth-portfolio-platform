@@ -16,9 +16,22 @@ describe('POST /api/v1/user', () => {
         password: 'Valid1Password!',
       }
 
-      await database.query({
-        text: 'INSERT INTO users (email, password_hash) VALUES ($1, $2)',
+      const newUser = await database.query({
+        text: 'INSERT INTO users (email, password_hash) VALUES ($1, $2) RETURNING id',
         values: [existingUser.email, existingUser.password],
+      })
+
+      await database.query({
+        text: `
+          INSERT INTO accounts ("userId", type, provider, "providerAccountId")
+          VALUES ($1, $2, $3, $4)
+        `,
+        values: [
+          newUser.rows[0].id,
+          'credential',
+          'credential',
+          newUser.rows[0].id,
+        ],
       })
     })
 
@@ -102,7 +115,7 @@ describe('POST /api/v1/user', () => {
         email: 'new3.email@example.com',
         password: 'Valid3Password!',
         name: 'New User',
-        nickName: 'newusernickname',
+        nick_name: 'newusernickname',
       }
 
       const response = await fetch('http://localhost:3000/api/v1/user', {
@@ -123,7 +136,9 @@ describe('POST /api/v1/user', () => {
       expect(responseBody.user).toHaveProperty('id')
       expect(responseBody.user.email).toBe(newUser.email)
       expect(responseBody.user.name).toBe(newUser.name?.toLowerCase())
-      expect(responseBody.user.nickName).toBe(newUser.nickName?.toLowerCase())
+      expect(responseBody.user.nick_name).toBe(newUser.nick_name?.toLowerCase())
+      expect(responseBody.account).toHaveProperty('id')
+      expect(responseBody.account.provider).toBe('credential')
     })
   })
 })
