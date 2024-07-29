@@ -6,6 +6,7 @@ import { cn } from '@/lib/shadcn-ui'
 import { emailValidation, passwordValidation } from '@/schemas'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { CheckCircle2, Eye, EyeOff, XCircle } from 'lucide-react'
+import { signIn } from 'next-auth/react'
 import Link from 'next/link'
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -37,6 +38,8 @@ export function LoginForm({ className, email, ...props }: LoginFormProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
   const [emailValue] = useState(email)
+  // const session = useSession()
+  // console.log('🔑🔑🔑 - status', session.status, 'data', session.data)
 
   const form = useForm<LoginFormSchemaProps>({
     resolver: zodResolver(loginFormSchema),
@@ -65,6 +68,14 @@ export function LoginForm({ className, email, ...props }: LoginFormProps) {
       // if (!response.ok) {
       //   throw new Error('Falha ao realizar login.')
       // }
+
+      // send this data to auth.ts in Credentials provider authorize(credentials) {}
+      signIn('credentials', {
+        email: values.email,
+        password: values.password,
+        redirect: false,
+        callbackUrl: '/',
+      })
 
       toast('Login realizado com sucesso!', {
         className:
@@ -99,8 +110,9 @@ export function LoginForm({ className, email, ...props }: LoginFormProps) {
     }
   }
 
-  function handleGoogleLogin() {
+  async function handleGoogleLogin() {
     console.log('🔑🔑🔑 - Login com Google')
+    await signIn('google')
   }
 
   return (

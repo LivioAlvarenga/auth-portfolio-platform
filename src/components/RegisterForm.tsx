@@ -134,6 +134,8 @@ export function RegisterForm({ className, ...props }: RegisterFormProps) {
         throw new Error(responseBody.message)
       }
 
+      // send email confirmation
+
       showToast({
         message: `Usuário registrado com sucesso! Para fazer login, por favor, confirme o email enviado para ${values.email}.`,
         duration: Infinity,
