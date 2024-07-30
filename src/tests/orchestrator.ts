@@ -1,3 +1,5 @@
+import { database } from '@/infra/database'
+import migrator from '@/infra/migrator'
 import AsyncRetry from 'async-retry'
 
 async function waitForAllServices() {
@@ -18,6 +20,19 @@ async function waitForAllServices() {
   }
 }
 
-const orchestrator = { waitForAllServices }
+async function dropAllTables() {
+  const databaseClient = await database.getNewClient()
+  await databaseClient.query(
+    'drop schema public cascade; create schema public;',
+  )
+
+  await databaseClient.end()
+}
+
+async function runPendingMigrations() {
+  await migrator.runPendingMigrations()
+}
+
+const orchestrator = { waitForAllServices, dropAllTables, runPendingMigrations }
 
 export { orchestrator }

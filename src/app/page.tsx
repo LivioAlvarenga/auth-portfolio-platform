@@ -25,29 +25,37 @@ export default function Home() {
           <ButtonThemeToggle />
         </header>
       </header>
-      <div className="my-10 overflow-hidden py-2 wrapper">
+      <div className="my-10 flex flex-col gap-4 overflow-hidden py-2 wrapper">
         <LogoVertical ariaLabel="Logo vertical Produtivese" />
         <Text as="h1" variant="advertence-32-72-700">
           adm.produtivese.com.br
         </Text>
-        {buttonVariantsList.map((variant) =>
-          buttonSizes.map((size) => (
-            <div
-              key={`${variant}-${size}`}
-              className="flex flex-col items-center"
-            >
-              <div className="flex items-center justify-center gap-4 p-10">
+        <div className="mt-5 grid grid-cols-4 gap-3 rounded-lg border bg-accent px-3 py-4">
+          {buttonVariantsList.map((variant) =>
+            buttonSizes.map((size) => (
+              <div
+                key={`${variant}-${size}`}
+                className="grid grid-cols-2 items-center gap-3 rounded-md bg-background p-2"
+              >
                 <Button variant={variant} size={size}>
-                  {size === 'icon' ? <HomeIcon /> : `${variant} - ${size}`}
+                  {size === 'icon' ? <HomeIcon /> : 'Produtivese'}
                 </Button>
-                <Text
-                  as="p"
-                  variant="body-16-16-400"
-                >{`Variant: ${variant}, Size: ${size}`}</Text>
+                <div className="grid grid-rows-2">
+                  <Text
+                    as="p"
+                    variant="body-16-16-400"
+                    className="font-sans700 text-foreground"
+                  >{`${variant}`}</Text>
+                  <Text
+                    as="p"
+                    variant="body-16-16-400"
+                    className="text-muted-foreground"
+                  >{`size - ${size}`}</Text>
+                </div>
               </div>
-            </div>
-          )),
-        )}
+            )),
+          )}
+        </div>
       </div>
     </>
   )
