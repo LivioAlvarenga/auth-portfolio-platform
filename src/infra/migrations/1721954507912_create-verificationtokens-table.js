@@ -13,6 +13,8 @@ exports.up = (pgm) => {
     identifier: {
       type: 'varchar(255)',
       notNull: true,
+      references: 'users(email)',
+      onDelete: 'CASCADE',
     },
     token: {
       type: 'varchar(255)',
