@@ -262,7 +262,7 @@ describe('Nickname Sanitization', () => {
   test('should return error for nickname too long', async () => {
     const newUser: CreateUser = {
       email: 'valid.email@example.com',
-      nickName: 'A'.repeat(151),
+      nick_name: 'A'.repeat(151),
     }
 
     const response = await fetch('http://localhost:3000/api/v1/user', {
@@ -282,7 +282,7 @@ describe('Nickname Sanitization', () => {
   test('should return error for nickname with invalid characters', async () => {
     const newUser: CreateUser = {
       email: 'valid.email@example.com',
-      nickName: 'John123',
+      nick_name: 'John123',
     }
 
     const response = await fetch('http://localhost:3000/api/v1/user', {
