@@ -30,13 +30,13 @@ export const fullNameValidation = z
     message: 'Informe o nome completo para continuar.',
   })
   .max(150, 'O nome completo é muito longo.')
-  .regex(/^[a-zA-Z\s]*$/, 'Deve conter apenas letras.')
+  .regex(/^[a-zA-ZÀ-ÿ\s]*$/, 'Deve conter apenas letras.')
   .toLowerCase()
 
 export const nickNameValidation = z
   .string()
   .trim()
   .max(150, 'O apelido é muito longo.')
-  .regex(/^[a-zA-Z\s]*$/, 'Deve conter apenas letras.')
+  .regex(/^[a-zA-ZÀ-ÿ\s]*$/, 'Deve conter apenas letras.')
   .toLowerCase()
   .optional()
