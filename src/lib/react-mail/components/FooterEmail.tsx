@@ -150,7 +150,7 @@ export function FooterEmail() {
           ajudá-lo(a).
         </Text>
       </Section>
-      <Section className="mt-5 bg-primary py-5">
+      <Section className="mt-5 bg-[#0866FF] py-5">
         <Text className="mx-auto max-w-md text-center text-[14px] leading-[24px] text-white">
           Copyright © {year} Produtivese Tecnologia | Rua Patagônia, Sion -
           CEP: 30.320-080 Belo Horizonte (MG)
