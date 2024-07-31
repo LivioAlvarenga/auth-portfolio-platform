@@ -22,21 +22,10 @@ interface EmailSendResult {
 }
 
 export const createEmailTransporter = () => {
-  const isDevelopment =
-    process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test'
-
-  const host = isDevelopment
-    ? process.env.EMAIL_HOST_SMTP_TEST_ETHEREAL
-    : process.env.EMAIL_HOST_SMTP
-  const port = isDevelopment
-    ? Number(process.env.EMAIL_HOST_PORT_TEST_ETHEREAL)
-    : Number(process.env.EMAIL_HOST_PORT)
-  const user = isDevelopment
-    ? process.env.EMAIL_HOST_USER_TEST_ETHEREAL
-    : process.env.EMAIL_HOST_USER
-  const pass = isDevelopment
-    ? process.env.EMAIL_HOST_PASSWORD_TEST_ETHEREAL
-    : process.env.EMAIL_HOST_PASSWORD
+  const host = process.env.EMAIL_HOST_SMTP
+  const port = Number(process.env.EMAIL_HOST_PORT)
+  const user = process.env.EMAIL_HOST_USER
+  const pass = process.env.EMAIL_HOST_PASSWORD
 
   const transporter = nodemailer.createTransport({
     host,
