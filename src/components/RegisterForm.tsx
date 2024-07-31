@@ -10,6 +10,7 @@ import {
   nickNameValidation,
   passwordValidation,
 } from '@/schemas'
+import { sendEmail } from '@/utils/email'
 import { generatePassword } from '@/utils/password'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Copy, Eye, EyeOff } from 'lucide-react'
@@ -97,6 +98,7 @@ export function RegisterForm({ className, ...props }: RegisterFormProps) {
         nick_name: values.nickName,
       }
 
+      // create user
       const response = await fetch('/api/v1/user', {
         method: 'POST',
         headers: {
@@ -134,7 +136,29 @@ export function RegisterForm({ className, ...props }: RegisterFormProps) {
         throw new Error(responseBody.message)
       }
 
-      // send email confirmation
+      // create verification token
+      const responseToken = await fetch('/api/v1/verification-token', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: values.email }),
+      })
+
+      const responseTokenBody = await responseToken.json()
+      const token = responseTokenBody.token
+      console.log('🚀🚀🚀token:', token)
+
+      // send user registration welcome email
+      const userId = responseBody.user.id
+      await sendEmail({
+        type: 'USER_REGISTRATION_WELCOME',
+        data: {
+          name: values.nickName || values.fullName,
+        },
+        to: values.email,
+        userId,
+      })
 
       showToast({
         message: `Usuário registrado com sucesso! Para fazer login, por favor, confirme o email enviado para ${values.email}.`,
