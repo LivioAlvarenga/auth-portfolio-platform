@@ -1,12 +1,15 @@
 import { capitalizeEachWord } from '@/utils/textUtils'
 import { Heading, Section, Text } from '@react-email/components'
+import { renderEmailComponent } from '..'
 import { LayoutEmail } from '../components/LayoutEmail'
 
-interface NewsletterWelcomeProps {
+export interface UserRegistrationWelcomeProps {
   name: string | null | undefined
 }
 
-export function UserRegistrationWelcome({ name }: NewsletterWelcomeProps) {
+export function UserRegistrationWelcome({
+  name,
+}: UserRegistrationWelcomeProps) {
   const previewText =
     'Bem-vindo à área administrativa da Produtivese! Explore os recursos e ferramentas que temos a oferecer para facilitar sua gestão.'
 
@@ -68,9 +71,9 @@ export function UserRegistrationWelcome({ name }: NewsletterWelcomeProps) {
   )
 }
 
-export function NewsletterWelcomeText({
+export function UserRegistrationWelcomeText({
   name,
-}: NewsletterWelcomeProps): string {
+}: UserRegistrationWelcomeProps): string {
   const previewText =
     'Bem-vindo à área administrativa da Produtivese! Explore os recursos e ferramentas que temos a oferecer para facilitar sua gestão.'
 
@@ -79,7 +82,7 @@ export function NewsletterWelcomeText({
   return `
 ${previewText}
 
-${helloText},
+${helloText}
 
 Seja bem-vindo(a) à área administrativa da Produtivese! Estamos entusiasmados por tê-lo(a) conosco. Aqui, você terá acesso a uma variedade de ferramentas e recursos que foram cuidadosamente desenvolvidos para otimizar a gestão e a produtividade da sua empresa.
 
@@ -94,4 +97,12 @@ Mais uma vez, seja bem-vindo(a) à Produtivese. Estamos ansiosos para trabalhar 
 Atenciosamente,
 Equipe Produtivese
 `
+}
+
+export const UserRegistrationWelcomeTemplate = {
+  subject: 'Bem-vindo à Produtivese!',
+  render: (data: UserRegistrationWelcomeProps) => ({
+    html: renderEmailComponent(UserRegistrationWelcome(data)),
+    text: UserRegistrationWelcomeText(data),
+  }),
 }
