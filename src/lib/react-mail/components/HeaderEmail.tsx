@@ -1,7 +1,7 @@
 // HeaderEmail.js ou HeaderEmail.tsx
 import { Column, Hr, Img, Link, Section } from '@react-email/components'
 
-const baseUrl = process.env.NEXT_PUBLIC_URL
+const baseUrl = 'https://www.produtivese.com.br/'
 
 export function HeaderEmail() {
   return (
