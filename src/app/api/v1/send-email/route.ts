@@ -1,9 +1,6 @@
 import { database } from '@/infra/database'
 import { sendMail } from '@/infra/email'
-import emailTemplates, {
-  EmailDataMap,
-  EmailType,
-} from '@/lib/react-mail/templates'
+import emailTemplates, { EmailType } from '@/lib/react-mail/templates'
 import { NextResponse, type NextRequest } from 'next/server'
 
 async function sendEmail(req: NextRequest) {
@@ -27,7 +24,7 @@ async function sendEmail(req: NextRequest) {
     }
 
     const { subject, render } = emailTemplates[type as EmailType]
-    const { html, text } = render(data as EmailDataMap[EmailType])
+    const { html, text } = render(data as any)
 
     const responseEmail = await sendMail({
       to,
