@@ -8,7 +8,7 @@ import {
   Text,
 } from '@react-email/components'
 
-const baseUrl = 'https://www.produtivese.com.br/'
+const baseUrl = 'https://www.produtivese.com.br'
 const year = new Date().getFullYear()
 
 export function FooterEmail() {
