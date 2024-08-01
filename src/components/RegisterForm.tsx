@@ -60,6 +60,10 @@ export function RegisterForm({ className, ...props }: RegisterFormProps) {
     router.push(`/login?email=${email}`)
   }
 
+  function handleGoVerifyEmailOpt(email: string) {
+    router.push(`/verify-email-opt?email=${email}`)
+  }
+
   function handleGoToForgotPassword(email: string) {
     console.log('❗❗❗ ~ handleGoToForgotPassword', email)
   }
@@ -136,18 +140,14 @@ export function RegisterForm({ className, ...props }: RegisterFormProps) {
         throw new Error(responseBody.message)
       }
 
-      // create verification token
-      const responseToken = await fetch('/api/v1/verification-token', {
+      // create verification token OPT
+      await fetch('/api/v1/verification-token', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email: values.email }),
+        body: JSON.stringify({ email: values.email, opt: true, dayExpires: 1 }),
       })
-
-      const responseTokenBody = await responseToken.json()
-      const token = responseTokenBody.token
-      console.log('🚀🚀🚀token:', token)
 
       // send user registration welcome email
       const userId = responseBody.user.id
@@ -165,13 +165,13 @@ export function RegisterForm({ className, ...props }: RegisterFormProps) {
         duration: Infinity,
         variant: 'success',
         firstButton: {
-          text: 'Fazer Login Agora',
+          text: 'Verificar Email Agora!',
           variant: 'default',
-          onClick: () => handleGoToLogin(values.email),
+          onClick: () => handleGoVerifyEmailOpt(values.email),
         },
         redirect: {
-          path: `/login?email=${values.email}`,
-          countdownSeconds: 7,
+          path: `/verify-email-opt?email=${values.email}`,
+          countdownSeconds: 5,
         },
       })
 

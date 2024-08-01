@@ -40,3 +40,17 @@ export const nickNameValidation = z
   .regex(/^[a-zA-ZÀ-ÿ\s]*$/, 'Deve conter apenas letras.')
   .toLowerCase()
   .optional()
+
+export const tokenValidation = z.string().refine(
+  (value) => {
+    const isUUID =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(
+        value,
+      )
+    const isOPT = /^\d{6}$/.test(value)
+    return isUUID || isOPT
+  },
+  {
+    message: 'Token deve ser um UUID válido ou um código OTP de 6 dígitos',
+  },
+)

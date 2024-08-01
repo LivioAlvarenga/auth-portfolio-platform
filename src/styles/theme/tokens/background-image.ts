@@ -3,4 +3,5 @@ export const backgroundImage = {
   registerImage: `url('https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/register-left-container-image.svg')`,
   verifyEmailImage: `url('https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/verify-email-left-container-image.svg')`,
   verifyEmailImageErro: `url('https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/verify-email-left-container-image-error.svg')`,
+  verifyEmailOptImage: `url('https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/verify-email-opt-left-container-image.svg')`,
 }
