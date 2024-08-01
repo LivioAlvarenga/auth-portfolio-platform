@@ -1,3 +1,5 @@
+import crypto from 'crypto'
+
 /**
  * Generates a random password that meets the specified criteria:
  * - At least one uppercase letter
@@ -40,3 +42,21 @@ export const generatePassword = (length: number): string => {
 // import { generatePassword } from './utils';
 // const password = generatePassword(12);
 // console.log(password);
+
+/**
+ * Gera um código OTP (One-Time Password) de 6 dígitos.
+ *
+ * @returns {string} - O código OTP gerado.
+ *
+ * @example
+ * const otp = generateOTP();
+ * console.log('Generated OTP:', otp); // Output: '123456'
+ */
+export function generateOTP(): string {
+  const otp = crypto.randomInt(100000, 999999).toString()
+  return otp
+}
+
+// Exemplo de uso da função
+// const otp = generateOTP();
+// console.log('Generated OTP:', otp);

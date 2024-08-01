@@ -1,6 +1,6 @@
 import { database } from '@/infra/database'
 import { orchestrator } from '@/tests/orchestrator'
-import { addHours } from 'date-fns'
+import { addDays } from 'date-fns'
 import { v4 as uuidv4 } from 'uuid'
 
 beforeAll(async () => {
@@ -40,7 +40,7 @@ describe('POST /api/v1/verification-token', () => {
       )
     })
 
-    test('should return 201 and token if email exists in database', async () => {
+    test('should return 201 and UUID token if opt is false', async () => {
       // Inserir um usuário na base de dados
       const existingUser = {
         email: 'existing.email@example.com',
@@ -73,7 +73,7 @@ describe('POST /api/v1/verification-token', () => {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ email: existingUser.email }),
+          body: JSON.stringify({ email: existingUser.email, opt: false }),
         },
       )
 
@@ -81,42 +81,56 @@ describe('POST /api/v1/verification-token', () => {
 
       expect(response.status).toBe(201)
       expect(responseBody.message).toBe('Token criado com sucesso.')
-      expect(responseBody.token).toBeDefined()
+      expect(responseBody.token).toMatch(
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/,
+      ) // Verifica se o token é um UUID
     })
-  })
-})
 
-describe('GET /api/v1/verification-token', () => {
-  describe('Verification Token Validation Use Case', () => {
-    test('should return 400 if token is not provided', async () => {
+    test('should return 201 and OTP token if opt is true', async () => {
+      // Inserir um usuário na base de dados
+      const existingUser = {
+        email: 'existing.email@example.com',
+        password: 'Valid1Password!',
+      }
+
+      const newUser = await database.query({
+        text: 'INSERT INTO users (email, password_hash) VALUES ($1, $2) RETURNING id',
+        values: [existingUser.email, existingUser.password],
+      })
+
+      await database.query({
+        text: `
+          INSERT INTO accounts ("userId", type, provider, "providerAccountId")
+          VALUES ($1, $2, $3, $4)
+        `,
+        values: [
+          newUser.rows[0].id,
+          'credential',
+          'credential',
+          newUser.rows[0].id,
+        ],
+      })
+
+      // Enviar uma requisição para a API com o email do usuário
       const response = await fetch(
         'http://localhost:3000/api/v1/verification-token',
         {
-          method: 'GET',
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email: existingUser.email, opt: true }),
         },
       )
 
       const responseBody = await response.json()
 
-      expect(response.status).toBe(400)
-      expect(responseBody.message).toBe('Token não fornecido.')
+      expect(response.status).toBe(201)
+      expect(responseBody.message).toBe('Token criado com sucesso.')
+      expect(responseBody.token).toMatch(/^\d{6}$/) // Verifica se o token é um OTP de 6 dígitos
     })
 
-    test('should return 404 if token does not exist in database', async () => {
-      const response = await fetch(
-        'http://localhost:3000/api/v1/verification-token?token=nonexistenttoken',
-        {
-          method: 'GET',
-        },
-      )
-
-      const responseBody = await response.json()
-
-      expect(response.status).toBe(404)
-      expect(responseBody.message).toBe('Token inválido ou expirado.')
-    })
-
-    test('should return 404 if token is expired', async () => {
+    test('should update existing token instead of creating a new one', async () => {
       // Inserir um usuário na base de dados
       const existingUser = {
         email: 'existing.email@example.com',
@@ -141,76 +155,40 @@ describe('GET /api/v1/verification-token', () => {
         ],
       })
 
-      // Inserir um token expirado na base de dados
-      const expiredToken = uuidv4()
-      const expiredDate = addHours(new Date(), -24)
+      // Criar um token inicial na base de dados
+      const initialToken = uuidv4()
+      const initialExpires = addDays(new Date(), 1)
 
       await database.query({
         text: `INSERT INTO verification_token (identifier, token, expires) VALUES ($1, $2, $3)`,
-        values: [existingUser.email, expiredToken, expiredDate],
+        values: [existingUser.email, initialToken, initialExpires],
       })
 
+      // Enviar uma requisição para a API para atualizar o token existente
       const response = await fetch(
-        `http://localhost:3000/api/v1/verification-token?token=${expiredToken}`,
+        'http://localhost:3000/api/v1/verification-token',
         {
-          method: 'GET',
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email: existingUser.email, opt: false }),
         },
       )
 
       const responseBody = await response.json()
 
-      expect(response.status).toBe(404)
-      expect(responseBody.message).toBe('Token inválido ou expirado.')
-    })
-
-    test('should return 200 and user data if token is valid', async () => {
-      // Inserir um usuário na base de dados
-      const existingUser = {
-        email: 'existing.email@example.com',
-        password: 'Valid1Password!',
-      }
-
-      const newUser = await database.query({
-        text: 'INSERT INTO users (email, password_hash) VALUES ($1, $2) RETURNING id',
-        values: [existingUser.email, existingUser.password],
+      const updatedTokenResult = await database.query({
+        text: `SELECT token FROM verification_token WHERE identifier = $1`,
+        values: [existingUser.email],
       })
 
-      await database.query({
-        text: `
-          INSERT INTO accounts ("userId", type, provider, "providerAccountId")
-          VALUES ($1, $2, $3, $4)
-        `,
-        values: [
-          newUser.rows[0].id,
-          'credential',
-          'credential',
-          newUser.rows[0].id,
-        ],
-      })
+      const updatedToken = updatedTokenResult.rows[0].token
 
-      // Inserir um token válido na base de dados
-      const validToken = uuidv4()
-      const validDate = addHours(new Date(), 24)
-
-      await database.query({
-        text: `INSERT INTO verification_token (identifier, token, expires) VALUES ($1, $2, $3)`,
-        values: [existingUser.email, validToken, validDate],
-      })
-
-      const response = await fetch(
-        `http://localhost:3000/api/v1/verification-token?token=${validToken}`,
-        {
-          method: 'GET',
-        },
-      )
-
-      const responseBody = await response.json()
-
-      expect(response.status).toBe(200)
-      expect(responseBody.name).toBeDefined()
-      expect(responseBody.nick_name).toBeDefined()
-      expect(responseBody.email).toBe(existingUser.email)
-      expect(responseBody.expires).toBe(validDate.toISOString())
+      expect(response.status).toBe(201)
+      expect(responseBody.message).toBe('Token criado com sucesso.')
+      expect(responseBody.token).toBe(updatedToken) // Verifica se o token foi atualizado
+      expect(responseBody.token).not.toBe(initialToken) // Verifica se o token não é o mesmo do inicial
     })
   })
 })

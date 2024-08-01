@@ -1,12 +1,22 @@
 import { database } from '@/infra/database'
-import { emailValidation } from '@/schemas'
-import { addHours, isAfter } from 'date-fns'
+import { emailValidation, tokenValidation } from '@/schemas'
+import { sendEmail } from '@/utils/email'
+import { generateOTP } from '@/utils/password'
+import { getBaseUrl } from '@/utils/url'
+import { addDays } from 'date-fns'
 import { NextResponse, type NextRequest } from 'next/server'
 import { v4 as uuidv4 } from 'uuid'
 import { z } from 'zod'
 
-const verificationTokenSchema = z.object({
+const verificationTokenPostSchema = z.object({
   email: emailValidation,
+  opt: z.boolean().default(false),
+  dayExpires: z.number().default(1),
+})
+
+const verificationTokenGetSchema = z.object({
+  email: emailValidation,
+  token: tokenValidation,
 })
 
 async function verificationToken(req: NextRequest) {
@@ -23,12 +33,26 @@ async function verificationToken(req: NextRequest) {
       const body = await req.json()
 
       // 1. useCase - sanitize body
-      const parsedData = verificationTokenSchema.parse(body)
+      const parsedData = verificationTokenPostSchema.parse(body)
 
       // 2. useCase - check if email already exists in database
-      const { email } = parsedData
+      const { email, opt, dayExpires } = parsedData
       const emailExistsInDatabaseResult = await database.query({
-        text: `SELECT * FROM users WHERE email = $1`,
+        text: `
+          SELECT
+            u.id,
+            u.email,
+            t.token,
+            t.expires
+          FROM
+            users u
+            LEFT JOIN verification_token t ON u.email = t.identifier
+          WHERE
+            u.email = $1
+          ORDER BY
+            t.created_at DESC
+          LIMIT 1
+        `,
         values: [email],
       })
 
@@ -44,15 +68,35 @@ async function verificationToken(req: NextRequest) {
         )
       }
 
-      // 3. useCase - create token uuid and save it to database
-      const token = uuidv4()
+      // 3. useCase - create token uuid / OPT and save it to database
+      const token = opt ? generateOTP() : uuidv4()
       const now = new Date()
-      const expires = addHours(now, 24)
+      const expires = addDays(now, dayExpires)
 
-      await database.query({
-        text: `INSERT INTO verification_token (identifier, token, expires) VALUES ($1, $2, $3)`,
-        values: [emailExistsInDatabase.email, token, expires],
-      })
+      if (emailExistsInDatabase.token) {
+        await database.query({
+          text: `UPDATE verification_token SET token = $1, expires = $2 WHERE identifier = $3`,
+          values: [token, expires, email],
+        })
+      } else {
+        await database.query({
+          text: `INSERT INTO verification_token (identifier, token, expires) VALUES ($1, $2, $3)`,
+          values: [emailExistsInDatabase.email, token, expires],
+        })
+      }
+
+      // 4. useCase - send email with opt
+      if (opt) {
+        await sendEmail({
+          type: 'VERIFICATION_EMAIL_WITH_OTP',
+          data: {
+            opt: token,
+            url: `${getBaseUrl()}/verify-email-opt?email=${email}&token=${token}`,
+          },
+          to: email,
+          userId: emailExistsInDatabase.id,
+        })
+      }
 
       return NextResponse.json(
         {
@@ -64,20 +108,33 @@ async function verificationToken(req: NextRequest) {
     }
 
     if (req.method === 'GET') {
+      // 1. useCase - check if email and token or opt exists in query
+      const email = req.nextUrl.searchParams.get('email')
       const token = req.nextUrl.searchParams.get('token')
 
-      // 1. useCase - check if token exists
-      if (!token) {
+      if (!email || !token) {
         return NextResponse.json(
-          { message: 'Token não fornecido.' },
+          { message: 'Email e token são obrigatórios.' },
           { status: 400 },
         )
       }
 
-      // 2. useCase - check if token is valid
+      // 2. useCase - sanitize query
+      const parsedData = verificationTokenGetSchema.parse({
+        email,
+        token,
+      })
+
+      // 3. useCase - check if token/opt is valid
       const tokenResult = await database.query({
-        text: `SELECT identifier, expires FROM verification_token WHERE token = $1`,
-        values: [token],
+        text: `
+          SELECT identifier, expires
+          FROM verification_token
+          WHERE token = $1
+            AND identifier = $2
+            AND expires > NOW()
+        `,
+        values: [parsedData.token, parsedData.email],
       })
 
       const tokenData = tokenResult.rows[0]
@@ -89,31 +146,43 @@ async function verificationToken(req: NextRequest) {
         )
       }
 
-      const { identifier, expires } = tokenData
+      // 4. useCase - update columns emailVerified and email_verified_provider in users table
+      const updateResult = await database.query({
+        text: `
+          UPDATE users
+          SET "emailVerified" = NOW(),
+              email_verified_provider = 'credential'
+          WHERE email = $1
+        `,
+        values: [parsedData.email],
+      })
 
-      const now = new Date()
-      if (isAfter(now, new Date(expires))) {
+      if (updateResult.rowCount === 0) {
         return NextResponse.json(
-          { message: 'Token inválido ou expirado.' },
+          { message: 'Email não encontrado ou já verificado.' },
           { status: 404 },
         )
       }
 
-      // 3. useCase - get user data by identifier and return it
-      const userResult = await database.query({
-        text: `SELECT name, nick_name, email FROM users WHERE email = $1`,
-        values: [identifier],
+      // 5. useCase - delete token from database
+      const deleteResult = await database.query({
+        text: `
+          DELETE FROM verification_token
+          WHERE token = $1
+            AND identifier = $2
+        `,
+        values: [parsedData.token, parsedData.email],
       })
 
-      const userData = userResult.rows[0]
+      if (deleteResult.rowCount === 0) {
+        return NextResponse.json(
+          { message: 'Erro ao deletar o token.' },
+          { status: 500 },
+        )
+      }
 
       return NextResponse.json(
-        {
-          name: userData.name,
-          nick_name: userData.nick_name,
-          email: userData.email,
-          expires,
-        },
+        { message: 'Email verificado com sucesso.' },
         { status: 200 },
       )
     }
