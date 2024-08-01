@@ -98,6 +98,8 @@ async function verificationToken(req: NextRequest) {
         })
       }
 
+      console.log('🌈getBaseUrl() backend - ', getBaseUrl())
+
       return NextResponse.json(
         {
           message: 'Token criado com sucesso.',
