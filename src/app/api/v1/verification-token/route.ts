@@ -12,6 +12,7 @@ const verificationTokenPostSchema = z.object({
   email: emailValidation,
   opt: z.boolean().default(false),
   dayExpires: z.number().default(1),
+  tokenType: z.string(),
 })
 
 const verificationTokenGetSchema = z.object({
@@ -36,7 +37,7 @@ async function verificationToken(req: NextRequest) {
       const parsedData = verificationTokenPostSchema.parse(body)
 
       // 2. useCase - check if email already exists in database
-      const { email, opt, dayExpires } = parsedData
+      const { email, opt, dayExpires, tokenType } = parsedData
       const emailExistsInDatabaseResult = await database.query({
         text: `
           SELECT
@@ -45,17 +46,18 @@ async function verificationToken(req: NextRequest) {
             u.name,
             u.nick_name,
             t.token,
+            t.token_type,
             t.expires
           FROM
             users u
-            LEFT JOIN verification_token t ON u.email = t.identifier
+            LEFT JOIN verification_token t ON u.email = t.identifier AND t.token_type = $2
           WHERE
             u.email = $1
           ORDER BY
             t.created_at DESC
           LIMIT 1
         `,
-        values: [email],
+        values: [email, tokenType],
       })
 
       const emailExistsInDatabase = emailExistsInDatabaseResult.rows[0]
@@ -77,13 +79,18 @@ async function verificationToken(req: NextRequest) {
 
       if (emailExistsInDatabase.token) {
         await database.query({
-          text: `UPDATE verification_token SET token = $1, expires = $2 WHERE identifier = $3`,
-          values: [token, expires, email],
+          text: `
+            UPDATE verification_token
+            SET token = $1, expires = $2, updated_at = NOW()
+            WHERE identifier = $3 AND token_type = $4
+          `,
+          values: [token, expires, email, tokenType],
         })
       } else {
         await database.query({
-          text: `INSERT INTO verification_token (identifier, token, expires) VALUES ($1, $2, $3)`,
-          values: [emailExistsInDatabase.email, token, expires],
+          text: `
+          INSERT INTO verification_token (identifier, token, expires, token_type) VALUES ($1, $2, $3, $4)`,
+          values: [emailExistsInDatabase.email, token, expires, tokenType],
         })
       }
 

@@ -146,7 +146,12 @@ export function RegisterForm({ className, ...props }: RegisterFormProps) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email: values.email, opt: true, dayExpires: 1 }),
+        body: JSON.stringify({
+          email: values.email,
+          opt: true,
+          dayExpires: 1,
+          tokenType: 'EMAIL_VERIFICATION',
+        }),
       })
 
       // send user registration welcome email

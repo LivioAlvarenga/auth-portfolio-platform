@@ -64,7 +64,12 @@ export function OptForm({ className, email, token, ...props }: OptFormProps) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, opt: true, dayExpires: 1 }),
+        body: JSON.stringify({
+          email,
+          opt: true,
+          dayExpires: 1,
+          tokenType: 'EMAIL_VERIFICATION',
+        }),
       })
 
       if (!response.ok) {

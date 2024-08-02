@@ -60,6 +60,7 @@ export function ForgotPasswordForm({
             email: values.email,
             opt: false,
             dayExpires: 1,
+            tokenType: 'RESET_PASSWORD',
           }),
         },
       )

@@ -158,10 +158,16 @@ describe('POST /api/v1/verification-token', () => {
       // Criar um token inicial na base de dados
       const initialToken = uuidv4()
       const initialExpires = addDays(new Date(), 1)
+      const initialTokenType = 'RESET_PASSWORD'
 
       await database.query({
-        text: `INSERT INTO verification_token (identifier, token, expires) VALUES ($1, $2, $3)`,
-        values: [existingUser.email, initialToken, initialExpires],
+        text: `INSERT INTO verification_token (identifier, token, expires, token_type) VALUES ($1, $2, $3, $4)`,
+        values: [
+          existingUser.email,
+          initialToken,
+          initialExpires,
+          initialTokenType,
+        ],
       })
 
       // Enviar uma requisição para a API para atualizar o token existente
@@ -172,7 +178,11 @@ describe('POST /api/v1/verification-token', () => {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ email: existingUser.email, opt: false }),
+          body: JSON.stringify({
+            email: existingUser.email,
+            opt: false,
+            tokenType: 'RESET_PASSWORD',
+          }),
         },
       )
 
