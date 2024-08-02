@@ -20,6 +20,10 @@ exports.up = (pgm) => {
       type: 'varchar(255)',
       notNull: true,
     },
+    token_type: {
+      type: 'varchar(255)',
+      notNull: false,
+    },
     expires: {
       type: 'timestamp with time zone',
       notNull: true,

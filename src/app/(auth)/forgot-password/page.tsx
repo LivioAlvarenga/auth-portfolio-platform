@@ -1,5 +1,5 @@
 import { ButtonThemeToggle } from '@/components/ButtonThemeToggle'
-import { RegisterForm } from '@/components/RegisterForm'
+import { ForgotPasswordForm } from '@/components/ForgotPasswordForm'
 import { LogoHorizontal } from '@/components/svg/logo-horizontal'
 import { LogoVertical } from '@/components/svg/logo-vertical'
 import { Text } from '@/components/Text'
@@ -7,25 +7,12 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import Link from 'next/link'
 
-interface VerifyEmailPageProps {
-  searchParams: {
-    email?: string
-    token?: string
-  }
-}
-
-export default function VerifyEmail({ searchParams }: VerifyEmailPageProps) {
-  const email = searchParams.email || ''
-  const token = searchParams.token || ''
-
-  console.log('email:', email)
-  console.log('token:', token)
-
+export default function ForgotPassword() {
   return (
     <div className="grid grid-cols-1 items-center overflow-hidden lg:grid-cols-2">
       {/* grid left - only in desktop */}
       <div className="hidden min-h-screen w-full border-r border-border bg-border dark:bg-card lg:block">
-        <div className="mx-auto min-h-screen w-1/2 bg-verifyEmailImage bg-contain bg-center bg-no-repeat" />
+        <div className="mx-auto min-h-screen w-1/2 bg-forgotPasswordImage bg-contain bg-center bg-no-repeat" />
         <LogoHorizontal
           ariaLabel="Logo horizontal Produtivese"
           className="absolute left-10 top-10 opacity-90"
@@ -52,17 +39,21 @@ export default function VerifyEmail({ searchParams }: VerifyEmailPageProps) {
         <Card className="mx-auto max-w-sm">
           <CardHeader>
             <Text as="h1" variant={'title-22-32-500'}>
-              Cadastrar
+              Esqueceu a senha?
             </Text>
-            <Text variant={'label-14-14-400'} className="text-muted-foreground">
-              Preencha os dados abaixo para criar sua conta
+            <Text
+              variant={'label-14-14-400'}
+              className="pt-4 text-muted-foreground"
+            >
+              Preencha seu e-mail abaixo para receber um link de redefinição de
+              senha
             </Text>
           </CardHeader>
           <CardContent>
-            <RegisterForm />
+            <ForgotPasswordForm />
             <div className="mt-4 flex items-center justify-center text-sm">
               <Text as="span" variant={'label-14-14-400'}>
-                Já tem uma conta?{' '}
+                Lembrou sua senha?{' '}
               </Text>
               <Button asChild variant="link">
                 <Link href="/login" className="underline">
