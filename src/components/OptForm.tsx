@@ -1,8 +1,10 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
+import { webserver } from '@/infra/webserver'
 import { cn } from '@/lib/shadcn-ui'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { LoaderCircle } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -57,20 +59,22 @@ export function OptForm({ className, email, token, ...props }: OptFormProps) {
   async function handleSendOptToEmail(email: string) {
     try {
       setIsLoading(true)
-
       // create verification token OPT
-      const response = await fetch('/api/v1/verification-token', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        `${webserver.host}/api/v1/verification-token`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email,
+            opt: true,
+            dayExpires: 1,
+            tokenType: 'EMAIL_VERIFICATION',
+          }),
         },
-        body: JSON.stringify({
-          email,
-          opt: true,
-          dayExpires: 1,
-          tokenType: 'EMAIL_VERIFICATION',
-        }),
-      })
+      )
 
       if (!response.ok) {
         console.error('💥 Falha ao enviar código de verificação.', response)
@@ -112,7 +116,7 @@ export function OptForm({ className, email, token, ...props }: OptFormProps) {
     try {
       // check opt code
       const response = await fetch(
-        `/api/v1/verification-token?email=${email}&token=${values.pin}`,
+        `${webserver.host}/api/v1/verification-token?email=${email}&token=${values.pin}`,
       )
       const responseBody = await response.json()
 
@@ -221,7 +225,13 @@ export function OptForm({ className, email, token, ...props }: OptFormProps) {
           disabled={form.formState.isSubmitting || isLoading}
           className="w-full"
         >
-          {isLoading ? 'Carregando...' : 'Verificar Código'}
+          {isLoading ? (
+            <>
+              <LoaderCircle className="mr-2 animate-spin" /> Carregando...
+            </>
+          ) : (
+            'Verificar Código'
+          )}
         </Button>
       </form>
       <div className="mt-4 flex items-center justify-center gap-4 text-sm">

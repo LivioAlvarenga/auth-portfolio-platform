@@ -1,8 +1,8 @@
 import { database } from '@/infra/database'
+import { webserver } from '@/infra/webserver'
 import { emailValidation, tokenValidation } from '@/schemas'
 import { sendEmail } from '@/utils/email'
 import { generateOTP } from '@/utils/password'
-import { getBaseUrl } from '@/utils/url'
 import { addDays } from 'date-fns'
 import { NextResponse, type NextRequest } from 'next/server'
 import { v4 as uuidv4 } from 'uuid'
@@ -100,7 +100,7 @@ async function verificationToken(req: NextRequest) {
           type: 'VERIFICATION_EMAIL_WITH_OTP',
           data: {
             opt: token,
-            url: `${getBaseUrl()}/verify-email-opt?email=${email}&token=${token}`,
+            url: `${webserver.host}/verify-email-opt?email=${email}&token=${token}`,
           },
           to: email,
           userId: emailExistsInDatabase.id,
