@@ -3,6 +3,7 @@
 import { CreateUser } from '@/@types/user'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { webserver } from '@/infra/webserver'
 import { cn } from '@/lib/shadcn-ui'
 import {
   emailValidation,
@@ -103,7 +104,7 @@ export function RegisterForm({ className, ...props }: RegisterFormProps) {
       }
 
       // create user
-      const response = await fetch('/api/v1/user', {
+      const response = await fetch(`${webserver.host}/api/v1/user`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -141,7 +142,7 @@ export function RegisterForm({ className, ...props }: RegisterFormProps) {
       }
 
       // create verification token OPT
-      await fetch('/api/v1/verification-token', {
+      await fetch(`${webserver.host}/api/v1/verification-token`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

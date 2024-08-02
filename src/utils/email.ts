@@ -1,5 +1,5 @@
+import { webserver } from '@/infra/webserver'
 import { EmailDataMap, EmailType } from '@/lib/react-mail/templates'
-import { getBaseUrl } from './url'
 
 interface sendEmailProps<T extends EmailType> {
   type: T
@@ -18,9 +18,7 @@ export async function sendEmail<T extends EmailType>({
   bcc,
   userId,
 }: sendEmailProps<T>) {
-  const baseUrl = getBaseUrl()
-
-  const responseEmail = await fetch(`${baseUrl}/api/v1/send-email`, {
+  const responseEmail = await fetch(`${webserver.host}/api/v1/send-email`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
