@@ -13,7 +13,7 @@ import {
 import { sendEmail } from '@/utils/email'
 import { generatePassword } from '@/utils/password'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Copy, Eye, EyeOff } from 'lucide-react'
+import { Copy, Eye, EyeOff, LoaderCircle } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -337,7 +337,13 @@ export function RegisterForm({ className, ...props }: RegisterFormProps) {
           disabled={form.formState.isSubmitting || isLoading}
           className="w-full"
         >
-          {isLoading ? 'Carregando...' : 'Registrar'}
+          {isLoading ? (
+            <>
+              <LoaderCircle className="mr-2 animate-spin" /> Carregando...
+            </>
+          ) : (
+            'Registrar'
+          )}
         </Button>
       </form>
     </Form>

@@ -3,6 +3,7 @@
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/shadcn-ui'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { LoaderCircle } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -221,7 +222,13 @@ export function OptForm({ className, email, token, ...props }: OptFormProps) {
           disabled={form.formState.isSubmitting || isLoading}
           className="w-full"
         >
-          {isLoading ? 'Carregando...' : 'Verificar Código'}
+          {isLoading ? (
+            <>
+              <LoaderCircle className="mr-2 animate-spin" /> Carregando...
+            </>
+          ) : (
+            'Verificar Código'
+          )}
         </Button>
       </form>
       <div className="mt-4 flex items-center justify-center gap-4 text-sm">

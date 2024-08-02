@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/shadcn-ui'
 import { emailValidation, passwordValidation } from '@/schemas'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { CheckCircle2, Eye, EyeOff, XCircle } from 'lucide-react'
+import { CheckCircle2, Eye, EyeOff, LoaderCircle, XCircle } from 'lucide-react'
 import { signIn } from 'next-auth/react'
 import Link from 'next/link'
 import React, { useState } from 'react'
@@ -194,7 +194,13 @@ export function LoginForm({ className, email, ...props }: LoginFormProps) {
           disabled={form.formState.isSubmitting || isLoading}
           className="w-full"
         >
-          {isLoading ? 'Carregando...' : 'Entrar'}
+          {isLoading ? (
+            <>
+              <LoaderCircle className="mr-2 animate-spin" /> Carregando...
+            </>
+          ) : (
+            'Entrar'
+          )}
         </Button>
 
         {/* Login with Google */}
