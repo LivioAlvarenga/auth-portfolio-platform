@@ -12,7 +12,7 @@ const verificationTokenPostSchema = z.object({
   email: emailValidation,
   opt: z.boolean().default(false),
   dayExpires: z.number().default(1),
-  tokenType: z.string(),
+  tokenType: z.string().optional(),
 })
 
 const verificationTokenGetSchema = z.object({

@@ -12,7 +12,7 @@ export default function ForgotPassword() {
     <div className="grid grid-cols-1 items-center overflow-hidden lg:grid-cols-2">
       {/* grid left - only in desktop */}
       <div className="hidden min-h-screen w-full border-r border-border bg-border dark:bg-card lg:block">
-        <div className="bg-forgotPasswordImage mx-auto min-h-screen w-1/2 bg-contain bg-center bg-no-repeat" />
+        <div className="mx-auto min-h-screen w-1/2 bg-forgotPasswordImage bg-contain bg-center bg-no-repeat" />
         <LogoHorizontal
           ariaLabel="Logo horizontal Produtivese"
           className="absolute left-10 top-10 opacity-90"
