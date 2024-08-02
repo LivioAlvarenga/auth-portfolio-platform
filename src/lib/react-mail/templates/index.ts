@@ -1,4 +1,8 @@
 import {
+  PasswordResetRequestProps,
+  PasswordResetRequestTemplate,
+} from '../emails/PasswordResetRequest'
+import {
   UserRegistrationWelcomeProps,
   UserRegistrationWelcomeTemplate,
 } from '../emails/UserRegistrationWelcome'
@@ -11,6 +15,7 @@ import {
 export interface EmailDataMap {
   USER_REGISTRATION_WELCOME: UserRegistrationWelcomeProps
   VERIFICATION_EMAIL_WITH_OTP: VerificationEmailWithOptProps
+  PASSWORD_RESET_REQUEST: PasswordResetRequestProps
   // Adicione outros mapeamentos conforme necessário
 }
 
@@ -29,6 +34,7 @@ type EmailTemplates = {
 const emailTemplates: EmailTemplates = {
   USER_REGISTRATION_WELCOME: UserRegistrationWelcomeTemplate,
   VERIFICATION_EMAIL_WITH_OTP: VerificationEmailWithOptTemplate,
+  PASSWORD_RESET_REQUEST: PasswordResetRequestTemplate,
   // Adicione outros templates aqui
 }
 
