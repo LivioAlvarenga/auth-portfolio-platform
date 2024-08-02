@@ -42,6 +42,8 @@ async function verificationToken(req: NextRequest) {
           SELECT
             u.id,
             u.email,
+            u.name,
+            u.nick_name,
             t.token,
             t.expires
           FROM
@@ -98,12 +100,14 @@ async function verificationToken(req: NextRequest) {
         })
       }
 
-      console.log('🌈getBaseUrl() backend - ', getBaseUrl())
-
       return NextResponse.json(
         {
           message: 'Token criado com sucesso.',
           token,
+          email,
+          userId: emailExistsInDatabase.id,
+          name: emailExistsInDatabase.name,
+          nickName: emailExistsInDatabase.nick_name,
         },
         { status: 201 },
       )

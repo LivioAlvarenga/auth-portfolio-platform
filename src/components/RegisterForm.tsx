@@ -65,7 +65,7 @@ export function RegisterForm({ className, ...props }: RegisterFormProps) {
   }
 
   function handleGoToForgotPassword(email: string) {
-    console.log('❗❗❗ ~ handleGoToForgotPassword', email)
+    router.push(`/forgot-password?email=${email}`)
   }
 
   function handleCopyPassword() {
