@@ -1,4 +1,8 @@
 import {
+  PasswordResetConfirmationProps,
+  PasswordResetConfirmationTemplate,
+} from '../emails/PasswordResetConfirmation'
+import {
   PasswordResetRequestProps,
   PasswordResetRequestTemplate,
 } from '../emails/PasswordResetRequest'
@@ -16,6 +20,7 @@ export interface EmailDataMap {
   USER_REGISTRATION_WELCOME: UserRegistrationWelcomeProps
   VERIFICATION_EMAIL_WITH_OTP: VerificationEmailWithOptProps
   PASSWORD_RESET_REQUEST: PasswordResetRequestProps
+  PASSWORD_RESET_CONFIRMATION: PasswordResetConfirmationProps
   // Adicione outros mapeamentos conforme necessário
 }
 
@@ -35,6 +40,7 @@ const emailTemplates: EmailTemplates = {
   USER_REGISTRATION_WELCOME: UserRegistrationWelcomeTemplate,
   VERIFICATION_EMAIL_WITH_OTP: VerificationEmailWithOptTemplate,
   PASSWORD_RESET_REQUEST: PasswordResetRequestTemplate,
+  PASSWORD_RESET_CONFIRMATION: PasswordResetConfirmationTemplate,
   // Adicione outros templates aqui
 }
 
