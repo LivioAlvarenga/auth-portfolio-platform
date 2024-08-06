@@ -5,4 +5,5 @@ export const backgroundImage = {
   verifyEmailImageErro: `url('https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/verify-email-left-container-image-error.svg')`,
   verifyEmailOptImage: `url('https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/verify-email-opt-left-container-image.svg')`,
   forgotPasswordImage: `url('https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/forgot-password-left-container-image.svg')`,
+  resetPasswordImage: `url('https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/reset-password-left-container-image.svg')`,
 }
