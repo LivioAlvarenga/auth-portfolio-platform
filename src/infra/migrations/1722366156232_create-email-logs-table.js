@@ -17,7 +17,7 @@ exports.up = (pgm) => {
       primaryKey: true,
     },
     email_logs_id: {
-      type: 'uuid',
+      type: 'serial',
       notNull: true,
       references: 'email_types(id)',
       onDelete: 'CASCADE',
