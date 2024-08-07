@@ -3,13 +3,13 @@ import { makeResetPasswordUseCase } from '@/use-cases/factories/make-reset-passw
 import { NextResponse, type NextRequest } from 'next/server'
 import { z } from 'zod'
 
-const userPasswordPutSchema = z.object({
+const resetPasswordSchema = z.object({
   token: z.string().uuid(),
   password: passwordValidation,
   email: emailValidation,
 })
 
-async function userPassword(req: NextRequest) {
+async function resetPassword(req: NextRequest) {
   const allowedMethods = ['POST']
   if (!allowedMethods.includes(req.method)) {
     return NextResponse.json(
@@ -23,7 +23,7 @@ async function userPassword(req: NextRequest) {
       const body = await req.json()
 
       // Sanitize body
-      const parsedData = userPasswordPutSchema.parse(body)
+      const parsedData = resetPasswordSchema.parse(body)
 
       const resetPasswordUseCase = makeResetPasswordUseCase()
 
@@ -35,22 +35,22 @@ async function userPassword(req: NextRequest) {
   } catch (error) {
     if (error instanceof z.ZodError) {
       console.error(
-        '💥 Unexpected error during data sanitization in api/v1/user-password',
+        '💥 Unexpected error during data sanitization in api/v1/reset-password',
         error,
       )
 
       const firstError = error.errors[0]?.message || 'Erro de validação.'
       return NextResponse.json({ message: firstError }, { status: 400 })
     }
-    console.error('💥 Unexpected error in api/v1/user-password', error)
+    console.error('💥 Unexpected error in api/v1/reset-password', error)
     return NextResponse.json({ message: 'Erro inesperado.' }, { status: 500 })
   }
 }
 
 export {
-  userPassword as DELETE,
-  userPassword as GET,
-  userPassword as PATCH,
-  userPassword as POST,
-  userPassword as PUT,
+  resetPassword as DELETE,
+  resetPassword as GET,
+  resetPassword as PATCH,
+  resetPassword as POST,
+  resetPassword as PUT,
 }

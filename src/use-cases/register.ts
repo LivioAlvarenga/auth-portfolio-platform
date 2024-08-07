@@ -1,0 +1,110 @@
+import { hashPassword } from '@/lib/bcrypt'
+import { AccountRepository } from '@/repositories/account-repository'
+import { UserRepository } from '@/repositories/user-repository'
+
+interface RegisterUseCaseRequest {
+  name?: string
+  nick_name?: string
+  email: string
+  password?: string
+}
+
+interface RegisterUseCaseResponse {
+  status: number
+  message: string
+  user?: {
+    id: string
+    email: string
+    name?: string
+    nick_name?: string
+  }
+  account?: {
+    id: string
+    provider: string
+  }
+}
+
+export class RegisterUseCase {
+  constructor(
+    private userRepository: UserRepository,
+    private accountRepository: AccountRepository,
+  ) {}
+
+  async execute({
+    name,
+    nick_name,
+    email,
+    password,
+  }: RegisterUseCaseRequest): Promise<RegisterUseCaseResponse> {
+    // 1. useCase - check if email is already in use and already credential provider
+    const userAlreadyExists = await this.userRepository.getUserByEmail(email)
+
+    let providers: string[] = []
+    if (userAlreadyExists) {
+      providers = await this.accountRepository.getProvidersByUserId(
+        userAlreadyExists.id,
+      )
+    }
+
+    if (userAlreadyExists && providers.includes('credential')) {
+      return {
+        status: 400,
+        message: 'E-mail já cadastrado.',
+      }
+    }
+
+    // 2. useCase - hash password before saving
+    let password_hash: string | undefined
+    if (password) {
+      password_hash = await hashPassword(password)
+    }
+
+    // 3. useCase - save user to database with minimal data (name, email, password_hash)
+    if (!name || !email || !password_hash) {
+      return {
+        status: 400,
+        message: 'Dados insuficientes para o cadastro.',
+      }
+    }
+
+    // 4. useCase - insert user to database if user does not exist Or update user if user exists (if user start with provider !== credential)
+    let user
+    if (userAlreadyExists) {
+      user = await this.userRepository.updateUser(userAlreadyExists.id, {
+        name,
+        nick_name,
+        password_hash,
+      })
+    } else {
+      user = await this.userRepository.createUser({
+        name,
+        nick_name,
+        email,
+        password_hash,
+      })
+    }
+
+    // 5. useCase - Create account for user with provider credential in accounts table
+    const account = await this.accountRepository.createAccount({
+      userId: user.id,
+      type: 'credential',
+      provider: 'credential',
+      providerAccountId: user.id,
+    })
+
+    return {
+      status: 201,
+      message: 'Usuário criado com sucesso!',
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        nick_name: user.nick_name,
+      },
+      account: {
+        id: account.id,
+        provider: account.provider,
+      },
+    }
+  }
+}

@@ -2,51 +2,33 @@ import { CreateUser } from '@/@types/user'
 import { database } from '@/infra/database'
 import { comparePassword } from '@/lib/bcrypt'
 import { orchestrator } from '@/tests/orchestrator'
+import { utilsTest } from '@/tests/utils/defaultUtilsTest'
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices()
   await orchestrator.dropAllTables()
   await orchestrator.runPendingMigrations()
 })
-describe('POST /api/v1/user', () => {
-  describe('User Creation Use Case', () => {
-    beforeAll(async () => {
-      const existingUser: CreateUser = {
-        email: 'existing.email@example.com',
-        password: 'Valid1Password!',
-      }
 
-      const newUser = await database.query({
-        text: 'INSERT INTO users (email, password_hash) VALUES ($1, $2) RETURNING id',
-        values: [existingUser.email, existingUser.password],
-      })
+afterEach(async () => {
+  await database.query('DELETE FROM users')
+  await database.query('DELETE FROM accounts')
+})
 
-      await database.query({
-        text: `
-          INSERT INTO accounts ("userId", type, provider, "providerAccountId")
-          VALUES ($1, $2, $3, $4)
-        `,
-        values: [
-          newUser.rows[0].id,
-          'credential',
-          'credential',
-          newUser.rows[0].id,
-        ],
-      })
-    })
-
+describe('POST /api/v1/register', () => {
+  describe('User Register Use Case', () => {
     test('should return error for already registered email', async () => {
-      const newUser: CreateUser = {
-        email: 'existing.email@example.com',
-        password: 'Valid1Password!',
-      }
+      const createdUser = await utilsTest.createDefaultUserWithAccount()
 
-      const response = await fetch('http://localhost:3000/api/v1/user', {
+      const response = await fetch('http://localhost:3000/api/v1/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(newUser),
+        body: JSON.stringify({
+          email: createdUser.email,
+          password: 'Valid1Password!',
+        }),
       })
 
       const responseBody = await response.json()
@@ -62,7 +44,7 @@ describe('POST /api/v1/user', () => {
         name: 'New User',
       }
 
-      const response = await fetch('http://localhost:3000/api/v1/user', {
+      const response = await fetch('http://localhost:3000/api/v1/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -95,7 +77,7 @@ describe('POST /api/v1/user', () => {
         // Missing name
       }
 
-      const response = await fetch('http://localhost:3000/api/v1/user', {
+      const response = await fetch('http://localhost:3000/api/v1/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -118,7 +100,7 @@ describe('POST /api/v1/user', () => {
         nick_name: 'newusernickname',
       }
 
-      const response = await fetch('http://localhost:3000/api/v1/user', {
+      const response = await fetch('http://localhost:3000/api/v1/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

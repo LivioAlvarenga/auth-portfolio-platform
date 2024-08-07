@@ -1,6 +1,5 @@
 'use client'
 
-import { CreateUser } from '@/@types/user'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { webserver } from '@/infra/webserver'
@@ -96,92 +95,91 @@ export function RegisterForm({ className, ...props }: RegisterFormProps) {
     setIsLoading(true)
 
     try {
-      const newUser: CreateUser = {
-        email: values.email,
-        password: values.password,
-        name: values.fullName,
-        nick_name: values.nickName,
-      }
-
       // create user
-      const response = await fetch(`${webserver.host}/api/v1/user`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(newUser),
-      })
-      const responseBody = await response.json()
-
-      if (!response.ok) {
-        if (responseBody.message === 'E-mail já cadastrado.') {
-          form.setError('email', {
-            message: 'E-mail já cadastrado.',
-          })
-
-          showToast({
-            message:
-              'Este email já se encontra cadastrado. Por favor, utilize outro email ou recupere a senha se necessário.',
-            duration: Infinity,
-            variant: 'warning',
-            firstButton: {
-              text: 'Fazer Login',
-              variant: 'ghost',
-              onClick: () => handleGoToLogin(values.email),
-            },
-            secondButton: {
-              text: 'Recuperar Senha',
-              variant: 'default',
-              onClick: () => handleGoToForgotPassword(values.email),
-            },
-          })
-          return
-        }
-
-        throw new Error(responseBody.message)
-      }
-
-      // create verification token OPT
-      await fetch(`${webserver.host}/api/v1/verification-token`, {
+      const response = await fetch(`${webserver.host}/api/v1/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           email: values.email,
-          opt: true,
-          dayExpires: 1,
-          tokenType: 'EMAIL_VERIFICATION',
+          password: values.password,
+          name: values.fullName,
+          nick_name: values.nickName,
         }),
       })
+      const responseBody = await response.json()
 
-      // send user registration welcome email
-      const userId = responseBody.user.id
-      await sendEmail({
-        type: 'USER_REGISTRATION_WELCOME',
-        data: {
-          name: values.nickName || values.fullName,
-        },
-        to: values.email,
-        userId,
-      })
+      if (response.status === 201 && responseBody) {
+        // create verification token OPT
+        await fetch(`${webserver.host}/api/v1/verification-token`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: values.email,
+            opt: true,
+            dayExpires: 1,
+            tokenType: 'EMAIL_VERIFICATION',
+          }),
+        })
 
-      showToast({
-        message: `Usuário registrado com sucesso! Para fazer login, por favor, confirme o email enviado para ${values.email}.`,
-        duration: Infinity,
-        variant: 'success',
-        firstButton: {
-          text: 'Verificar Email Agora!',
-          variant: 'default',
-          onClick: () => handleGoVerifyEmailOpt(values.email),
-        },
-        redirect: {
-          path: `/verify-email-opt?email=${values.email}`,
-          countdownSeconds: 5,
-        },
-      })
+        // send user registration welcome email
+        const userId = responseBody.user.id
+        await sendEmail({
+          type: 'USER_REGISTRATION_WELCOME',
+          data: {
+            name: values.nickName || values.fullName,
+          },
+          to: values.email,
+          userId,
+        })
 
-      form.reset()
+        showToast({
+          message: `Usuário registrado com sucesso! Para fazer login, por favor, confirme o email enviado para ${values.email}.`,
+          duration: Infinity,
+          variant: 'success',
+          firstButton: {
+            text: 'Verificar Email Agora!',
+            variant: 'default',
+            onClick: () => handleGoVerifyEmailOpt(values.email),
+          },
+          redirect: {
+            path: `/verify-email-opt?email=${values.email}`,
+            countdownSeconds: 5,
+          },
+        })
+
+        form.reset()
+        return
+      }
+
+      if (responseBody.message === 'E-mail já cadastrado.') {
+        form.setError('email', {
+          message: 'E-mail já cadastrado.',
+        })
+
+        showToast({
+          message:
+            'Este email já se encontra cadastrado. Por favor, utilize outro email ou recupere a senha se necessário.',
+          duration: Infinity,
+          variant: 'warning',
+          firstButton: {
+            text: 'Fazer Login',
+            variant: 'ghost',
+            onClick: () => handleGoToLogin(values.email),
+          },
+          secondButton: {
+            text: 'Recuperar Senha',
+            variant: 'default',
+            onClick: () => handleGoToForgotPassword(values.email),
+          },
+        })
+        return
+      }
+
+      throw new Error(responseBody.message)
     } catch (error) {
       console.error('💥 Falha ao registrar usuário.', error)
 
