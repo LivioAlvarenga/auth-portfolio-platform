@@ -11,8 +11,7 @@ exports.shorthands = undefined
 exports.up = (pgm) => {
   pgm.createTable('email_types', {
     id: {
-      type: 'uuid',
-      default: pgm.func('gen_random_uuid()'),
+      type: 'serial',
       notNull: true,
       primaryKey: true,
     },
