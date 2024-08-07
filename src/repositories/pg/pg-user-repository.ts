@@ -12,12 +12,12 @@ export class PgUserRepository implements UserRepository {
       `,
       values: [
         data.name || null,
-        data.nickName || null,
+        data.nick_name || null,
         data.email,
         data.emailVerified || null,
         data.emailVerifiedProvider || null,
         data.image || null,
-        data.passwordHash || null,
+        data.password_hash || null,
         data.role || 'user',
       ],
     }
@@ -26,27 +26,36 @@ export class PgUserRepository implements UserRepository {
     return result.rows[0]
   }
 
-  async updateUser(id: string, data: Partial<User>): Promise<boolean> {
+  // Validate this method
+  async updateUser(
+    id: string,
+    data: Partial<User>,
+  ): Promise<Omit<User, 'passwordHash'>> {
     const setClause = Object.keys(data)
       .map((key, index) => `${key} = $${index + 2}`)
       .join(', ')
 
     if (!setClause) {
-      // If data is empty, no need to proceed with the query
-      return false
+      throw new Error('No data provided for update')
     }
 
     const query = {
       text: `
       UPDATE users
-      SET ${setClause}
+      SET ${setClause}, updated_at = NOW()
       WHERE id = $1
+      RETURNING id, name, nick_name, email, "emailVerified", email_verified_provider, image, role, updated_at
     `,
       values: [id, ...Object.values(data)],
     }
 
     const result = await database.query(query)
-    return result.rowCount > 0
+
+    if (result.rowCount === 0) {
+      throw new Error('User not found')
+    }
+
+    return result.rows[0]
   }
 
   // Validate this method

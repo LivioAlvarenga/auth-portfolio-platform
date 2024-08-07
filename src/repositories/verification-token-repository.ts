@@ -1,5 +1,3 @@
-/* eslint-disable no-unused-vars */
-
 export interface VerificationToken {
   identifier: string
   token: string

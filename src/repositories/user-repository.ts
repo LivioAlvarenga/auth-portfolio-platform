@@ -1,5 +1,3 @@
-/* eslint-disable no-unused-vars */
-
 export interface User {
   id: string
   name?: string
@@ -16,18 +14,21 @@ export interface User {
 
 export interface UserInput {
   name?: string
-  nickName?: string
+  nick_name?: string
   email: string
   emailVerified?: Date
   emailVerifiedProvider?: string
   image?: string
-  passwordHash?: string
+  password_hash?: string
   role?: 'admin' | 'user'
 }
 
 export interface UserRepository {
   createUser(data: UserInput): Promise<Omit<User, 'passwordHash'>>
-  updateUser(id: string, data: Partial<User>): Promise<boolean>
+  updateUser(
+    id: string,
+    data: Partial<User>,
+  ): Promise<Omit<User, 'passwordHash'>>
   updatePassword(
     email: string,
     passwordHash: string,
