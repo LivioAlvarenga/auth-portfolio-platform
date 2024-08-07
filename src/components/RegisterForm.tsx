@@ -152,6 +152,7 @@ export function RegisterForm({ className, ...props }: RegisterFormProps) {
         })
 
         form.reset()
+        return
       }
 
       if (responseBody.message === 'E-mail já cadastrado.') {
