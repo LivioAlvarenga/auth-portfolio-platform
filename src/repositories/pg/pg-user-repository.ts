@@ -92,6 +92,20 @@ export class PgUserRepository implements UserRepository {
     return result.rows[0] || null
   }
 
+  // Validate this method
+  async getUserById(id: string): Promise<User | null> {
+    const query = {
+      text: `
+        SELECT * FROM users
+        WHERE id = $1
+      `,
+      values: [id],
+    }
+
+    const result = await database.query(query)
+    return result.rows[0] || null
+  }
+
   async deleteUser(id: string): Promise<boolean> {
     const query = {
       text: `

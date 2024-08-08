@@ -3,8 +3,12 @@ import {
   fullNameValidation,
   nickNameValidation,
   passwordValidation,
+  tokenValidation,
 } from '@/schemas'
-import { makeRegisterUserUseCase } from '@/use-cases/factories/make-register-use-case'
+import {
+  makeGetRegisterUserUseCase,
+  makeRegisterUserUseCase,
+} from '@/use-cases/register/make-register'
 import { NextResponse, type NextRequest } from 'next/server'
 import { z } from 'zod'
 
@@ -16,7 +20,7 @@ const registerSchema = z.object({
 })
 
 async function register(req: NextRequest) {
-  const allowedMethods = ['POST']
+  const allowedMethods = ['POST', 'GET']
   if (!allowedMethods.includes(req.method)) {
     return NextResponse.json(
       { error: `method "${req.method}" not allowed` },
@@ -40,6 +44,33 @@ async function register(req: NextRequest) {
         {
           message,
           userId,
+        },
+        { status },
+      )
+    }
+
+    if (req.method === 'GET') {
+      const token = req.nextUrl.searchParams.get('token')
+
+      // Sanitize token
+      const { data } = tokenValidation.safeParse(token)
+      if (!data) {
+        return NextResponse.json(
+          { message: 'Token inválido.' },
+          { status: 400 },
+        )
+      }
+
+      const getRegisterUseCase = makeGetRegisterUserUseCase()
+
+      const { message, user, status } = await getRegisterUseCase.execute({
+        userId: data,
+      })
+
+      return NextResponse.json(
+        {
+          message,
+          user,
         },
         { status },
       )

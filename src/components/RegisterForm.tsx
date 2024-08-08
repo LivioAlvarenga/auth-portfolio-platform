@@ -56,16 +56,16 @@ export function RegisterForm({ className, ...props }: RegisterFormProps) {
     },
   })
 
-  function handleGoToLogin(email: string) {
-    router.push(`/login?email=${email}`)
+  function handleGoToLogin(userId: string) {
+    router.push(`${webserver.host}/login?token=${userId}`)
   }
 
-  function handleGoVerifyEmailOpt(email: string) {
-    router.push(`/verify-email-opt?email=${email}`)
+  function handleGoVerifyEmailOpt(userId: string) {
+    router.push(`${webserver.host}/verify-email-opt?token=${userId}`)
   }
 
-  function handleGoToForgotPassword(email: string) {
-    router.push(`/forgot-password?email=${email}`)
+  function handleGoToForgotPassword(userId: string) {
+    router.push(`${webserver.host}/forgot-password?token=${userId}`)
   }
 
   function handleCopyPassword() {
@@ -127,10 +127,10 @@ export function RegisterForm({ className, ...props }: RegisterFormProps) {
           firstButton: {
             text: 'Verificar Email Agora!',
             variant: 'default',
-            onClick: () => handleGoVerifyEmailOpt(values.email),
+            onClick: () => handleGoVerifyEmailOpt(responseBody.userId),
           },
           redirect: {
-            path: `/verify-email-opt?email=${values.email}`,
+            path: `${webserver.host}/verify-email-opt?token=${responseBody.userId}`,
             countdownSeconds: 5,
           },
         })
@@ -152,12 +152,12 @@ export function RegisterForm({ className, ...props }: RegisterFormProps) {
           firstButton: {
             text: 'Fazer Login',
             variant: 'ghost',
-            onClick: () => handleGoToLogin(values.email),
+            onClick: () => handleGoToLogin(responseBody.userId),
           },
           secondButton: {
             text: 'Recuperar Senha',
             variant: 'default',
-            onClick: () => handleGoToForgotPassword(values.email),
+            onClick: () => handleGoToForgotPassword(responseBody.userId),
           },
         })
         return

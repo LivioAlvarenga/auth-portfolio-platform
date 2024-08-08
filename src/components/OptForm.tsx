@@ -6,7 +6,7 @@ import { cn } from '@/lib/shadcn-ui'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { LoaderCircle } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { showToast } from './ShowToast'
@@ -32,23 +32,21 @@ type OptFormSchemaProps = z.infer<typeof optFormSchema>
 
 type OptFormProps = React.HTMLAttributes<HTMLFormElement> & {
   className?: string
-  email: string
-  token: string
+  user: {
+    id: string
+    email: string
+    name?: string
+  }
 }
 
-export function OptForm({ className, email, token, ...props }: OptFormProps) {
+export function OptForm({ className, user, ...props }: OptFormProps) {
   const [isLoading, setIsLoading] = useState(false)
-  const [pin, setPin] = useState(token)
   const router = useRouter()
-
-  useEffect(() => {
-    setPin(token)
-  }, [token])
 
   const form = useForm<OptFormSchemaProps>({
     resolver: zodResolver(optFormSchema),
     defaultValues: {
-      pin: pin || '',
+      pin: '',
     },
   })
 
@@ -116,7 +114,7 @@ export function OptForm({ className, email, token, ...props }: OptFormProps) {
     try {
       // check opt code
       const response = await fetch(
-        `${webserver.host}/api/v1/verification-token?email=${email}&token=${values.pin}`,
+        `${webserver.host}/api/v1/verification-token?email=${user.email}&token=${values.pin}`,
       )
       const responseBody = await response.json()
 
@@ -147,7 +145,7 @@ export function OptForm({ className, email, token, ...props }: OptFormProps) {
             firstButton: {
               text: 'Enviar código novamente',
               variant: 'default',
-              onClick: () => handleSendOptToEmail(email),
+              onClick: () => handleSendOptToEmail(user.email),
             },
           })
           return
@@ -157,16 +155,16 @@ export function OptForm({ className, email, token, ...props }: OptFormProps) {
       }
 
       showToast({
-        message: `O email ${email} foi verificado com sucesso. Você será redirecionado para a página de login.`,
+        message: `O email ${user.email} foi verificado com sucesso. Você será redirecionado para a página de login.`,
         duration: Infinity,
         variant: 'success',
         firstButton: {
           text: 'Fazer Login Agora!',
           variant: 'default',
-          onClick: () => handleGoToLogin(email),
+          onClick: () => handleGoToLogin(user.email),
         },
         redirect: {
-          path: `/login?email=${email}`,
+          path: `/login?email=${user.email}`,
           countdownSeconds: 5,
         },
       })
@@ -242,7 +240,7 @@ export function OptForm({ className, email, token, ...props }: OptFormProps) {
           type="button"
           disabled={form.formState.isSubmitting || isLoading}
           variant={'secondary'}
-          onClick={() => handleSendOptToEmail(email)}
+          onClick={() => handleSendOptToEmail(user.email)}
         >
           Reenviar código
         </Button>

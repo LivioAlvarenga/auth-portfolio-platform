@@ -11,9 +11,9 @@ exports.shorthands = undefined
 exports.up = (pgm) => {
   pgm.createTable('verification_token', {
     identifier: {
-      type: 'varchar(255)',
+      type: 'uuid',
       notNull: true,
-      references: 'users(email)',
+      references: 'users(id)',
       onDelete: 'CASCADE',
     },
     token: {

@@ -6,7 +6,7 @@ import { User } from '@/repositories/user-repository'
 import { VerificationToken } from '@/repositories/verification-token-repository'
 import { generateOTP } from '@/utils/password'
 import { addDays } from 'date-fns'
-import { v4 as uuidv4 } from 'uuid'
+import { v4 } from 'uuid'
 
 const userRepository = new PgUserRepository()
 const verificationTokenRepository = new PgVerificationTokenRepository()
@@ -24,8 +24,8 @@ const createDefaultUser = async (): Promise<User> => {
 const createDefaultTokenWithOpt = async (): Promise<VerificationToken> => {
   const user = await createDefaultUser()
   const token = {
-    identifier: user.email,
-    token: uuidv4(),
+    identifier: user.id,
+    token: v4(),
     expires: addDays(new Date(), 1),
     tokenType: 'EMAIL_VERIFICATION',
     opt: generateOTP(),
@@ -77,8 +77,8 @@ const createDefaultResetPasswordToken =
   async (): Promise<VerificationToken> => {
     const user = await createDefaultUser()
     const token = {
-      identifier: user.email,
-      token: uuidv4(),
+      identifier: user.id,
+      token: v4(),
       tokenType: 'RESET_PASSWORD',
       expires: addDays(new Date(), 1),
     }

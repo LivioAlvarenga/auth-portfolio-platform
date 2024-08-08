@@ -53,15 +53,12 @@ describe('POST /api/v1/register', () => {
         body: JSON.stringify(newUser),
       })
 
-      // Check for successful response
       expect(response.status).toBe(201)
 
-      // Verify that the password was hashed
       const userResult = await database.query({
         text: 'SELECT password_hash FROM users WHERE email = $1',
         values: [newUser.email],
       })
-
       const hashedPassword = userResult.rows[0].password_hash
       const isPasswordHashed = await comparePassword(
         newUser.password!,
@@ -88,7 +85,6 @@ describe('POST /api/v1/register', () => {
 
       const responseBody = await response.json()
 
-      // Check for error response
       expect(response.status).toBe(400)
       expect(responseBody.message).toBe('Dados insuficientes para o cadastro.')
     })
@@ -191,7 +187,7 @@ describe('POST /api/v1/register', () => {
 
       const tokenResult = await database.query({
         text: `SELECT * FROM verification_token WHERE identifier = $1 AND token_type = $2 AND expires > now() at time zone 'utc'`,
-        values: [newUser.email, 'EMAIL_VERIFICATION'],
+        values: [responseBody.userId, 'EMAIL_VERIFICATION'],
       })
       const token = tokenResult.rows[0]
 

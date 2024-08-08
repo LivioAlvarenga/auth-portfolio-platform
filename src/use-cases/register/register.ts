@@ -83,7 +83,7 @@ export class RegisterUseCase {
     }
 
     // 5. useCase - Create account for user with provider credential in accounts table
-    const account = await this.accountRepository.createAccount({
+    await this.accountRepository.createAccount({
       userId: user.id,
       type: 'credential',
       provider: 'credential',
@@ -101,12 +101,12 @@ export class RegisterUseCase {
       // 8. useCase - check if typeToken and email already exists in database and update or create token
       const verificationToken =
         await this.verificationTokenRepository.getValidTokenByTypeAndIdentifier(
-          email,
+          user.id,
           tokenType,
         )
       if (verificationToken) {
         await this.verificationTokenRepository.updateToken({
-          identifier: email,
+          identifier: user.id,
           token,
           expires,
           opt,
@@ -114,7 +114,7 @@ export class RegisterUseCase {
         })
       } else {
         await this.verificationTokenRepository.createToken({
-          identifier: email,
+          identifier: user.id,
           token,
           expires,
           opt,
@@ -127,7 +127,7 @@ export class RegisterUseCase {
         type: 'VERIFICATION_EMAIL_WITH_OTP',
         data: {
           opt,
-          url: `${webserver.host}/verify-email-opt?token=${token}`,
+          url: `${webserver.host}/verify-email-opt?token=${user.id}`,
         },
         to: email,
         userId: user.id,
