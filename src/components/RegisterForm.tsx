@@ -95,7 +95,6 @@ export function RegisterForm({ className, ...props }: RegisterFormProps) {
     setIsLoading(true)
 
     try {
-      // create user
       const response = await fetch(`${webserver.host}/api/v1/register`, {
         method: 'POST',
         headers: {
@@ -111,29 +110,14 @@ export function RegisterForm({ className, ...props }: RegisterFormProps) {
       const responseBody = await response.json()
 
       if (response.status === 201 && responseBody) {
-        // create verification token OPT
-        await fetch(`${webserver.host}/api/v1/verification-token`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            email: values.email,
-            opt: true,
-            dayExpires: 1,
-            tokenType: 'EMAIL_VERIFICATION',
-          }),
-        })
-
-        // send user registration welcome email
-        const userId = responseBody.user.id
+        // send email USER_REGISTRATION_WELCOME
         await sendEmail({
           type: 'USER_REGISTRATION_WELCOME',
           data: {
             name: values.nickName || values.fullName,
           },
           to: values.email,
-          userId,
+          userId: responseBody.userId,
         })
 
         showToast({

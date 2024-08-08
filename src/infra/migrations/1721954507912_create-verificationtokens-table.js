@@ -28,6 +28,10 @@ exports.up = (pgm) => {
       type: 'timestamp with time zone',
       notNull: true,
     },
+    opt: {
+      type: 'varchar(6)',
+      notNull: false,
+    },
     created_at: {
       type: 'timestamp with time zone',
       notNull: true,

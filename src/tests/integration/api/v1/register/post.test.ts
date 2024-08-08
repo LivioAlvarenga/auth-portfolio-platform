@@ -13,6 +13,7 @@ beforeAll(async () => {
 afterEach(async () => {
   await database.query('DELETE FROM users')
   await database.query('DELETE FROM accounts')
+  await database.query('DELETE FROM verification_token')
 })
 
 describe('POST /api/v1/register', () => {
@@ -92,12 +93,14 @@ describe('POST /api/v1/register', () => {
       expect(responseBody.message).toBe('Dados insuficientes para o cadastro.')
     })
 
-    test('should create user successfully', async () => {
+    test('should update existing user details and create a new "credential" account if the user has already logged in with a Google account', async () => {
+      const userGoogle = await utilsTest.createDefaultUserWithAccountGoggle()
+
       const newUser: CreateUser = {
-        email: 'new3.email@example.com',
+        email: userGoogle.email,
         password: 'Valid3Password!',
-        name: 'New User',
-        nick_name: 'newusernickname',
+        name: 'Credential User',
+        nick_name: 'Credential User nickname',
       }
 
       const response = await fetch('http://localhost:3000/api/v1/register', {
@@ -107,20 +110,94 @@ describe('POST /api/v1/register', () => {
         },
         body: JSON.stringify(newUser),
       })
-
       const responseBody = await response.json()
 
-      // Check for successful response
       expect(response.status).toBe(201)
       expect(responseBody.message).toBe('Usuário criado com sucesso!')
 
-      // Check returned user data
-      expect(responseBody.user).toHaveProperty('id')
-      expect(responseBody.user.email).toBe(newUser.email)
-      expect(responseBody.user.name).toBe(newUser.name?.toLowerCase())
-      expect(responseBody.user.nick_name).toBe(newUser.nick_name?.toLowerCase())
-      expect(responseBody.account).toHaveProperty('id')
-      expect(responseBody.account.provider).toBe('credential')
+      const accountResult = await database.query({
+        text: 'SELECT * FROM accounts WHERE "userId" = $1',
+        values: [responseBody.userId],
+      })
+      const account = accountResult.rows
+
+      expect(account.length).toBe(2)
+      expect(account).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ provider: 'google' }),
+          expect.objectContaining({ provider: 'credential' }),
+        ]),
+      )
+
+      const userResult = await database.query({
+        text: 'SELECT * FROM users WHERE id = $1',
+        values: [responseBody.userId],
+      })
+      const user = userResult.rows[0]
+
+      expect(user.name).toBe(newUser.name?.toLowerCase())
+      expect(user.nick_name).toBe(newUser.nick_name?.toLowerCase())
+      expect(user.password_hash).toBeDefined()
+      expect(user.emailVerified).toBeTruthy()
+      expect(user.email_verified_provider).toBe('google')
+      expect(user.image).toBe(userGoogle.image)
+    })
+
+    test('should create a new "credential" account and update user details if the user has not logged in with a other provider', async () => {
+      const newUser: CreateUser = {
+        email: 'credentialuser@example.com',
+        password: 'Valid3Password!',
+        name: 'Credential User',
+        nick_name: 'Credential User nickname',
+      }
+
+      const response = await fetch('http://localhost:3000/api/v1/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newUser),
+      })
+      const responseBody = await response.json()
+
+      expect(response.status).toBe(201)
+      expect(responseBody.message).toBe('Usuário criado com sucesso!')
+
+      const accountResult = await database.query({
+        text: 'SELECT * FROM accounts WHERE "userId" = $1',
+        values: [responseBody.userId],
+      })
+      const account = accountResult.rows
+
+      expect(account.length).toBe(1)
+      expect(account).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ provider: 'credential' }),
+        ]),
+      )
+
+      const userResult = await database.query({
+        text: 'SELECT * FROM users WHERE id = $1',
+        values: [responseBody.userId],
+      })
+      const user = userResult.rows[0]
+
+      expect(user.name).toBe(newUser.name?.toLowerCase())
+      expect(user.nick_name).toBe(newUser.nick_name?.toLowerCase())
+      expect(user.password_hash).toBeDefined()
+      expect(user.emailVerified).toBeFalsy()
+      expect(user.email_verified_provider).toBeNull()
+      expect(user.image).toBeNull()
+
+      const tokenResult = await database.query({
+        text: `SELECT * FROM verification_token WHERE identifier = $1 AND token_type = $2 AND expires > now() at time zone 'utc'`,
+        values: [newUser.email, 'EMAIL_VERIFICATION'],
+      })
+      const token = tokenResult.rows[0]
+
+      expect(token).toBeDefined()
+      expect(token.token).toBeDefined()
+      expect(token.opt).toBeDefined()
     })
   })
 })

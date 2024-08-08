@@ -1,6 +1,12 @@
+import { webserver } from '@/infra/webserver'
 import { hashPassword } from '@/lib/bcrypt'
 import { AccountRepository } from '@/repositories/account-repository'
 import { UserRepository } from '@/repositories/user-repository'
+import { VerificationTokenRepository } from '@/repositories/verification-token-repository'
+import { sendEmail } from '@/utils/email'
+import { generateOTP } from '@/utils/password'
+import { addDays } from 'date-fns'
+import { v4 } from 'uuid'
 
 interface RegisterUseCaseRequest {
   name?: string
@@ -12,22 +18,14 @@ interface RegisterUseCaseRequest {
 interface RegisterUseCaseResponse {
   status: number
   message: string
-  user?: {
-    id: string
-    email: string
-    name?: string
-    nick_name?: string
-  }
-  account?: {
-    id: string
-    provider: string
-  }
+  userId?: string
 }
 
 export class RegisterUseCase {
   constructor(
     private userRepository: UserRepository,
     private accountRepository: AccountRepository,
+    private verificationTokenRepository: VerificationTokenRepository,
   ) {}
 
   async execute({
@@ -92,19 +90,54 @@ export class RegisterUseCase {
       providerAccountId: user.id,
     })
 
+    // 6. useCase - create token to verify email if email is not verified
+    if (!user.emailVerified) {
+      // 7. useCase - create tokens uuid / OPT
+      const token = v4()
+      const opt = generateOTP()
+      const expires = addDays(new Date(), 1) // 1 day
+      const tokenType = 'EMAIL_VERIFICATION'
+
+      // 8. useCase - check if typeToken and email already exists in database and update or create token
+      const verificationToken =
+        await this.verificationTokenRepository.getValidTokenByTypeAndIdentifier(
+          email,
+          tokenType,
+        )
+      if (verificationToken) {
+        await this.verificationTokenRepository.updateToken({
+          identifier: email,
+          token,
+          expires,
+          opt,
+          tokenType,
+        })
+      } else {
+        await this.verificationTokenRepository.createToken({
+          identifier: email,
+          token,
+          expires,
+          opt,
+          tokenType,
+        })
+      }
+
+      // 9. useCase - send email to user with token
+      await sendEmail({
+        type: 'VERIFICATION_EMAIL_WITH_OTP',
+        data: {
+          opt,
+          url: `${webserver.host}/verify-email-opt?token=${token}`,
+        },
+        to: email,
+        userId: user.id,
+      })
+    }
+
     return {
       status: 201,
       message: 'Usuário criado com sucesso!',
-      user: {
-        id: user.id,
-        email: user.email,
-        name: user.name,
-        nick_name: user.nick_name,
-      },
-      account: {
-        id: account.id,
-        provider: account.provider,
-      },
+      userId: user.id,
     }
   }
 }

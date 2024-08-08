@@ -33,14 +33,13 @@ async function register(req: NextRequest) {
 
       const registerUseCase = makeRegisterUserUseCase()
 
-      const { message, user, account, status } =
+      const { message, userId, status } =
         await registerUseCase.execute(parsedData)
 
       return NextResponse.json(
         {
           message,
-          user,
-          account,
+          userId,
         },
         { status },
       )

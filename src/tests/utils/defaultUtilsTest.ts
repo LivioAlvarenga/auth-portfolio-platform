@@ -4,6 +4,7 @@ import { PgUserRepository } from '@/repositories/pg/pg-user-repository'
 import { PgVerificationTokenRepository } from '@/repositories/pg/pg-verification-token-repository'
 import { User } from '@/repositories/user-repository'
 import { VerificationToken } from '@/repositories/verification-token-repository'
+import { generateOTP } from '@/utils/password'
 import { addDays } from 'date-fns'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -20,6 +21,18 @@ const createDefaultUser = async (): Promise<User> => {
   return userRepository.createUser(user)
 }
 
+const createDefaultTokenWithOpt = async (): Promise<VerificationToken> => {
+  const user = await createDefaultUser()
+  const token = {
+    identifier: user.email,
+    token: uuidv4(),
+    expires: addDays(new Date(), 1),
+    tokenType: 'EMAIL_VERIFICATION',
+    opt: generateOTP(),
+  }
+  return verificationTokenRepository.createToken(token)
+}
+
 const createDefaultUserWithAccount = async (): Promise<User> => {
   const user = {
     email: 'testuser@example.com',
@@ -29,10 +42,31 @@ const createDefaultUserWithAccount = async (): Promise<User> => {
 
   const createdUser = await userRepository.createUser(user)
 
-  const createdAccount = await accountRepository.createAccount({
+  await accountRepository.createAccount({
     userId: createdUser.id,
     type: 'credential',
     provider: 'credential',
+    providerAccountId: createdUser.id,
+  })
+
+  return { ...createdUser }
+}
+
+const createDefaultUserWithAccountGoggle = async (): Promise<User> => {
+  const user = {
+    email: 'testuser@example.com',
+    name: 'Google User',
+    emailVerified: new Date(),
+    emailVerifiedProvider: 'google',
+    image: 'https://lh3.googleusercontent.com/a-/AOh14Gj3',
+  }
+
+  const createdUser = await userRepository.createUser(user)
+
+  await accountRepository.createAccount({
+    userId: createdUser.id,
+    type: 'oidc',
+    provider: 'google',
     providerAccountId: createdUser.id,
   })
 
@@ -55,4 +89,6 @@ export const utilsTest = {
   createDefaultUser,
   createDefaultResetPasswordToken,
   createDefaultUserWithAccount,
+  createDefaultUserWithAccountGoggle,
+  createDefaultTokenWithOpt,
 }
