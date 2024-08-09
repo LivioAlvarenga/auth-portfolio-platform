@@ -60,17 +60,17 @@ export class PgUserRepository implements UserRepository {
 
   // Validate this method
   async updatePassword(
-    email: string,
+    userId: string,
     passwordHash: string,
   ): Promise<{ userId: string } | null> {
     const query = {
       text: `
         UPDATE users
         SET password_hash = $2, updated_at = now() at time zone 'utc'
-        WHERE email = $1
+        WHERE id = $1
         RETURNING id
       `,
-      values: [email, passwordHash],
+      values: [userId, passwordHash],
     }
 
     const result = await database.query(query)

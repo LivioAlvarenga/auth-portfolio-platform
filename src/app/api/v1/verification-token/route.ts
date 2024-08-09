@@ -50,7 +50,7 @@ async function verificationToken(req: NextRequest) {
             t.expires
           FROM
             users u
-            LEFT JOIN verification_token t ON u.email = t.identifier AND t.token_type = $2
+            LEFT JOIN verification_token t ON u.id = t.identifier AND t.token_type = $2
           WHERE
             u.email = $1
           ORDER BY
@@ -84,13 +84,13 @@ async function verificationToken(req: NextRequest) {
             SET token = $1, expires = $2, updated_at = NOW()
             WHERE identifier = $3 AND token_type = $4
           `,
-          values: [token, expires, email, tokenType],
+          values: [token, expires, emailExistsInDatabase.id, tokenType],
         })
       } else {
         await database.query({
           text: `
           INSERT INTO verification_token (identifier, token, expires, token_type) VALUES ($1, $2, $3, $4)`,
-          values: [emailExistsInDatabase.email, token, expires, tokenType],
+          values: [emailExistsInDatabase.id, token, expires, tokenType],
         })
       }
 

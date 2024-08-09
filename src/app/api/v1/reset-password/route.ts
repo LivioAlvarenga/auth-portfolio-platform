@@ -1,4 +1,4 @@
-import { emailValidation, passwordValidation } from '@/schemas'
+import { passwordValidation, tokenValidation } from '@/schemas'
 import { makeResetPasswordUseCase } from '@/use-cases/factories/make-reset-password-use-case'
 import { NextResponse, type NextRequest } from 'next/server'
 import { z } from 'zod'
@@ -6,7 +6,7 @@ import { z } from 'zod'
 const resetPasswordSchema = z.object({
   token: z.string().uuid(),
   password: passwordValidation,
-  email: emailValidation,
+  identifier: tokenValidation,
 })
 
 async function resetPassword(req: NextRequest) {

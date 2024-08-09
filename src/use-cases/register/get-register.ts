@@ -11,6 +11,7 @@ interface GetRegisterUseCaseResponse {
     id: string
     email: string
     name?: string
+    emailVerified?: string
   }
 }
 
@@ -37,6 +38,7 @@ export class GetRegisterUseCase {
         id: userAlreadyExists.id,
         email: userAlreadyExists.email,
         name: userAlreadyExists.nick_name || userAlreadyExists.name,
+        emailVerified: userAlreadyExists.emailVerified,
       },
     }
   }

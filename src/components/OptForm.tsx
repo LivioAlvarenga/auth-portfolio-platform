@@ -57,6 +57,7 @@ export function OptForm({ className, user, ...props }: OptFormProps) {
   async function handleSendOptToEmail(email: string) {
     try {
       setIsLoading(true)
+      // TODO: criar rota api/v1/verify-email e chamar aqui
       // create verification token OPT
       const response = await fetch(
         `${webserver.host}/api/v1/verification-token`,

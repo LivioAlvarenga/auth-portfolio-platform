@@ -90,6 +90,7 @@ export class RegisterUseCase {
       providerAccountId: user.id,
     })
 
+    // TODO: mover do caso de uso 6 em diante para rota api/v1/verify-email
     // 6. useCase - create token to verify email if email is not verified
     if (!user.emailVerified) {
       // 7. useCase - create tokens uuid / OPT
@@ -98,7 +99,7 @@ export class RegisterUseCase {
       const expires = addDays(new Date(), 1) // 1 day
       const tokenType = 'EMAIL_VERIFICATION'
 
-      // 8. useCase - check if typeToken and email already exists in database and update or create token
+      // 8. useCase - check if typeToken and userId already exists in database and update or create token
       const verificationToken =
         await this.verificationTokenRepository.getValidTokenByTypeAndIdentifier(
           user.id,

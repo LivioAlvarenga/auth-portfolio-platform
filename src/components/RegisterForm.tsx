@@ -109,6 +109,8 @@ export function RegisterForm({ className, ...props }: RegisterFormProps) {
       })
       const responseBody = await response.json()
 
+      // TODO: Chamar a api api/v1/verify-email e criar o token OPT e enviar email
+
       if (response.status === 201 && responseBody) {
         // send email USER_REGISTRATION_WELCOME
         await sendEmail({

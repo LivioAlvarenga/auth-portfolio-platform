@@ -21,7 +21,12 @@ async function getData(token: string) {
     return null
   }
 
-  return await response.json()
+  const responseBody = await response.json()
+  if (responseBody.user.emailVerified) {
+    return null
+  }
+
+  return responseBody
 }
 
 interface VerifyEmailOptPageProps {
