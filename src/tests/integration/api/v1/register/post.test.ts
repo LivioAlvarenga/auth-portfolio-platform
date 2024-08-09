@@ -1,5 +1,6 @@
 import { CreateUser } from '@/@types/user'
 import { database } from '@/infra/database'
+import { webserver } from '@/infra/webserver'
 import { comparePassword } from '@/lib/bcrypt'
 import { orchestrator } from '@/tests/orchestrator'
 import { utilsTest } from '@/tests/utils/defaultUtilsTest'
@@ -21,7 +22,7 @@ describe('POST /api/v1/register', () => {
     test('should return error for already registered email', async () => {
       const createdUser = await utilsTest.createDefaultUserWithAccount()
 
-      const response = await fetch('http://localhost:3000/api/v1/register', {
+      const response = await fetch(`${webserver.host}/api/v1/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -45,7 +46,7 @@ describe('POST /api/v1/register', () => {
         name: 'New User',
       }
 
-      const response = await fetch('http://localhost:3000/api/v1/register', {
+      const response = await fetch(`${webserver.host}/api/v1/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -75,7 +76,7 @@ describe('POST /api/v1/register', () => {
         // Missing name
       }
 
-      const response = await fetch('http://localhost:3000/api/v1/register', {
+      const response = await fetch(`${webserver.host}/api/v1/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -99,7 +100,7 @@ describe('POST /api/v1/register', () => {
         nick_name: 'Credential User nickname',
       }
 
-      const response = await fetch('http://localhost:3000/api/v1/register', {
+      const response = await fetch(`${webserver.host}/api/v1/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -147,7 +148,7 @@ describe('POST /api/v1/register', () => {
         nick_name: 'Credential User nickname',
       }
 
-      const response = await fetch('http://localhost:3000/api/v1/register', {
+      const response = await fetch(`${webserver.host}/api/v1/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -184,16 +185,6 @@ describe('POST /api/v1/register', () => {
       expect(user.emailVerified).toBeFalsy()
       expect(user.email_verified_provider).toBeNull()
       expect(user.image).toBeNull()
-
-      const tokenResult = await database.query({
-        text: `SELECT * FROM verification_token WHERE identifier = $1 AND token_type = $2 AND expires > now() at time zone 'utc'`,
-        values: [responseBody.userId, 'EMAIL_VERIFICATION'],
-      })
-      const token = tokenResult.rows[0]
-
-      expect(token).toBeDefined()
-      expect(token.token).toBeDefined()
-      expect(token.opt).toBeDefined()
     })
   })
 })

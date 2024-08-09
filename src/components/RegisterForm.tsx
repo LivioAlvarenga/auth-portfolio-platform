@@ -10,7 +10,6 @@ import {
   nickNameValidation,
   passwordValidation,
 } from '@/schemas'
-import { sendEmail } from '@/utils/email'
 import { generatePassword } from '@/utils/password'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Copy, Eye, EyeOff, LoaderCircle } from 'lucide-react'
@@ -109,17 +108,16 @@ export function RegisterForm({ className, ...props }: RegisterFormProps) {
       })
       const responseBody = await response.json()
 
-      // TODO: Chamar a api api/v1/verify-email e criar o token OPT e enviar email
-
       if (response.status === 201 && responseBody) {
-        // send email USER_REGISTRATION_WELCOME
-        await sendEmail({
-          type: 'USER_REGISTRATION_WELCOME',
-          data: {
-            name: values.nickName || values.fullName,
+        // Create opt token and send email verification
+        await fetch(`${webserver.host}/api/v1/verify-email-opt`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
           },
-          to: values.email,
-          userId: responseBody.userId,
+          body: JSON.stringify({
+            userId: responseBody.userId,
+          }),
         })
 
         showToast({

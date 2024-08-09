@@ -101,11 +101,6 @@ export const showToast = (options: ToastOptions) => {
       }
     }, [redirect, router])
 
-    const getPathWithoutQuery = (url: string) => {
-      const urlObj = new URL(url, window.location.origin)
-      return urlObj.pathname
-    }
-
     return (
       <div className="flex w-full flex-col space-y-4">
         {renderIcon()}
@@ -140,12 +135,8 @@ export const showToast = (options: ToastOptions) => {
         )}
         {redirect && (
           <Text className="my-3 text-center" variant={'label-14-14-400'}>
-            Você será redirecionado para{' '}
-            <strong className="text-destructive">
-              {getPathWithoutQuery(redirect.path)}
-            </strong>{' '}
-            em <strong className="text-destructive">{counter}</strong>{' '}
-            segundos...
+            Você será redirecionado em{' '}
+            <strong className="text-destructive">{counter}</strong> segundos...
           </Text>
         )}
       </div>

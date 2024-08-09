@@ -26,7 +26,7 @@ async function getData(token: string) {
     return null
   }
 
-  return responseBody
+  return responseBody.user
 }
 
 interface VerifyEmailOptPageProps {
