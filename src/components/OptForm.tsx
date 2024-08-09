@@ -50,27 +50,23 @@ export function OptForm({ className, user, ...props }: OptFormProps) {
     },
   })
 
-  function handleGoToLogin(email: string) {
-    router.push(`/login?email=${email}`)
+  function handleGoToLogin(userId: string) {
+    router.push(`/login?token=${userId}`)
   }
 
-  async function handleSendOptToEmail(email: string) {
+  async function handleSendOptToEmail(userId: string) {
     try {
       setIsLoading(true)
-      // TODO: criar rota api/v1/verify-email e chamar aqui
-      // create verification token OPT
+      // Create opt token and send email verification
       const response = await fetch(
-        `${webserver.host}/api/v1/verification-token`,
+        `${webserver.host}/api/v1/verify-email-opt`,
         {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            email,
-            opt: true,
-            dayExpires: 1,
-            tokenType: 'EMAIL_VERIFICATION',
+            userId,
           }),
         },
       )
@@ -84,14 +80,14 @@ export function OptForm({ className, user, ...props }: OptFormProps) {
           firstButton: {
             text: 'Enviar código novamente',
             variant: 'default',
-            onClick: () => handleSendOptToEmail(email),
+            onClick: () => handleSendOptToEmail(user.id),
           },
         })
         return
       }
 
       showToast({
-        message: `Código de verificação enviado para o email ${email}.`,
+        message: `Código de verificação enviado para o email ${user.email}.`,
         variant: 'success',
       })
 
@@ -113,64 +109,53 @@ export function OptForm({ className, user, ...props }: OptFormProps) {
     setIsLoading(true)
 
     try {
-      // check opt code
       const response = await fetch(
-        `${webserver.host}/api/v1/verification-token?email=${user.email}&token=${values.pin}`,
+        `${webserver.host}/api/v1/verify-email-opt?token=${user.id}&opt=${values.pin}`,
       )
       const responseBody = await response.json()
 
-      if (!response.ok) {
-        if (responseBody.message === 'Email e token são obrigatórios.') {
-          form.setError('pin', {
-            message: 'OPT e email são obrigatórios.',
-          })
+      if (response.ok) {
+        showToast({
+          message: `O email ${user.email} foi verificado com sucesso. Você será redirecionado para a página de login.`,
+          duration: Infinity,
+          variant: 'success',
+          firstButton: {
+            text: 'Fazer Login Agora!',
+            variant: 'default',
+            onClick: () => handleGoToLogin(user.id),
+          },
+          redirect: {
+            path: `${webserver.host}/login?token=${user.id}`,
+            countdownSeconds: 5,
+          },
+        })
 
-          showToast({
-            message:
-              'Por favor, forneça um email válido junto com o código OPT.',
-            duration: Infinity,
-            variant: 'warning',
-          })
-          return
-        }
-
-        if (responseBody.message === 'Token inválido ou expirado.') {
-          form.setError('pin', {
-            message: 'Código inválido ou expirado.',
-          })
-
-          showToast({
-            message: 'Código OPT inválido ou expirado.',
-            duration: Infinity,
-            variant: 'error',
-            firstButton: {
-              text: 'Enviar código novamente',
-              variant: 'default',
-              onClick: () => handleSendOptToEmail(user.email),
-            },
-          })
-          return
-        }
-
-        throw new Error(responseBody.message)
+        form.reset()
+        return
       }
 
-      showToast({
-        message: `O email ${user.email} foi verificado com sucesso. Você será redirecionado para a página de login.`,
-        duration: Infinity,
-        variant: 'success',
-        firstButton: {
-          text: 'Fazer Login Agora!',
-          variant: 'default',
-          onClick: () => handleGoToLogin(user.email),
-        },
-        redirect: {
-          path: `/login?email=${user.email}`,
-          countdownSeconds: 5,
-        },
-      })
+      if (
+        responseBody.message === 'Token não encontrado ou expirado.' ||
+        responseBody.message === 'Token inválido.'
+      ) {
+        form.setError('pin', {
+          message: 'Código inválido ou expirado.',
+        })
 
-      form.reset()
+        showToast({
+          message: 'Código OPT inválido ou expirado.',
+          duration: Infinity,
+          variant: 'error',
+          firstButton: {
+            text: 'Enviar código novamente',
+            variant: 'default',
+            onClick: () => handleSendOptToEmail(user.id),
+          },
+        })
+        return
+      }
+
+      throw new Error(responseBody.message)
     } catch (error) {
       console.error('💥 Falha ao enviar código de verificação.', error)
 
@@ -241,7 +226,7 @@ export function OptForm({ className, user, ...props }: OptFormProps) {
           type="button"
           disabled={form.formState.isSubmitting || isLoading}
           variant={'secondary'}
-          onClick={() => handleSendOptToEmail(user.email)}
+          onClick={() => handleSendOptToEmail(user.id)}
         >
           Reenviar código
         </Button>

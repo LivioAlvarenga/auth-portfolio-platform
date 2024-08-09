@@ -21,6 +21,16 @@ const createDefaultUser = async (): Promise<User> => {
   return userRepository.createUser(user)
 }
 
+const createDefaultUserEmailVerified = async (): Promise<User> => {
+  const user = {
+    email: 'testuser@example.com',
+    passwordHash: await hashPassword('Password123$%$'),
+    name: 'Test User',
+    emailVerified: new Date(),
+  }
+  return userRepository.createUser(user)
+}
+
 const createDefaultTokenWithOpt = async (): Promise<VerificationToken> => {
   const user = await createDefaultUser()
   const token = {
@@ -57,7 +67,7 @@ const createDefaultUserWithAccountGoggle = async (): Promise<User> => {
     email: 'testuser@example.com',
     name: 'Google User',
     emailVerified: new Date(),
-    emailVerifiedProvider: 'google',
+    email_verified_provider: 'google',
     image: 'https://lh3.googleusercontent.com/a-/AOh14Gj3',
   }
 
@@ -91,4 +101,5 @@ export const utilsTest = {
   createDefaultUserWithAccount,
   createDefaultUserWithAccountGoggle,
   createDefaultTokenWithOpt,
+  createDefaultUserEmailVerified,
 }

@@ -1,12 +1,7 @@
-import { webserver } from '@/infra/webserver'
 import { hashPassword } from '@/lib/bcrypt'
 import { AccountRepository } from '@/repositories/account-repository'
 import { UserRepository } from '@/repositories/user-repository'
-import { VerificationTokenRepository } from '@/repositories/verification-token-repository'
 import { sendEmail } from '@/utils/email'
-import { generateOTP } from '@/utils/password'
-import { addDays } from 'date-fns'
-import { v4 } from 'uuid'
 
 interface RegisterUseCaseRequest {
   name?: string
@@ -25,7 +20,6 @@ export class RegisterUseCase {
   constructor(
     private userRepository: UserRepository,
     private accountRepository: AccountRepository,
-    private verificationTokenRepository: VerificationTokenRepository,
   ) {}
 
   async execute({
@@ -90,50 +84,15 @@ export class RegisterUseCase {
       providerAccountId: user.id,
     })
 
-    // TODO: mover do caso de uso 6 em diante para rota api/v1/verify-email
-    // 6. useCase - create token to verify email if email is not verified
-    if (!user.emailVerified) {
-      // 7. useCase - create tokens uuid / OPT
-      const token = v4()
-      const opt = generateOTP()
-      const expires = addDays(new Date(), 1) // 1 day
-      const tokenType = 'EMAIL_VERIFICATION'
-
-      // 8. useCase - check if typeToken and userId already exists in database and update or create token
-      const verificationToken =
-        await this.verificationTokenRepository.getValidTokenByTypeAndIdentifier(
-          user.id,
-          tokenType,
-        )
-      if (verificationToken) {
-        await this.verificationTokenRepository.updateToken({
-          identifier: user.id,
-          token,
-          expires,
-          opt,
-          tokenType,
-        })
-      } else {
-        await this.verificationTokenRepository.createToken({
-          identifier: user.id,
-          token,
-          expires,
-          opt,
-          tokenType,
-        })
-      }
-
-      // 9. useCase - send email to user with token
-      await sendEmail({
-        type: 'VERIFICATION_EMAIL_WITH_OTP',
-        data: {
-          opt,
-          url: `${webserver.host}/verify-email-opt?token=${user.id}`,
-        },
-        to: email,
-        userId: user.id,
-      })
-    }
+    // 6. useCase - send email USER_REGISTRATION_WELCOME
+    await sendEmail({
+      type: 'USER_REGISTRATION_WELCOME',
+      data: {
+        name: user.nick_name || user.name,
+      },
+      to: user.email,
+      userId: user.id,
+    })
 
     return {
       status: 201,

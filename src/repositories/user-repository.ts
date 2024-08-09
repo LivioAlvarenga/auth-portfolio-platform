@@ -17,17 +17,18 @@ export interface UserInput {
   nick_name?: string
   email: string
   emailVerified?: Date
-  emailVerifiedProvider?: string
+  email_verified_provider?: string
   image?: string
   password_hash?: string
   role?: 'admin' | 'user'
+  updated_at?: Date
 }
 
 export interface UserRepository {
   createUser(data: UserInput): Promise<Omit<User, 'passwordHash'>>
   updateUser(
     id: string,
-    data: Partial<User>,
+    data: Partial<UserInput>,
   ): Promise<Omit<User, 'passwordHash'>>
   updatePassword(
     userId: string,

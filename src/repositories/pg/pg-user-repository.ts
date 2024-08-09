@@ -15,7 +15,7 @@ export class PgUserRepository implements UserRepository {
         data.nick_name || null,
         data.email,
         data.emailVerified || null,
-        data.emailVerifiedProvider || null,
+        data.email_verified_provider || null,
         data.image || null,
         data.password_hash || null,
         data.role || 'user',
@@ -29,10 +29,14 @@ export class PgUserRepository implements UserRepository {
   // Validate this method
   async updateUser(
     id: string,
-    data: Partial<User>,
+    data: Partial<UserInput>,
   ): Promise<Omit<User, 'passwordHash'>> {
     const setClause = Object.keys(data)
-      .map((key, index) => `${key} = $${index + 2}`)
+      .map((key, index) => {
+        // Tratamento especial para colunas que precisam de aspas duplas
+        const column = key === 'emailVerified' ? `"${key}"` : key
+        return `${column} = $${index + 2}`
+      })
       .join(', ')
 
     if (!setClause) {
