@@ -56,16 +56,16 @@ export function RegisterForm({ className, ...props }: RegisterFormProps) {
     },
   })
 
-  function handleGoToLogin(email: string) {
-    router.push(`/login?email=${email}`)
+  function handleGoToLogin(userId: string) {
+    router.push(`${webserver.host}/login?token=${userId}`)
   }
 
-  function handleGoVerifyEmailOpt(email: string) {
-    router.push(`/verify-email-opt?email=${email}`)
+  function handleGoVerifyEmailOpt(userId: string) {
+    router.push(`${webserver.host}/verify-email-opt?token=${userId}`)
   }
 
-  function handleGoToForgotPassword(email: string) {
-    router.push(`/forgot-password?email=${email}`)
+  function handleGoToForgotPassword(userId: string) {
+    router.push(`${webserver.host}/forgot-password?token=${userId}`)
   }
 
   function handleCopyPassword() {
@@ -95,7 +95,6 @@ export function RegisterForm({ className, ...props }: RegisterFormProps) {
     setIsLoading(true)
 
     try {
-      // create user
       const response = await fetch(`${webserver.host}/api/v1/register`, {
         method: 'POST',
         headers: {
@@ -110,30 +109,17 @@ export function RegisterForm({ className, ...props }: RegisterFormProps) {
       })
       const responseBody = await response.json()
 
-      if (response.status === 201 && responseBody) {
-        // create verification token OPT
-        await fetch(`${webserver.host}/api/v1/verification-token`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            email: values.email,
-            opt: true,
-            dayExpires: 1,
-            tokenType: 'EMAIL_VERIFICATION',
-          }),
-        })
+      // TODO: Chamar a api api/v1/verify-email e criar o token OPT e enviar email
 
-        // send user registration welcome email
-        const userId = responseBody.user.id
+      if (response.status === 201 && responseBody) {
+        // send email USER_REGISTRATION_WELCOME
         await sendEmail({
           type: 'USER_REGISTRATION_WELCOME',
           data: {
             name: values.nickName || values.fullName,
           },
           to: values.email,
-          userId,
+          userId: responseBody.userId,
         })
 
         showToast({
@@ -143,10 +129,10 @@ export function RegisterForm({ className, ...props }: RegisterFormProps) {
           firstButton: {
             text: 'Verificar Email Agora!',
             variant: 'default',
-            onClick: () => handleGoVerifyEmailOpt(values.email),
+            onClick: () => handleGoVerifyEmailOpt(responseBody.userId),
           },
           redirect: {
-            path: `/verify-email-opt?email=${values.email}`,
+            path: `${webserver.host}/verify-email-opt?token=${responseBody.userId}`,
             countdownSeconds: 5,
           },
         })
@@ -168,12 +154,12 @@ export function RegisterForm({ className, ...props }: RegisterFormProps) {
           firstButton: {
             text: 'Fazer Login',
             variant: 'ghost',
-            onClick: () => handleGoToLogin(values.email),
+            onClick: () => handleGoToLogin(responseBody.userId),
           },
           secondButton: {
             text: 'Recuperar Senha',
             variant: 'default',
-            onClick: () => handleGoToForgotPassword(values.email),
+            onClick: () => handleGoToForgotPassword(responseBody.userId),
           },
         })
         return

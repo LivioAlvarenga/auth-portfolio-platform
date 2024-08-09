@@ -60,17 +60,17 @@ export class PgUserRepository implements UserRepository {
 
   // Validate this method
   async updatePassword(
-    email: string,
+    userId: string,
     passwordHash: string,
   ): Promise<{ userId: string } | null> {
     const query = {
       text: `
         UPDATE users
         SET password_hash = $2, updated_at = now() at time zone 'utc'
-        WHERE email = $1
+        WHERE id = $1
         RETURNING id
       `,
-      values: [email, passwordHash],
+      values: [userId, passwordHash],
     }
 
     const result = await database.query(query)
@@ -86,6 +86,20 @@ export class PgUserRepository implements UserRepository {
         WHERE email = $1
       `,
       values: [email],
+    }
+
+    const result = await database.query(query)
+    return result.rows[0] || null
+  }
+
+  // Validate this method
+  async getUserById(id: string): Promise<User | null> {
+    const query = {
+      text: `
+        SELECT * FROM users
+        WHERE id = $1
+      `,
+      values: [id],
     }
 
     const result = await database.query(query)

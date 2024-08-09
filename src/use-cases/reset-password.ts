@@ -3,7 +3,7 @@ import { UserRepository } from '@/repositories/user-repository'
 import { VerificationTokenRepository } from '@/repositories/verification-token-repository'
 
 interface ResetPasswordUseCaseRequest {
-  email: string
+  identifier: string
   token: string
   password: string
 }
@@ -21,13 +21,13 @@ export class ResetPasswordUseCase {
   ) {}
 
   async execute({
-    email,
+    identifier,
     token,
     password,
   }: ResetPasswordUseCaseRequest): Promise<ResetPasswordUseCaseResponse> {
     // 1. useCase - check if token exists in database
     const tokenExistsInDatabase =
-      await this.verificationTokenRepository.getValidToken(email, token)
+      await this.verificationTokenRepository.getValidToken(identifier, token)
 
     if (!tokenExistsInDatabase) {
       return {
@@ -41,7 +41,7 @@ export class ResetPasswordUseCase {
 
     // 3. useCase - update password in database
     const passwordUpdated = await this.userRepository.updatePassword(
-      email,
+      identifier,
       hashedPassword,
     )
 
@@ -53,7 +53,7 @@ export class ResetPasswordUseCase {
     }
 
     // 4. useCase - delete token from database
-    await this.verificationTokenRepository.deleteToken(email, token)
+    await this.verificationTokenRepository.deleteToken(identifier, token)
 
     return {
       status: 201,

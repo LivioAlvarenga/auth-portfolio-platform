@@ -37,7 +37,7 @@ describe('POST /api/v1/reset-password', () => {
       body: JSON.stringify({
         password: newPassword,
         token: differentToken,
-        email: resetPasswordToken.identifier,
+        identifier: resetPasswordToken.identifier,
       }),
     })
 
@@ -60,7 +60,7 @@ describe('POST /api/v1/reset-password', () => {
       body: JSON.stringify({
         password: newPassword,
         token: resetPasswordToken.token,
-        email: resetPasswordToken.identifier,
+        identifier: resetPasswordToken.identifier,
       }),
     })
 
@@ -73,7 +73,7 @@ describe('POST /api/v1/reset-password', () => {
     })
 
     // Check if the password was updated and hashed correctly
-    const userUpdate = await userRepository.getUserByEmail(
+    const userUpdate = await userRepository.getUserById(
       resetPasswordToken.identifier,
     )
     const passwordHash = userUpdate?.password_hash

@@ -5,24 +5,47 @@ import { LogoVertical } from '@/components/svg/logo-vertical'
 import { Text } from '@/components/Text'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
+import { webserver } from '@/infra/webserver'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
+async function getData(token: string) {
+  const response = await fetch(
+    `${webserver.host}/api/v1/register?token=${token}`,
+    {
+      cache:
+        process.env.NODE_ENV === 'development' ? 'no-cache' : 'force-cache',
+    },
+  )
+  if (!response.ok) {
+    return null
+  }
+
+  const responseBody = await response.json()
+  if (responseBody.user.emailVerified) {
+    return null
+  }
+
+  return responseBody
+}
+
 interface VerifyEmailOptPageProps {
   searchParams: {
-    email?: string
     token?: string
   }
 }
 
-export default function VerifyEmailOpt({
+export default async function VerifyEmailOpt({
   searchParams,
 }: VerifyEmailOptPageProps) {
-  const email = searchParams.email || ''
-  const token = searchParams.token || ''
+  const token = searchParams.token || null
+  if (!token) {
+    redirect('/register')
+  }
 
-  if (!email) {
-    redirect('/login')
+  const user = await getData(token)
+  if (!user) {
+    redirect('/register')
   }
 
   return (
@@ -62,12 +85,12 @@ export default function VerifyEmailOpt({
               variant={'label-14-14-400'}
               className="pt-4 text-muted-foreground"
             >
-              {`Por favor, insira o código de verificação enviado para o seu
-              e-mail ${email}.`}
+              Por favor, insira o código de verificação enviado para o seu
+              e-mail.
             </Text>
           </CardHeader>
           <CardContent>
-            <OptForm email={email} token={token} />
+            <OptForm user={user} />
             <Text
               variant={'label-14-14-400'}
               className="mt-4 text-pretty text-center text-muted-foreground"

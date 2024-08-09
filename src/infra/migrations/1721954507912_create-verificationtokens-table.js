@@ -11,9 +11,9 @@ exports.shorthands = undefined
 exports.up = (pgm) => {
   pgm.createTable('verification_token', {
     identifier: {
-      type: 'varchar(255)',
+      type: 'uuid',
       notNull: true,
-      references: 'users(email)',
+      references: 'users(id)',
       onDelete: 'CASCADE',
     },
     token: {
@@ -27,6 +27,10 @@ exports.up = (pgm) => {
     expires: {
       type: 'timestamp with time zone',
       notNull: true,
+    },
+    opt: {
+      type: 'varchar(6)',
+      notNull: false,
     },
     created_at: {
       type: 'timestamp with time zone',

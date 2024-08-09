@@ -3,7 +3,7 @@ export interface User {
   name?: string
   nick_name?: string
   email: string
-  emailVerified?: Date
+  emailVerified?: string
   email_verified_provider?: string
   image?: string
   password_hash?: string
@@ -30,9 +30,10 @@ export interface UserRepository {
     data: Partial<User>,
   ): Promise<Omit<User, 'passwordHash'>>
   updatePassword(
-    email: string,
+    userId: string,
     passwordHash: string,
   ): Promise<{ userId: string } | null>
   getUserByEmail(email: string): Promise<User | null>
+  getUserById(id: string): Promise<User | null>
   deleteUser(id: string): Promise<boolean>
 }
