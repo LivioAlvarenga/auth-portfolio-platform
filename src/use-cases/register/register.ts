@@ -42,6 +42,7 @@ export class RegisterUseCase {
       return {
         status: 400,
         message: 'E-mail já cadastrado.',
+        userId: userAlreadyExists.id,
       }
     }
 

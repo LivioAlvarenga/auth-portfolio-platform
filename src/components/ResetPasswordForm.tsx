@@ -123,6 +123,7 @@ export function ResetPasswordForm({
       const responseBody = await response.json()
 
       if (response.status === 201 && responseBody) {
+        // TODO: Atenção!!! apos enviar o link magico e o usuário clicar, se o email dele não estiver verificado, deve se adicionar como verificado, pois ele acessou o link.
         // send email reset password confirmation
         await sendEmail({
           type: 'PASSWORD_RESET_CONFIRMATION',

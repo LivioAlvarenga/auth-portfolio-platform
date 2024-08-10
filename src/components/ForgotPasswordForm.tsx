@@ -5,7 +5,6 @@ import { Input } from '@/components/ui/input'
 import { webserver } from '@/infra/webserver'
 import { cn } from '@/lib/shadcn-ui'
 import { emailValidation } from '@/schemas'
-import { sendEmail } from '@/utils/email'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { LoaderCircle } from 'lucide-react'
 import React, { useState } from 'react'
@@ -48,37 +47,17 @@ export function ForgotPasswordForm({
     setIsLoading(true)
 
     try {
-      // create verification token
-      const response = await fetch(
-        `${webserver.host}/api/v1/verification-token`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            email: values.email,
-            opt: false,
-            dayExpires: 1,
-            tokenType: 'RESET_PASSWORD',
-          }),
+      const response = await fetch(`${webserver.host}/api/v1/forgot-password`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      )
+        body: JSON.stringify({
+          email: values.email,
+        }),
+      })
 
-      const responseBody = await response.json()
-
-      if (response.status === 201 && responseBody) {
-        // send password reset email
-        await sendEmail({
-          type: 'PASSWORD_RESET_REQUEST',
-          data: {
-            name: responseBody.nickName || responseBody.name,
-            url: `${webserver.host}/reset-password?email=${responseBody.email}&token=${responseBody.token}`,
-          },
-          to: values.email,
-          userId: responseBody.userId,
-        })
-
+      if (response.ok) {
         showToast({
           message: `E-mail enviado para ${values.email} com instruções para redefinir sua senha. Verifique sua caixa de entrada ou spam.`,
           duration: Infinity,
@@ -88,6 +67,10 @@ export function ForgotPasswordForm({
         form.reset()
         return
       }
+
+      form.setError('email', {
+        message: 'O e-mail fornecido não existe.',
+      })
 
       console.error('💥 Falha ao enviar código de verificação.', response)
 

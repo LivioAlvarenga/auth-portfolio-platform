@@ -5,7 +5,7 @@ import { LayoutEmail } from '../components/LayoutEmail'
 
 export interface PasswordResetRequestProps {
   url: string
-  name: string
+  name: string | null
 }
 
 export function PasswordResetRequest({ url, name }: PasswordResetRequestProps) {
