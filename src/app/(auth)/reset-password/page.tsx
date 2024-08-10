@@ -5,23 +5,43 @@ import { LogoVertical } from '@/components/svg/logo-vertical'
 import { Text } from '@/components/Text'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
+import { webserver } from '@/infra/webserver'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
+async function getData(token: string) {
+  const response = await fetch(
+    `${webserver.host}/api/v1/register?token=${token}`,
+    {
+      cache:
+        process.env.NODE_ENV === 'development' ? 'no-cache' : 'force-cache',
+    },
+  )
+  if (!response.ok) {
+    return null
+  }
+
+  const responseBody = await response.json()
+
+  return responseBody.user
+}
 interface ResetPasswordPageProps {
   searchParams: {
     token?: string
-    email?: string
   }
 }
 
-export default function ResetPassword({
+export default async function ResetPassword({
   searchParams,
 }: ResetPasswordPageProps) {
-  const token = searchParams.token || ''
-  const email = searchParams.email || ''
+  const token = searchParams.token || null
 
-  if (!token || !email) {
+  if (!token) {
+    redirect('/login')
+  }
+
+  const user = await getData(token)
+  if (!user) {
     redirect('/login')
   }
 
@@ -66,7 +86,7 @@ export default function ResetPassword({
             </Text>
           </CardHeader>
           <CardContent>
-            <ResetPasswordForm token={token} email={email} />
+            <ResetPasswordForm user={user} />
             <div className="mt-4 flex items-center justify-center text-sm">
               <Text as="span" variant={'label-14-14-400'}>
                 Lembrou sua senha?{' '}

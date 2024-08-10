@@ -1,6 +1,6 @@
 import { PgUserRepository } from '@/repositories/pg/pg-user-repository'
 import { PgVerificationTokenRepository } from '@/repositories/pg/pg-verification-token-repository'
-import { ResetPasswordUseCase } from '../reset-password'
+import { ResetPasswordUseCase } from './reset-password'
 
 export function makeResetPasswordUseCase() {
   const userRepository = new PgUserRepository()

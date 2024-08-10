@@ -5,7 +5,6 @@ import { Input } from '@/components/ui/input'
 import { webserver } from '@/infra/webserver'
 import { cn } from '@/lib/shadcn-ui'
 import { passwordValidation } from '@/schemas'
-import { sendEmail } from '@/utils/email'
 import { generatePassword } from '@/utils/password'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Copy, Eye, EyeOff, LoaderCircle } from 'lucide-react'
@@ -32,14 +31,16 @@ type ResetPasswordFormSchemaProps = z.infer<typeof resetPasswordFormSchema>
 
 type ResetPasswordFormProps = React.HTMLAttributes<HTMLFormElement> & {
   className?: string
-  token: string
-  email: string
+  user: {
+    id: string
+    email: string
+    name?: string
+  }
 }
 
 export function ResetPasswordForm({
   className,
-  token,
-  email,
+  user,
   ...props
 }: ResetPasswordFormProps) {
   const [isLoading, setIsLoading] = useState(false)
@@ -54,12 +55,12 @@ export function ResetPasswordForm({
     },
   })
 
-  function handleGoToLogin(email: string) {
-    router.push(`/login?email=${email}`)
+  function handleGoToLogin(token: string) {
+    router.push(`/login?token=${token}`)
   }
 
-  function handleGoToForgotPassword(email: string) {
-    router.push(`/forgot-password?email=${email}`)
+  function handleGoToForgotPassword(token: string) {
+    router.push(`/forgot-password?token=${token}`)
   }
 
   function handleCopyPassword() {
@@ -115,23 +116,13 @@ export function ResetPasswordForm({
         },
         body: JSON.stringify({
           password: values.newPassword,
-          token,
-          email,
+          identifier: user.id,
         }),
       })
 
       const responseBody = await response.json()
 
-      if (response.status === 201 && responseBody) {
-        // TODO: Atenção!!! apos enviar o link magico e o usuário clicar, se o email dele não estiver verificado, deve se adicionar como verificado, pois ele acessou o link.
-        // send email reset password confirmation
-        await sendEmail({
-          type: 'PASSWORD_RESET_CONFIRMATION',
-          data: {},
-          to: email,
-          userId: responseBody.userId,
-        })
-
+      if (response.ok) {
         showToast({
           message: `Sua senha foi atualizada com sucesso!`,
           duration: Infinity,
@@ -139,10 +130,10 @@ export function ResetPasswordForm({
           firstButton: {
             text: 'Fazer Login Agora!',
             variant: 'default',
-            onClick: () => handleGoToLogin(email),
+            onClick: () => handleGoToLogin(responseBody.userId),
           },
           redirect: {
-            path: `/login?email=${email}`,
+            path: `/login?token=${responseBody.userId}`,
             countdownSeconds: 5,
           },
         })
@@ -160,7 +151,7 @@ export function ResetPasswordForm({
         firstButton: {
           text: 'Recuperar Senha',
           variant: 'default',
-          onClick: () => handleGoToForgotPassword(email),
+          onClick: () => handleGoToForgotPassword(user.id),
         },
       })
     } catch (error) {
