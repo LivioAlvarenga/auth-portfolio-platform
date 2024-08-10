@@ -63,8 +63,8 @@ export function RegisterForm({ className, ...props }: RegisterFormProps) {
     router.push(`${webserver.host}/verify-email-opt?token=${userId}`)
   }
 
-  function handleGoToForgotPassword(userId: string) {
-    router.push(`${webserver.host}/forgot-password?token=${userId}`)
+  function handleGoToForgotPassword() {
+    router.push(`${webserver.host}/forgot-password`)
   }
 
   function handleCopyPassword() {
@@ -157,7 +157,7 @@ export function RegisterForm({ className, ...props }: RegisterFormProps) {
           secondButton: {
             text: 'Recuperar Senha',
             variant: 'default',
-            onClick: () => handleGoToForgotPassword(responseBody.userId),
+            onClick: () => handleGoToForgotPassword(),
           },
         })
         return
