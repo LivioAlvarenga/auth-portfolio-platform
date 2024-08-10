@@ -14,7 +14,7 @@ const accountRepository = new PgAccountRepository()
 
 const createDefaultUser = async (): Promise<User> => {
   const user = {
-    email: 'testuser@example.com',
+    email: 'testuser1@example.com',
     passwordHash: await hashPassword('Password123$%$'),
     name: 'Test User',
   }
@@ -23,7 +23,7 @@ const createDefaultUser = async (): Promise<User> => {
 
 const createDefaultUserEmailVerified = async (): Promise<User> => {
   const user = {
-    email: 'testuser@example.com',
+    email: 'testuser2@example.com',
     passwordHash: await hashPassword('Password123$%$'),
     name: 'Test User',
     emailVerified: new Date(),
@@ -45,7 +45,7 @@ const createDefaultTokenWithOpt = async (): Promise<VerificationToken> => {
 
 const createDefaultUserWithAccount = async (): Promise<User> => {
   const user = {
-    email: 'testuser@example.com',
+    email: 'testuser3@example.com',
     passwordHash: await hashPassword('Password123$%$'),
     name: 'Test User',
   }
@@ -64,7 +64,7 @@ const createDefaultUserWithAccount = async (): Promise<User> => {
 
 const createDefaultUserWithAccountGoggle = async (): Promise<User> => {
   const user = {
-    email: 'testuser@example.com',
+    email: 'testuser4@example.com',
     name: 'Google User',
     emailVerified: new Date(),
     email_verified_provider: 'google',

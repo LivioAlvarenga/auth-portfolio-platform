@@ -5,7 +5,7 @@ import { PgUserRepository } from '@/repositories/pg/pg-user-repository'
 import { PgVerificationTokenRepository } from '@/repositories/pg/pg-verification-token-repository'
 import { orchestrator } from '@/tests/orchestrator'
 import { utilsTest } from '@/tests/utils/defaultUtilsTest'
-import { v4 as uuidv4 } from 'uuid'
+import { v4 } from 'uuid'
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices()
@@ -24,10 +24,30 @@ const userRepository = new PgUserRepository()
 const verificationTokenRepository = new PgVerificationTokenRepository()
 
 describe('POST /api/v1/reset-password', () => {
+  test('should return 404 if user not found', async () => {
+    const identifier = v4()
+    const password = 'Password23@#!'
+
+    const response = await fetch(`${webserver.host}/api/v1/reset-password`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        identifier,
+        password,
+      }),
+    })
+
+    const responseBody = await response.json()
+
+    expect(response.status).toBe(404)
+    expect(responseBody.message).toBe('Usuário não encontrado.')
+  })
+
   test('should return 404 if token does not exist or is expired', async () => {
-    const resetPasswordToken = await utilsTest.createDefaultResetPasswordToken()
+    const user = await utilsTest.createDefaultUser()
     const newPassword = 'Password123$%$'
-    const differentToken = uuidv4()
 
     const response = await fetch(`${webserver.host}/api/v1/reset-password`, {
       method: 'POST',
@@ -36,8 +56,7 @@ describe('POST /api/v1/reset-password', () => {
       },
       body: JSON.stringify({
         password: newPassword,
-        token: differentToken,
-        identifier: resetPasswordToken.identifier,
+        identifier: user.id,
       }),
     })
 
@@ -47,8 +66,7 @@ describe('POST /api/v1/reset-password', () => {
     expect(responseBody).toEqual({ message: 'Token inválido ou expirado.' })
   })
 
-  test('should hash password, update it in the database, and delete the token', async () => {
-    // Generate a reset password token
+  test('should hash password, update it in the database, update emailVerified and delete the token', async () => {
     const resetPasswordToken = await utilsTest.createDefaultResetPasswordToken()
     const newPassword = 'Password123$%$'
 
@@ -59,7 +77,6 @@ describe('POST /api/v1/reset-password', () => {
       },
       body: JSON.stringify({
         password: newPassword,
-        token: resetPasswordToken.token,
         identifier: resetPasswordToken.identifier,
       }),
     })
@@ -73,9 +90,15 @@ describe('POST /api/v1/reset-password', () => {
     })
 
     // Check if the password was updated and hashed correctly
-    const userUpdate = await userRepository.getUserById(
-      resetPasswordToken.identifier,
-    )
+    const userUpdateResult = await database.query({
+      text: 'SELECT * FROM users WHERE id = $1',
+      values: [resetPasswordToken.identifier],
+    })
+    const userUpdate = userUpdateResult.rows[0]
+
+    expect(userUpdate.emailVerified).not.toBe(null)
+    expect(userUpdate.email_verified_provider).toBe('credential')
+
     const passwordHash = userUpdate?.password_hash
     const passwordMatch = await comparePassword(
       newPassword,
@@ -85,11 +108,15 @@ describe('POST /api/v1/reset-password', () => {
     expect(passwordMatch).toBe(true)
 
     // Check if the token was deleted
-    const tokenExists = await verificationTokenRepository.getValidToken(
-      resetPasswordToken.identifier,
-      resetPasswordToken.token,
-    )
+    const tokenExistsResult = await database.query({
+      text: `
+        SELECT * FROM verification_token
+        WHERE identifier = $1 AND token_type = $2
+      `,
+      values: [resetPasswordToken.identifier, 'RESET_PASSWORD'],
+    })
+    const tokenExists = tokenExistsResult.rows[0]
 
-    expect(tokenExists).toBe(null)
+    expect(tokenExists).not.toBe(true)
   })
 })
