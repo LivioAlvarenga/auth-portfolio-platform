@@ -1,4 +1,5 @@
 import { database } from '@/infra/database'
+import { webserver } from '@/infra/webserver'
 import { orchestrator } from '@/tests/orchestrator'
 import { utilsTest } from '@/tests/utils/defaultUtilsTest'
 import { v4 } from 'uuid'
@@ -13,13 +14,13 @@ afterEach(async () => {
   await database.query('DELETE FROM users')
 })
 
-describe('GET /api/v1/register', () => {
+describe('GET /api/v1/auth/register', () => {
   describe('Get User Register Use Case', () => {
     test('should return 404 if userId is invalid', async () => {
       const userId = v4()
 
       const response = await fetch(
-        `http://localhost:3000/api/v1/register?token=${userId}`,
+        `${webserver.host}/api/v1/auth/register?token=${userId}`,
       )
 
       const responseBody = await response.json()
@@ -32,7 +33,7 @@ describe('GET /api/v1/register', () => {
       const user = await utilsTest.createDefaultUser()
 
       const response = await fetch(
-        `http://localhost:3000/api/v1/register?token=${user.id}`,
+        `${webserver.host}/api/v1/auth/register?token=${user.id}`,
       )
 
       const responseBody = await response.json()

@@ -5,6 +5,7 @@ import { LogoVertical } from '@/components/svg/logo-vertical'
 import { Text } from '@/components/Text'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
+import { webserver } from '@/infra/webserver'
 import Link from 'next/link'
 
 export default function Register() {
@@ -24,7 +25,7 @@ export default function Register() {
         {/* sing-in and toggle theme buttons */}
         <div className="absolute right-4 top-4 flex items-center gap-2 md:right-6 md:top-6 lg:right-10 lg:top-10">
           <Button asChild variant={'ghost'} className="hidden lg:flex">
-            <Link href="/login">Entrar</Link>
+            <Link href={`${webserver.host}/login`}>Entrar</Link>
           </Button>
           <ButtonThemeToggle />
         </div>
@@ -52,7 +53,7 @@ export default function Register() {
                 Já tem uma conta?{' '}
               </Text>
               <Button asChild variant="link">
-                <Link href="/login" className="underline">
+                <Link href={`${webserver.host}/login`} className="underline">
                   Fazer Login
                 </Link>
               </Button>

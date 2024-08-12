@@ -17,12 +17,12 @@ afterEach(async () => {
   await database.query('DELETE FROM verification_token')
 })
 
-describe('POST /api/v1/register', () => {
+describe('POST /api/v1/auth/register', () => {
   describe('User Register Use Case', () => {
     test('should return error for already registered email', async () => {
       const createdUser = await utilsTest.createDefaultUserWithAccount()
 
-      const response = await fetch(`${webserver.host}/api/v1/register`, {
+      const response = await fetch(`${webserver.host}/api/v1/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -46,7 +46,7 @@ describe('POST /api/v1/register', () => {
         name: 'New User',
       }
 
-      const response = await fetch(`${webserver.host}/api/v1/register`, {
+      const response = await fetch(`${webserver.host}/api/v1/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -76,7 +76,7 @@ describe('POST /api/v1/register', () => {
         // Missing name
       }
 
-      const response = await fetch(`${webserver.host}/api/v1/register`, {
+      const response = await fetch(`${webserver.host}/api/v1/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -100,7 +100,7 @@ describe('POST /api/v1/register', () => {
         nick_name: 'Credential User nickname',
       }
 
-      const response = await fetch(`${webserver.host}/api/v1/register`, {
+      const response = await fetch(`${webserver.host}/api/v1/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -148,7 +148,7 @@ describe('POST /api/v1/register', () => {
         nick_name: 'Credential User nickname',
       }
 
-      const response = await fetch(`${webserver.host}/api/v1/register`, {
+      const response = await fetch(`${webserver.host}/api/v1/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

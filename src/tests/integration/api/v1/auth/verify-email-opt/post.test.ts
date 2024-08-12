@@ -16,13 +16,13 @@ afterEach(async () => {
   await database.query('DELETE FROM verification_token')
 })
 
-describe('POST /api/v1/verify-email-opt', () => {
+describe('POST /api/v1/auth/verify-email-opt', () => {
   describe('Verify Email Use Case', () => {
     test('should return 404 if user not found', async () => {
       const userId = v4() // random user id
 
       const response = await fetch(
-        `${webserver.host}/api/v1/verify-email-opt`,
+        `${webserver.host}/api/v1/auth/verify-email-opt`,
         {
           method: 'POST',
           headers: {
@@ -44,7 +44,7 @@ describe('POST /api/v1/verify-email-opt', () => {
       const user = await utilsTest.createDefaultUserEmailVerified()
 
       const response = await fetch(
-        `${webserver.host}/api/v1/verify-email-opt`,
+        `${webserver.host}/api/v1/auth/verify-email-opt`,
         {
           method: 'POST',
           headers: {
@@ -66,7 +66,7 @@ describe('POST /api/v1/verify-email-opt', () => {
       const user = await utilsTest.createDefaultUser()
 
       const response = await fetch(
-        `${webserver.host}/api/v1/verify-email-opt`,
+        `${webserver.host}/api/v1/auth/verify-email-opt`,
         {
           method: 'POST',
           headers: {
@@ -107,7 +107,7 @@ describe('POST /api/v1/verify-email-opt', () => {
       const token = await utilsTest.createDefaultTokenWithOpt()
 
       const response = await fetch(
-        `${webserver.host}/api/v1/verify-email-opt`,
+        `${webserver.host}/api/v1/auth/verify-email-opt`,
         {
           method: 'POST',
           headers: {
@@ -180,7 +180,7 @@ describe('POST /api/v1/verify-email-opt', () => {
 
       expect(tokensExpired.length).toBe(10)
 
-      await fetch(`${webserver.host}/api/v1/verify-email-opt`, {
+      await fetch(`${webserver.host}/api/v1/auth/verify-email-opt`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

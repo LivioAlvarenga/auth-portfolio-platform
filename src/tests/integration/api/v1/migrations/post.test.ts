@@ -1,3 +1,4 @@
+import { webserver } from '@/infra/webserver'
 import { orchestrator } from '@/tests/orchestrator'
 
 beforeAll(async () => {
@@ -7,7 +8,7 @@ beforeAll(async () => {
 
 test('POST to /api/v1/migrations should return 200', async () => {
   // first migrate the database responseBody.length > 0, because we have migrations
-  const response1 = await fetch('http://localhost:3000/api/v1/migrations', {
+  const response1 = await fetch(`${webserver.host}/api/v1/migrations`, {
     method: 'POST',
   })
   expect(response1.status).toBe(201)
@@ -18,7 +19,7 @@ test('POST to /api/v1/migrations should return 200', async () => {
   expect(responseBody.length).toBeGreaterThan(0)
 
   // now migrate the database responseBody.length === 0, because we have already migrated
-  const response2 = await fetch('http://localhost:3000/api/v1/migrations', {
+  const response2 = await fetch(`${webserver.host}/api/v1/migrations`, {
     method: 'POST',
   })
   expect(response2.status).toBe(200)

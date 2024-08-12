@@ -47,15 +47,18 @@ export function ForgotPasswordForm({
     setIsLoading(true)
 
     try {
-      const response = await fetch(`${webserver.host}/api/v1/forgot-password`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        `${webserver.host}/api/v1/auth/forgot-password`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: values.email,
+          }),
         },
-        body: JSON.stringify({
-          email: values.email,
-        }),
-      })
+      )
 
       if (response.ok) {
         showToast({

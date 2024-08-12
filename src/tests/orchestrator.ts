@@ -1,5 +1,6 @@
 import { database } from '@/infra/database'
 import migrator from '@/infra/migrator'
+import { webserver } from '@/infra/webserver'
 import AsyncRetry from 'async-retry'
 
 async function waitForAllServices() {
@@ -12,7 +13,7 @@ async function waitForAllServices() {
     })
 
     async function fetchStatusPage() {
-      const response = await fetch('http://localhost:3000/api/v1/status')
+      const response = await fetch(`${webserver.host}/api/v1/status`)
       if (response.status !== 200) {
         throw new Error()
       }

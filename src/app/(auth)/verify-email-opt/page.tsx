@@ -11,7 +11,7 @@ import { redirect } from 'next/navigation'
 
 async function getData(token: string) {
   const response = await fetch(
-    `${webserver.host}/api/v1/register?token=${token}`,
+    `${webserver.host}/api/v1/auth/register?token=${token}`,
     {
       cache:
         process.env.NODE_ENV === 'development' ? 'no-cache' : 'force-cache',
@@ -40,12 +40,12 @@ export default async function VerifyEmailOpt({
 }: VerifyEmailOptPageProps) {
   const token = searchParams.token || null
   if (!token) {
-    redirect('/register')
+    redirect(`${webserver.host}/register`)
   }
 
   const user = await getData(token)
   if (!user) {
-    redirect('/register')
+    redirect(`${webserver.host}/register`)
   }
 
   return (
@@ -64,7 +64,7 @@ export default async function VerifyEmailOpt({
         {/* sing-in and toggle theme buttons */}
         <div className="absolute right-4 top-4 flex items-center gap-2 md:right-6 md:top-6 lg:right-10 lg:top-10">
           <Button asChild variant={'ghost'} className="hidden lg:flex">
-            <Link href="/login">Entrar</Link>
+            <Link href={`${webserver.host}/login`}>Entrar</Link>
           </Button>
           <ButtonThemeToggle />
         </div>
