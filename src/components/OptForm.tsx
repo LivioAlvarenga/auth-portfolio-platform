@@ -51,7 +51,7 @@ export function OptForm({ className, user, ...props }: OptFormProps) {
   })
 
   function handleGoToLogin(userId: string) {
-    router.push(`/login?token=${userId}`)
+    router.push(`${webserver.host}/login?token=${userId}`)
   }
 
   async function handleSendOptToEmail(userId: string) {
@@ -59,7 +59,7 @@ export function OptForm({ className, user, ...props }: OptFormProps) {
       setIsLoading(true)
       // Create opt token and send email verification
       const response = await fetch(
-        `${webserver.host}/api/v1/verify-email-opt`,
+        `${webserver.host}/api/v1/auth/verify-email-opt`,
         {
           method: 'POST',
           headers: {
@@ -110,7 +110,7 @@ export function OptForm({ className, user, ...props }: OptFormProps) {
 
     try {
       const response = await fetch(
-        `${webserver.host}/api/v1/verify-email-opt?token=${user.id}&opt=${values.pin}`,
+        `${webserver.host}/api/v1/auth/verify-email-opt?token=${user.id}&opt=${values.pin}`,
       )
       const responseBody = await response.json()
 

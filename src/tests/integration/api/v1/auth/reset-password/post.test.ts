@@ -23,21 +23,24 @@ afterEach(async () => {
 const userRepository = new PgUserRepository()
 const verificationTokenRepository = new PgVerificationTokenRepository()
 
-describe('POST /api/v1/reset-password', () => {
+describe('POST /api/v1/auth/reset-password', () => {
   test('should return 404 if user not found', async () => {
     const identifier = v4()
     const password = 'Password23@#!'
 
-    const response = await fetch(`${webserver.host}/api/v1/reset-password`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
+    const response = await fetch(
+      `${webserver.host}/api/v1/auth/reset-password`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          identifier,
+          password,
+        }),
       },
-      body: JSON.stringify({
-        identifier,
-        password,
-      }),
-    })
+    )
 
     const responseBody = await response.json()
 
@@ -49,16 +52,19 @@ describe('POST /api/v1/reset-password', () => {
     const user = await utilsTest.createDefaultUser()
     const newPassword = 'Password123$%$'
 
-    const response = await fetch(`${webserver.host}/api/v1/reset-password`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
+    const response = await fetch(
+      `${webserver.host}/api/v1/auth/reset-password`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          password: newPassword,
+          identifier: user.id,
+        }),
       },
-      body: JSON.stringify({
-        password: newPassword,
-        identifier: user.id,
-      }),
-    })
+    )
 
     const responseBody = await response.json()
 
@@ -70,16 +76,19 @@ describe('POST /api/v1/reset-password', () => {
     const resetPasswordToken = await utilsTest.createDefaultResetPasswordToken()
     const newPassword = 'Password123$%$'
 
-    const response = await fetch(`${webserver.host}/api/v1/reset-password`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
+    const response = await fetch(
+      `${webserver.host}/api/v1/auth/reset-password`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          password: newPassword,
+          identifier: resetPasswordToken.identifier,
+        }),
       },
-      body: JSON.stringify({
-        password: newPassword,
-        identifier: resetPasswordToken.identifier,
-      }),
-    })
+    )
 
     const responseBody = await response.json()
 

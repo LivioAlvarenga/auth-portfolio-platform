@@ -3,11 +3,11 @@ import { tokenValidation } from '@/schemas'
 import {
   makeGetVerifyEmailOptUseCase,
   makeVerifyEmailOptUseCase,
-} from '@/use-cases/verify-email-opt/make-verify-email-opt'
+} from '@/use-cases/auth/verify-email-opt/make-verify-email-opt'
 import { NextResponse, type NextRequest } from 'next/server'
 import { z } from 'zod'
 
-async function verifyEmailOpt(req: NextRequest) {
+export async function verifyEmailOpt(req: NextRequest) {
   const allowedMethods = ['POST', 'GET']
   if (!allowedMethods.includes(req.method)) {
     return NextResponse.json(
@@ -72,22 +72,14 @@ async function verifyEmailOpt(req: NextRequest) {
   } catch (error) {
     if (error instanceof z.ZodError) {
       console.error(
-        '💥 Unexpected error during data sanitization in api/v1/verifyEmailOpt',
+        '💥 Unexpected error during data sanitization in api/v1/auth/verifyEmailOpt',
         error,
       )
 
       const firstError = error.errors[0]?.message || 'Erro de validação.'
       return NextResponse.json({ message: firstError }, { status: 400 })
     }
-    console.error('💥 Unexpected error in api/v1/verifyEmailOpt', error)
+    console.error('💥 Unexpected error in api/v1/auth/verifyEmailOpt', error)
     return NextResponse.json({ message: 'Erro inesperado.' }, { status: 500 })
   }
-}
-
-export {
-  verifyEmailOpt as DELETE,
-  verifyEmailOpt as GET,
-  verifyEmailOpt as PATCH,
-  verifyEmailOpt as POST,
-  verifyEmailOpt as PUT,
 }

@@ -56,11 +56,11 @@ export function ResetPasswordForm({
   })
 
   function handleGoToLogin(token: string) {
-    router.push(`/login?token=${token}`)
+    router.push(`${webserver.host}/login?token=${token}`)
   }
 
   function handleGoToForgotPassword(token: string) {
-    router.push(`/forgot-password?token=${token}`)
+    router.push(`${webserver.host}/forgot-password?token=${token}`)
   }
 
   function handleCopyPassword() {
@@ -109,16 +109,19 @@ export function ResetPasswordForm({
       }
 
       // reset password
-      const response = await fetch(`${webserver.host}/api/v1/reset-password`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        `${webserver.host}/api/v1/auth/reset-password`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            password: values.newPassword,
+            identifier: user.id,
+          }),
         },
-        body: JSON.stringify({
-          password: values.newPassword,
-          identifier: user.id,
-        }),
-      })
+      )
 
       const responseBody = await response.json()
 
@@ -133,7 +136,7 @@ export function ResetPasswordForm({
             onClick: () => handleGoToLogin(responseBody.userId),
           },
           redirect: {
-            path: `/login?token=${responseBody.userId}`,
+            path: `${webserver.host}/login?token=${responseBody.userId}`,
             countdownSeconds: 5,
           },
         })

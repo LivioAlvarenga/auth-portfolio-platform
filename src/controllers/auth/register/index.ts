@@ -8,8 +8,8 @@ import {
 import {
   makeGetRegisterUserUseCase,
   makeRegisterUserUseCase,
-} from '@/use-cases/register/make-register'
-import { NextResponse, type NextRequest } from 'next/server'
+} from '@/use-cases/auth/register/make-register'
+import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 
 const registerSchema = z.object({
@@ -19,7 +19,7 @@ const registerSchema = z.object({
   password: passwordValidation.optional(),
 })
 
-async function register(req: NextRequest) {
+export async function register(req: NextRequest) {
   const allowedMethods = ['POST', 'GET']
   if (!allowedMethods.includes(req.method)) {
     return NextResponse.json(
@@ -88,12 +88,4 @@ async function register(req: NextRequest) {
     console.error('💥 Unexpected error in api/v1/register', error)
     return NextResponse.json({ message: 'Erro inesperado.' }, { status: 500 })
   }
-}
-
-export {
-  register as DELETE,
-  register as GET,
-  register as PATCH,
-  register as POST,
-  register as PUT,
 }
