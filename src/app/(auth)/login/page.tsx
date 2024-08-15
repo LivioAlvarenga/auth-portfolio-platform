@@ -8,14 +8,37 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { webserver } from '@/infra/webserver'
 import Link from 'next/link'
 
+async function getData(token: string) {
+  const response = await fetch(
+    `${webserver.host}/api/v1/auth/register?token=${token}`,
+    {
+      cache:
+        process.env.NODE_ENV === 'development' ? 'no-cache' : 'force-cache',
+    },
+  )
+  if (!response.ok) {
+    return null
+  }
+
+  const responseBody = await response.json()
+
+  return responseBody.user
+}
+
 interface LoginPageProps {
   searchParams: {
-    email?: string
+    token?: string
   }
 }
 
-export default function Login({ searchParams }: LoginPageProps) {
-  const email = searchParams.email || ''
+export default async function Login({ searchParams }: LoginPageProps) {
+  let user = null
+
+  const token = searchParams.token || null
+  if (token) {
+    user = await getData(token)
+  }
+
   return (
     <div className="grid grid-cols-1 items-center overflow-hidden lg:grid-cols-2">
       {/* grid left - only in desktop */}
@@ -54,7 +77,7 @@ export default function Login({ searchParams }: LoginPageProps) {
             </Text>
           </CardHeader>
           <CardContent>
-            <LoginForm email={email} />
+            <LoginForm user={user} />
             <div className="mt-4 flex items-center justify-center text-sm">
               <Text as="span" variant={'label-14-14-400'}>
                 Não tem uma conta?{' '}
