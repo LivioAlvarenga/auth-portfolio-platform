@@ -78,14 +78,14 @@ export async function register(req: NextRequest) {
   } catch (error) {
     if (error instanceof z.ZodError) {
       console.error(
-        '💥 Unexpected error during data sanitization in api/v1/register',
+        '💥 Unexpected error during data sanitization in api/v1/auth/register',
         error,
       )
 
       const firstError = error.errors[0]?.message || 'Erro de validação.'
       return NextResponse.json({ message: firstError }, { status: 400 })
     }
-    console.error('💥 Unexpected error in api/v1/register', error)
+    console.error('💥 Unexpected error in api/v1/auth/register', error)
     return NextResponse.json({ message: 'Erro inesperado.' }, { status: 500 })
   }
 }

@@ -2,16 +2,19 @@
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { webserver } from '@/infra/webserver'
 import { cn } from '@/lib/shadcn-ui'
 import { emailValidation, passwordValidation } from '@/schemas'
+import { getDeviceInfo } from '@/utils'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { CheckCircle2, Eye, EyeOff, LoaderCircle, XCircle } from 'lucide-react'
+import { Eye, EyeOff, LoaderCircle } from 'lucide-react'
 import { signIn } from 'next-auth/react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { toast } from 'sonner'
 import { z } from 'zod'
+import { showToast } from './ShowToast'
 import { GoogleIcon } from './svg/google-icon'
 import {
   Form,
@@ -31,15 +34,18 @@ type LoginFormSchemaProps = z.infer<typeof loginFormSchema>
 
 type LoginFormProps = React.HTMLAttributes<HTMLFormElement> & {
   className?: string
-  email?: string
+  user?: {
+    id: string
+    email: string
+    name?: string
+  }
 }
 
-export function LoginForm({ className, email, ...props }: LoginFormProps) {
+export function LoginForm({ className, user, ...props }: LoginFormProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
-  const [emailValue] = useState(email)
-  // const session = useSession()
-  // console.log('🔑🔑🔑 - status', session.status, 'data', session.data)
+  const [emailValue] = useState(user?.email)
+  const router = useRouter()
 
   const form = useForm<LoginFormSchemaProps>({
     resolver: zodResolver(loginFormSchema),
@@ -49,61 +55,79 @@ export function LoginForm({ className, email, ...props }: LoginFormProps) {
     },
   })
 
+  function handleGoVerifyEmailOpt(token: string) {
+    router.push(`${webserver.host}/verify-email-opt?token=${token}`)
+  }
+
   async function onSubmit(values: z.infer<typeof loginFormSchema>) {
     setIsLoading(true)
 
     try {
-      console.log('💌💌💌 - ', values)
-      // const response = await fetch(`/api/...`, {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
-      //   body: JSON.stringify({
-      //     email: values.email,
-      //     password: values.password,
-      //   }),
-      // })
-
-      // if (!response.ok) {
-      //   throw new Error('Falha ao realizar login.')
-      // }
-
-      // send this data to auth.ts in Credentials provider authorize(credentials) {}
-      signIn('credentials', {
-        email: values.email,
-        password: values.password,
-        redirect: false,
-        callbackUrl: '/',
-      })
-
-      toast('Login realizado com sucesso!', {
-        className:
-          'flex items-center justify-start space-x-1 bg-card text-card-foreground border border-border',
-        duration: 4000,
-        icon: <CheckCircle2 className="mr-10 fill-green-600 text-card" />,
-        closeButton: true,
-        classNames: {
-          closeButton: 'bg-background border-border hover:dark:text-background',
+      const response = await fetch(
+        `${webserver.host}/api/v1/auth/login/credential`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: values.email,
+            password: values.password,
+            device: getDeviceInfo(),
+          }),
         },
-      })
+      )
 
-      // form.reset()
-      // redirect to home
+      const responseBody = await response.json()
+
+      if (response.ok) {
+        showToast({
+          message: 'Usuário logado com sucesso!',
+          duration: 5000,
+          variant: 'success',
+          redirect: {
+            path: `${webserver.host}/`,
+            countdownSeconds: 5,
+          },
+        })
+
+        // form.reset()
+        return
+      }
+
+      if (response.status === 404 || response.status === 401) {
+        showToast({
+          message: 'Usuário ou Senha incorretos.',
+          duration: Infinity,
+          variant: 'error',
+        })
+        return
+      }
+
+      if (response.status === 403) {
+        showToast({
+          message: 'Email não verificado.',
+          duration: Infinity,
+          variant: 'error',
+          firstButton: {
+            text: 'Verificar Email Agora!',
+            variant: 'default',
+            onClick: () => handleGoVerifyEmailOpt(responseBody.userId),
+          },
+        })
+        return
+      }
+
+      console.error('💥 Erro ao realizar o Login com senha e password')
     } catch (error) {
       console.error(
         '💥 Erro ao realizar o Login com senha e password - ',
         error,
       )
-      toast('Falha ao realizar login.', {
-        className:
-          'flex items-center justify-start space-x-1 bg-card text-card-foreground border border-border',
-        duration: 5000,
-        icon: <XCircle className="mr-10 fill-red-500 text-card" />,
-        closeButton: true,
-        classNames: {
-          closeButton: 'bg-background border-border hover:dark:text-background',
-        },
+      showToast({
+        message: 'Falha ao realizar o login.',
+        duration: Infinity,
+        variant: 'error',
       })
     } finally {
       setIsLoading(false)
@@ -111,7 +135,10 @@ export function LoginForm({ className, email, ...props }: LoginFormProps) {
   }
 
   async function handleGoogleLogin() {
-    console.log('🔑🔑🔑 - Login com Google')
+    const device = getDeviceInfo()
+    const deviceCookie = `authjs.user-device=${device}; path=/; max-age=${60 * 5}`
+    document.cookie = deviceCookie
+
     await signIn('google')
   }
 
@@ -149,7 +176,7 @@ export function LoginForm({ className, email, ...props }: LoginFormProps) {
               <div className="flex items-center">
                 <FormLabel>Senha</FormLabel>
                 <Link
-                  href="#"
+                  href={`${webserver.host}/forgot-password`}
                   className="ml-auto inline-block rounded-sm text-[14px] leading-[20px] tracking-[0.1px] underline ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 >
                   Esqueceu sua senha?

@@ -1,3 +1,3 @@
-import { GET, POST } from '@/lib/authjs'
+import { handlers } from '@/lib/authjs'
 
-export { GET, POST }
+export const { GET, POST } = handlers
