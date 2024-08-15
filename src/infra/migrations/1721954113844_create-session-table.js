@@ -32,6 +32,11 @@ exports.up = (pgm) => {
       type: 'timestamp with time zone',
       notNull: true,
     },
+    // The device identifier is used to identify the device that the user is using to login - generated with `User-Agent` library
+    device_identifier: {
+      type: 'varchar(255)',
+      notNull: false,
+    },
     created_at: {
       type: 'timestamp with time zone',
       notNull: true,
@@ -42,6 +47,11 @@ exports.up = (pgm) => {
       notNull: true,
       default: pgm.func("(now() at time zone 'utc')"),
     },
+  })
+
+  // Add unique constraint on userId and device_identifier
+  pgm.addConstraint('sessions', 'unique_user_device', {
+    unique: ['userId', 'device_identifier'],
   })
 
   // Add foreign key to users table

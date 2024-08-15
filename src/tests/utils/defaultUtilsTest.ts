@@ -1,7 +1,9 @@
 import { hashPassword } from '@/lib/bcrypt'
 import { PgAccountRepository } from '@/repositories/pg/pg-account-repository'
+import { PgSessionRepository } from '@/repositories/pg/pg-session-repository'
 import { PgUserRepository } from '@/repositories/pg/pg-user-repository'
 import { PgVerificationTokenRepository } from '@/repositories/pg/pg-verification-token-repository'
+import { Session } from '@/repositories/session-repository'
 import { User } from '@/repositories/user-repository'
 import { VerificationToken } from '@/repositories/verification-token-repository'
 import { generateOTP } from '@/utils/password'
@@ -11,6 +13,12 @@ import { v4 } from 'uuid'
 const userRepository = new PgUserRepository()
 const verificationTokenRepository = new PgVerificationTokenRepository()
 const accountRepository = new PgAccountRepository()
+const sessionRepository = new PgSessionRepository()
+
+const DAYS_30_IN_SECONDS = 30 * 24 * 60 * 60
+const DAYS_30_IN_MILLISECONDS =
+  parseInt(process.env.AUTH_SESSION_MAX_AGES!) * 1000 ||
+  DAYS_30_IN_SECONDS * 1000
 
 const createDefaultUser = async (): Promise<User> => {
   const user = {
@@ -24,11 +32,51 @@ const createDefaultUser = async (): Promise<User> => {
 const createDefaultUserEmailVerified = async (): Promise<User> => {
   const user = {
     email: 'testuser2@example.com',
-    passwordHash: await hashPassword('Password123$%$'),
+    password_hash: await hashPassword('Password123$%$'),
     name: 'Test User',
     emailVerified: new Date(),
   }
-  return userRepository.createUser(user)
+  return await userRepository.createUser(user)
+}
+
+const createDefaultUserWithSession = async (): Promise<{
+  user: User
+  session: Session
+  password: string
+}> => {
+  const password = 'Password123$%$'
+  const device = 'device'
+  const token = v4()
+  const sessionExpiry = new Date(Date.now() + DAYS_30_IN_MILLISECONDS)
+
+  const userData = {
+    email: 'testuser2@example.com',
+    password_hash: await hashPassword(password),
+    name: 'Test User',
+    emailVerified: new Date(),
+  }
+
+  const user = await userRepository.createUser(userData)
+
+  await accountRepository.createAccount({
+    userId: user.id,
+    type: 'credential',
+    provider: 'credential',
+    providerAccountId: user.id,
+  })
+
+  const session = await sessionRepository.createSession({
+    userId: user.id,
+    expires: sessionExpiry,
+    sessionToken: token,
+    device_identifier: device,
+  })
+
+  return {
+    user,
+    session,
+    password,
+  }
 }
 
 const createDefaultTokenWithOpt = async (): Promise<VerificationToken> => {
@@ -102,4 +150,5 @@ export const utilsTest = {
   createDefaultUserWithAccountGoggle,
   createDefaultTokenWithOpt,
   createDefaultUserEmailVerified,
+  createDefaultUserWithSession,
 }

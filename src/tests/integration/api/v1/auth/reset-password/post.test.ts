@@ -1,8 +1,6 @@
 import { database } from '@/infra/database'
 import { webserver } from '@/infra/webserver'
 import { comparePassword } from '@/lib/bcrypt'
-import { PgUserRepository } from '@/repositories/pg/pg-user-repository'
-import { PgVerificationTokenRepository } from '@/repositories/pg/pg-verification-token-repository'
 import { orchestrator } from '@/tests/orchestrator'
 import { utilsTest } from '@/tests/utils/defaultUtilsTest'
 import { v4 } from 'uuid'
@@ -18,10 +16,6 @@ afterEach(async () => {
   await database.query('DELETE FROM verification_token')
   await database.query('DELETE FROM users')
 })
-
-// Instanciar o repositório PgUserRepository
-const userRepository = new PgUserRepository()
-const verificationTokenRepository = new PgVerificationTokenRepository()
 
 describe('POST /api/v1/auth/reset-password', () => {
   test('should return 404 if user not found', async () => {
