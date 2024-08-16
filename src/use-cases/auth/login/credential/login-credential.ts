@@ -92,11 +92,25 @@ export class LoginCredentialUseCase {
     })
 
     // 7. useCase - set session token cookie
+    // cookies().set({
+    //   name: 'authjs.session-token', // this the default cookie name used by AuthJs
+    //   value: sessionToken,
+    //   expires: sessionExpiry,
+    //   httpOnly: true,
+    // })
+
+    // 7. useCase - set session token cookie with the appropriate name and security settings
     cookies().set({
-      name: 'authjs.session-token', // this the default cookie name used by AuthJs
+      name:
+        process.env.NODE_ENV === 'production'
+          ? '__Secure-authjs.session-token'
+          : 'authjs.session-token', // in production, use the secure prefix
       value: sessionToken,
       expires: sessionExpiry,
       httpOnly: true,
+      secure: process.env.NODE_ENV === 'production', // ensure it's secure in production
+      path: '/',
+      sameSite: 'lax',
     })
 
     return {
