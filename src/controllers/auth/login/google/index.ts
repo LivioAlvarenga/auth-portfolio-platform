@@ -1,10 +1,16 @@
+import { NextCookieRepository } from '@/repositories/nextjs/next-cookie-repository'
 import { makeLoginGoogleUseCase } from '@/use-cases/auth/login/google/make-login-google'
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 
 const loginGoogleSchema = z.object({
   device: z.string().toLowerCase(),
+  sessionToken: z.string().uuid(), // get sessionToken from cookie
+  emailVerified: z.string().optional(), // get emailVerified from cookie
+  avatarUrl: z.string().url().optional(), // get avatarUrl from cookie
 })
+
+const CookieRepository = new NextCookieRepository()
 
 export async function loginGoogle(req: NextRequest) {
   const allowedMethods = ['POST']
@@ -19,8 +25,31 @@ export async function loginGoogle(req: NextRequest) {
     if (req.method === 'POST') {
       const body = await req.json()
 
+      const googleEmailVerified = CookieRepository.getCookie(
+        'authjs.google-email-verified',
+      )
+      const emailVerified =
+        googleEmailVerified?.value === 'true'
+          ? new Date().toISOString()
+          : undefined
+
+      const sessionTokenCookie = CookieRepository.getCookie(
+        'authjs.session-token',
+      )
+      const sessionToken = sessionTokenCookie?.value || ''
+
+      const avatarUrlCookie = CookieRepository.getCookie(
+        'authjs.google-picture',
+      )
+      const avatarUrl = avatarUrlCookie?.value || undefined
+
       // Sanitize body
-      const parsedData = loginGoogleSchema.parse(body)
+      const parsedData = loginGoogleSchema.parse({
+        device: body.device,
+        sessionToken,
+        emailVerified,
+        avatarUrl,
+      })
 
       const loginGoogleUseCase = makeLoginGoogleUseCase()
 

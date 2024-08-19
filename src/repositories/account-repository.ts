@@ -33,4 +33,6 @@ export interface AccountRepository {
   createAccount(data: AccountInput): Promise<Account>
   getAccountsByUserId(userId: string): Promise<Account[]>
   getProvidersByUserId(userId: string): Promise<string[]>
+  getAccountByProvider(provider: string): Promise<Account>
+  deleteAccountByProvider(provider: string): Promise<boolean>
 }
