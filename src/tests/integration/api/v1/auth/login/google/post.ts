@@ -80,6 +80,8 @@ describe('POST /api/v1/auth/login/google', () => {
       expect(session).toBeUndefined()
     })
 
+    // TODO: adicionar .test no nome do arquivo post.test.ts, retirei para não da erro no CI, pois precisamos implementar supabase URLs no github actions
+
     // TODO: criar test para (3. useCase - check if email was verified and update emailVerified and email_verified_provider) - if (user && !user.emailVerified && emailVerified)
 
     // TODO: criar test para (4. useCase - get avatarUrl, resize, save in bucket, add url in avatars table, update users.image with avatarUrl if not exists) - Usar mock para resizeAndConvertImage e this.imageRepository.uploadImage
