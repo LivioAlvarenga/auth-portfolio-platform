@@ -1,7 +1,7 @@
 import { comparePassword } from '@/lib/bcrypt'
+import { CookieRepository } from '@/repositories/cookie-repository'
 import { SessionRepository } from '@/repositories/session-repository'
 import { UserRepository } from '@/repositories/user-repository'
-import { cookies } from 'next/headers'
 import { v4 } from 'uuid'
 
 interface LoginCredentialUseCaseRequest {
@@ -25,6 +25,7 @@ export class LoginCredentialUseCase {
   constructor(
     private userRepository: UserRepository,
     private sessionRepository: SessionRepository,
+    private cookieRepository: CookieRepository,
   ) {}
 
   async execute({
@@ -91,26 +92,11 @@ export class LoginCredentialUseCase {
       device_identifier: device,
     })
 
-    // 7. useCase - set session token cookie
-    // cookies().set({
-    //   name: 'authjs.session-token', // this the default cookie name used by AuthJs
-    //   value: sessionToken,
-    //   expires: sessionExpiry,
-    //   httpOnly: true,
-    // })
-
     // 7. useCase - set session token cookie with the appropriate name and security settings
-    cookies().set({
-      name:
-        process.env.NODE_ENV === 'production'
-          ? '__Secure-authjs.session-token'
-          : 'authjs.session-token', // in production, use the secure prefix
+    this.cookieRepository.setCookie({
+      name: 'authjs.session-token',
       value: sessionToken,
       expires: sessionExpiry,
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production', // ensure it's secure in production
-      path: '/',
-      sameSite: 'lax',
     })
 
     return {

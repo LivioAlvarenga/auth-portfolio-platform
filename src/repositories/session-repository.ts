@@ -17,6 +17,10 @@ export interface SessionInput {
 
 export interface SessionRepository {
   createSession(data: SessionInput): Promise<Session>
+  updateDeviceIdentifier(
+    sessionToken: string,
+    device_identifier: string,
+  ): Promise<Session | null>
   deleteExpiredSessions(): Promise<boolean>
   deleteSessionByToken(sessionToken: string): Promise<boolean>
   getSessionByUserIdAndDevice(
