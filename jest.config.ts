@@ -3,7 +3,7 @@ import type { Config } from 'jest'
 import nextJest from 'next/jest.js'
 
 config({
-  path: '.env.development',
+  path: ['.env.development', '.env'],
 }) // injects the env.development file into process.env with dotenv
 
 const createJestConfig = nextJest({
