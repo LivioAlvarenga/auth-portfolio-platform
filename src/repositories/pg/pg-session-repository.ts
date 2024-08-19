@@ -21,6 +21,24 @@ export class PgSessionRepository implements SessionRepository {
     return result.rows[0]
   }
 
+  async updateDeviceIdentifier(
+    sessionToken: string,
+    device_identifier: string,
+  ): Promise<Session | null> {
+    const query = {
+      text: `
+        UPDATE sessions
+        SET device_identifier = $2, updated_at = NOW() AT TIME ZONE 'utc'
+        WHERE "sessionToken" = $1
+        RETURNING id, "sessionToken", "userId", expires, device_identifier
+      `,
+      values: [sessionToken, device_identifier],
+    }
+
+    const result = await database.query(query)
+    return result.rows[0] || null
+  }
+
   async deleteExpiredSessions(): Promise<boolean> {
     const query = {
       text: `

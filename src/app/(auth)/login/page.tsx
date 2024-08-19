@@ -28,6 +28,7 @@ async function getData(token: string) {
 interface LoginPageProps {
   searchParams: {
     token?: string
+    loginCallback?: string
   }
 }
 
@@ -38,6 +39,8 @@ export default async function Login({ searchParams }: LoginPageProps) {
   if (token) {
     user = await getData(token)
   }
+
+  const loginCallback = searchParams.loginCallback || ''
 
   return (
     <div className="grid grid-cols-1 items-center overflow-hidden lg:grid-cols-2">
@@ -77,7 +80,7 @@ export default async function Login({ searchParams }: LoginPageProps) {
             </Text>
           </CardHeader>
           <CardContent>
-            <LoginForm user={user} />
+            <LoginForm user={user} loginCallback={loginCallback} />
             <div className="mt-4 flex items-center justify-center text-sm">
               <Text as="span" variant={'label-14-14-400'}>
                 Não tem uma conta?{' '}

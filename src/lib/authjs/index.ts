@@ -11,12 +11,15 @@ http://localhost:3000/api/auth/error - Usado para lidar com erros de autenticaç
 */
 
 import { database } from '@/infra/database'
+import { NextCookieRepository } from '@/repositories/nextjs/next-cookie-repository'
 import PostgresAdapter from '@auth/pg-adapter'
 import NextAuth from 'next-auth'
 import Google from 'next-auth/providers/google'
 
 const DAYS_30_IN_SECONDS = 30 * 24 * 60 * 60
 const DAY_IN_SECONDS = 24 * 60 * 60
+
+const CookieRepository = new NextCookieRepository()
 
 export const {
   handlers,
@@ -38,7 +41,35 @@ export const {
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      allowDangerousEmailAccountLinking: true, // permite que o usuário vincule sua conta do Google a uma conta existente
+      allowDangerousEmailAccountLinking: true, // Allows users to link their Google account to an existing account
+      profile(profile) {
+        // We are removing `email_verified` and `picture` from the profile object because Auth.js already processes these properties.
+        // By removing them here, we delegate the responsibility of handling these properties to the `LoginGoogleUseCase`.
+        // This ensures that our case use logic (LoginGoogleUseCase) has full control over these specific properties.
+
+        // We store `email_verified` in a cookie to ensure that this information is accessible in the `LoginGoogleUseCase`.
+        if (profile?.email_verified) {
+          CookieRepository.setCookie({
+            name: 'authjs.google-email-verified',
+            value: profile.email_verified.toString(),
+          })
+        }
+
+        // We store `picture` in a cookie for the same reason, allowing the `LoginGoogleUseCase` to access it server-side.
+        if (profile?.picture) {
+          CookieRepository.setCookie({
+            name: 'authjs.google-picture',
+            value: profile.picture,
+          })
+        }
+
+        // Remove `email_verified` and `picture` from the profile object before returning it.
+        // This leaves the responsibility of handling these fields to our case use (`LoginGoogleUseCase`).
+        profile.email_verified = undefined
+        profile.picture = undefined
+
+        return profile
+      },
     }),
   ],
   callbacks: {
@@ -47,35 +78,6 @@ export const {
     },
     async jwt() {
       return null
-    },
-    async signIn({ account, profile, user }) {
-      // console.log('🚀 ~ signIn ~ user:', user)
-      // console.log('🚀 ~ signIn ~ profile:', profile)
-      // console.log('🚀 ~ signIn ~ account:', account)
-
-      return true
-    },
-  },
-  events: {
-    async linkAccount(message) {
-      // const { user, account, profile } = message
-      // const userByEmailInDb = await database.query({
-      //   text: 'SELECT * FROM users WHERE email = $1',
-      //   values: [user.email],
-      // })
-      // // Apos cadastrar o usuário no banco de dados e criar o link com account vamos verificar para o Provider Google se o email ja foi verificado
-      // if (
-      //   account.provider === 'google' &&
-      //   profile.emailVerified &&
-      //   userByEmailInDb.rows[0].email === user.email
-      // ) {
-      //   // Atualize o emailVerified e email_verified_provider do usuário no banco de dados
-      //   const timestamp = new Date()
-      //   await database.query({
-      //     text: 'UPDATE users SET "emailVerified" = $1, email_verified_provider = $2 WHERE email = $3',
-      //     values: [timestamp, account.provider, user.email],
-      //   })
-      // }
     },
   },
 })

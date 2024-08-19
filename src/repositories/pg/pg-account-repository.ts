@@ -29,13 +29,15 @@ export class PgAccountRepository implements AccountRepository {
   }
 
   async getAccountsByUserId(userId: string): Promise<Account[]> {
-    return database.query({
+    const result = await database.query({
       text: `
       SELECT * FROM accounts
       WHERE "userId" = $1
       `,
       values: [userId],
     })
+
+    return result.rows
   }
 
   async getProvidersByUserId(userId: string): Promise<string[]> {
@@ -48,5 +50,29 @@ export class PgAccountRepository implements AccountRepository {
     })
 
     return result.rows.map((row: { provider: string }) => row.provider)
+  }
+
+  async getAccountByProvider(provider: string): Promise<Account> {
+    const result = await database.query({
+      text: `
+      SELECT * FROM accounts
+      WHERE provider = $1
+      `,
+      values: [provider],
+    })
+
+    return result.rows[0]
+  }
+
+  async deleteAccountByProvider(provider: string): Promise<boolean> {
+    const result = await database.query({
+      text: `
+      DELETE FROM accounts
+      WHERE provider = $1
+      `,
+      values: [provider],
+    })
+
+    return result.rowCount > 0
   }
 }

@@ -1,4 +1,5 @@
 import { hashPassword } from '@/lib/bcrypt'
+import { Account } from '@/repositories/account-repository'
 import { PgAccountRepository } from '@/repositories/pg/pg-account-repository'
 import { PgSessionRepository } from '@/repositories/pg/pg-session-repository'
 import { PgUserRepository } from '@/repositories/pg/pg-user-repository'
@@ -143,6 +144,53 @@ const createDefaultResetPasswordToken =
     return verificationTokenRepository.createToken(token)
   }
 
+const createDefaultUserWithGoogleAccountFromAuthJs = async ({
+  email_verified = true,
+  picture = 'https://adm.com.br',
+}): Promise<{
+  user: User
+  account: Account
+  session: Session
+  cookie: string
+}> => {
+  const user = {
+    email: 'testuser4@example.com',
+    name: 'Google User',
+    emailVerified: undefined,
+    image: undefined,
+  }
+  const createdUser = await userRepository.createUser(user)
+
+  const createdAccount = await accountRepository.createAccount({
+    userId: createdUser.id,
+    type: 'oidc',
+    provider: 'google',
+    providerAccountId: createdUser.id,
+  })
+
+  const sessionToken = v4()
+
+  const createdSession = await sessionRepository.createSession({
+    userId: createdUser.id,
+    expires: addDays(new Date(), 1),
+    sessionToken,
+    device_identifier: undefined,
+  })
+
+  const cookieSession = `authjs.session-token=${sessionToken}; Path=/; SameSite=Lax; HttpOnly; Secure`
+  const cookieEmailVerified = `authjs.google-email-verified=${{ email_verified }}; Path=/; SameSite=Lax; HttpOnly; Secure`
+  const cookiePicture = `authjs.google-picture=${picture}; Path=/; SameSite=Lax; HttpOnly; Secure`
+
+  const combinedCookies = `${cookieSession}; ${cookieEmailVerified}; ${cookiePicture}`
+
+  return {
+    user: createdUser,
+    account: createdAccount,
+    session: createdSession,
+    cookie: combinedCookies,
+  }
+}
+
 export const utilsTest = {
   createDefaultUser,
   createDefaultResetPasswordToken,
@@ -151,4 +199,5 @@ export const utilsTest = {
   createDefaultTokenWithOpt,
   createDefaultUserEmailVerified,
   createDefaultUserWithSession,
+  createDefaultUserWithGoogleAccountFromAuthJs,
 }
