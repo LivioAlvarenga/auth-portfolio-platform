@@ -6,6 +6,7 @@ jobs:
   jest:
     name: Jest Ubuntu
     runs-on: ubuntu-latest
+    environment: production
     steps:
       - uses: actions/checkout@v4
 
