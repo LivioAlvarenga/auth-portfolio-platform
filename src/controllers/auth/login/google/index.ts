@@ -28,6 +28,9 @@ export async function loginGoogle(req: NextRequest) {
       const googleEmailVerified = CookieRepository.getCookie(
         'authjs.google-email-verified',
       )
+
+      console.log('🌈googleEmailVerified:', googleEmailVerified)
+
       const emailVerified =
         googleEmailVerified?.value === 'true'
           ? new Date().toISOString()
@@ -36,11 +39,17 @@ export async function loginGoogle(req: NextRequest) {
       const sessionTokenCookie = CookieRepository.getCookie(
         'authjs.session-token',
       )
+
+      console.log('🌈 ~ loginGoogle ~ sessionTokenCookie:', sessionTokenCookie)
+
       const sessionToken = sessionTokenCookie?.value || ''
 
       const avatarUrlCookie = CookieRepository.getCookie(
         'authjs.google-picture',
       )
+
+      console.log('🌈 ~ loginGoogle ~ avatarUrlCookie:', avatarUrlCookie)
+
       const avatarUrl = avatarUrlCookie?.value || undefined
 
       // Sanitize body
