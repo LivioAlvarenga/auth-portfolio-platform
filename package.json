@@ -19,7 +19,8 @@
     "test:watch": "jest --watchAll --runInBand",
     "migration:create": "node-pg-migrate --migrations-dir src/infra/migrations create",
     "migration:up": "node-pg-migrate --migrations-dir src/infra/migrations --envPath .env.development up",
-    "wait-for-postgres": "ts-node src/infra/scripts/wait-for-postgres.ts"
+    "wait-for-postgres": "ts-node src/infra/scripts/wait-for-postgres.ts",
+    "prepare": "husky"
   },
   "dependencies": {
     "@auth/pg-adapter": "^1.4.1",
@@ -77,6 +78,7 @@
     "eslint-config-next": "14.2.4",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-jest": "^28.6.0",
+    "husky": "^9.1.5",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "postcss": "^8",
