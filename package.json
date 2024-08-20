@@ -20,7 +20,8 @@
     "migration:create": "node-pg-migrate --migrations-dir src/infra/migrations create",
     "migration:up": "node-pg-migrate --migrations-dir src/infra/migrations --envPath .env.development up",
     "wait-for-postgres": "ts-node src/infra/scripts/wait-for-postgres.ts",
-    "prepare": "husky"
+    "prepare": "husky",
+    "commit": "cz"
   },
   "dependencies": {
     "@auth/pg-adapter": "^1.4.1",
@@ -73,7 +74,9 @@
     "@types/react-dom": "^18",
     "@types/ua-parser-js": "^0.7.39",
     "@types/uuid": "^10.0.0",
+    "commitizen": "^4.3.0",
     "concurrently": "^8.2.2",
+    "cz-conventional-changelog": "^3.3.0",
     "eslint": "^8",
     "eslint-config-next": "14.2.4",
     "eslint-config-prettier": "^9.1.0",
@@ -88,5 +91,10 @@
     "tailwindcss": "^3.4.1",
     "ts-node": "^10.9.2",
     "typescript": "^5"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   }
 }
