@@ -11,8 +11,10 @@ const createJestConfig = nextJest({
 })
 
 const jestConfig: Config = {
-  moduleDirectories: ['node_modules', '<rootDir>/src'],
-  testTimeout: 60000,
+  moduleDirectories: ['node_modules', '<rootDir>/src'], // An array of directory names to be searched recursively up from the requiring module's location
+  testTimeout: 60000, // The default timeout of a test in milliseconds
+  bail: true, // Stop running tests after `n` failures
+  testMatch: ['<rootDir>/src/tests/**/*.test.ts'], // The glob patterns Jest uses to detect test files
 }
 
 export default createJestConfig(jestConfig)
