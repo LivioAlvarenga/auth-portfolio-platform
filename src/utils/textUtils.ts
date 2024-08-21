@@ -1,10 +1,29 @@
 import { prepositions } from '@/schemas/textValidations'
 
+/**
+ * Transforms a string by capitalizing the first letter and converting the rest to lowercase.
+ *
+ * @param str - The input string.
+ * @returns The input string with the first letter capitalized and the rest in lowercase.
+ */
 export function transformTextIntoCapitalized(str: string) {
   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
 }
 
-export function transformTextIntoCapitalizedWords(str: string) {
+/**
+ * Transforms a string by capitalizing each word, except for prepositions.
+ * If the string is `null`, `undefined`, or empty, it returns an empty string.
+ *
+ * @param str - The input string.
+ * @returns The input string with each word capitalized, except for prepositions, or an empty string if the input is `null`, `undefined`, or empty.
+ */
+export function transformTextIntoCapitalizedWords(
+  str: string | null | undefined,
+) {
+  if (!str) {
+    return ''
+  }
+
   // capitalize every word except prepositions
   const words = str.split(' ')
   const capitalizedWords = words.map((word) => {
@@ -16,7 +35,14 @@ export function transformTextIntoCapitalizedWords(str: string) {
   return capitalizedWords.join(' ')
 }
 
-export function capitalizeEachWord(str: string | null | undefined) {
+/**
+ * Capitalizes the first letter of each word in the provided string.
+ * If the string is `null`, `undefined`, or empty, it returns an empty string.
+ *
+ * @param {string | null | undefined} str - The input string.
+ * @returns {string} The input string with each word capitalized, or an empty string if the input is `null`, `undefined`, or empty.
+ */
+export function capitalizeEachWord(str: string | null | undefined): string {
   if (!str) {
     return ''
   }
@@ -24,4 +50,29 @@ export function capitalizeEachWord(str: string | null | undefined) {
     .split(' ')
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
     .join(' ')
+}
+
+/**
+ * Returns the initials of the first and last name.
+ * If the name contains only one word, it returns the first two letters of that word.
+ * If the name is an empty string, `null`, or `undefined`, it returns an empty string.
+ *
+ * @param {string | null | undefined} name - The full name of the user.
+ * @returns {string} The initials of the first and last name, or the first two letters of the single name, or an empty string.
+ */
+export function getInitials(name: string | null | undefined): string {
+  if (!name) {
+    return ''
+  }
+
+  const nameParts = name.trim().split(' ')
+
+  if (nameParts.length === 1) {
+    return nameParts[0].slice(0, 2).toUpperCase()
+  }
+
+  const firstInitial = nameParts[0].charAt(0).toUpperCase()
+  const lastInitial = nameParts[nameParts.length - 1].charAt(0).toUpperCase()
+
+  return `${firstInitial}${lastInitial}`
 }

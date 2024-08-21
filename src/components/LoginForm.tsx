@@ -106,7 +106,7 @@ export function LoginForm({
           variant: 'success',
           redirect: {
             path: `${webserver.host}/`,
-            countdownSeconds: 5,
+            countdownSeconds: 3,
           },
         })
 
