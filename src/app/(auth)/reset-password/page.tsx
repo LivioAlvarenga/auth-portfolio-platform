@@ -6,6 +6,7 @@ import { Text } from '@/components/Text'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { webserver } from '@/infra/webserver'
+import { serverProtectedRoute } from '@/lib/authjs/serverProtectedRoute'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
@@ -34,6 +35,8 @@ interface ResetPasswordPageProps {
 export default async function ResetPassword({
   searchParams,
 }: ResetPasswordPageProps) {
+  await serverProtectedRoute({ accessIfNotAuthenticated: true })
+
   const token = searchParams.token || null
 
   if (!token) {

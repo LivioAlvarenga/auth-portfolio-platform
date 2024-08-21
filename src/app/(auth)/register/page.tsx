@@ -6,9 +6,12 @@ import { Text } from '@/components/Text'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { webserver } from '@/infra/webserver'
+import { serverProtectedRoute } from '@/lib/authjs/serverProtectedRoute'
 import Link from 'next/link'
 
-export default function Register() {
+export default async function Register() {
+  await serverProtectedRoute({ accessIfNotAuthenticated: true })
+
   return (
     <div className="grid grid-cols-1 items-center overflow-hidden lg:grid-cols-2">
       {/* grid left - only in desktop */}
