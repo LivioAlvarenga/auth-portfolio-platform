@@ -28,7 +28,6 @@ export default async function RootLayout({
   children: ReactNode
 }>) {
   const session = await auth()
-  // console.log('🚀🚀🚀session layout.tsx:', session)
 
   return (
     <html lang="pt-br" suppressHydrationWarning className="scroll-pt-36">

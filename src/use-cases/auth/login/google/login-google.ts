@@ -1,4 +1,3 @@
-import { AccountRepository } from '@/repositories/account-repository'
 import { AvatarRepository } from '@/repositories/avatar-repository'
 import { CookieRepository } from '@/repositories/cookie-repository'
 import { ImageRepository } from '@/repositories/image-repository'
@@ -23,7 +22,6 @@ export class LoginGoogleUseCase {
   constructor(
     private userRepository: UserRepository,
     private sessionRepository: SessionRepository,
-    private accountRepository: AccountRepository,
     private avatarRepository: AvatarRepository,
     private cookieRepository: CookieRepository,
     private imageRepository: ImageRepository,

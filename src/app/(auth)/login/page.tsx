@@ -6,6 +6,7 @@ import { Text } from '@/components/Text'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { webserver } from '@/infra/webserver'
+import { serverProtectedRoute } from '@/lib/authjs/serverProtectedRoute'
 import Link from 'next/link'
 
 async function getData(token: string) {
@@ -33,14 +34,18 @@ interface LoginPageProps {
 }
 
 export default async function Login({ searchParams }: LoginPageProps) {
-  let user = null
+  const loginCallback = searchParams.loginCallback || ''
 
+  if (loginCallback === '') {
+    // if loginCallback is different from empty string, example: loginCallback=google, must not be serverProtectedRoute, because it is a callback from google
+    await serverProtectedRoute({ accessIfNotAuthenticated: true })
+  }
+
+  let user = null
   const token = searchParams.token || null
   if (token) {
     user = await getData(token)
   }
-
-  const loginCallback = searchParams.loginCallback || ''
 
   return (
     <div className="grid grid-cols-1 items-center overflow-hidden lg:grid-cols-2">

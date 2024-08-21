@@ -73,7 +73,25 @@ export const {
     }),
   ],
   callbacks: {
-    async session({ session }) {
+    async session({ session, user }) {
+      const userSession = {
+        id: user.id,
+        name: user.nick_name || user.name,
+        role: user.role,
+        email: user.email,
+        image: user.image,
+      }
+      // @ts-ignore
+      session.user = userSession
+      // @ts-ignore
+      delete session.id // @ts-ignore
+      delete session.expires // @ts-ignore
+      delete session.sessionToken // @ts-ignore
+      delete session.userId // @ts-ignore
+      delete session.device_identifier // @ts-ignore
+      delete session.created_at // @ts-ignore
+      delete session.updated_at
+
       return session
     },
     async jwt() {
