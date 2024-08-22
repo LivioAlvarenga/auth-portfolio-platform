@@ -3,6 +3,7 @@ import { CookieRepository } from '@/repositories/cookie-repository'
 import { ImageRepository } from '@/repositories/image-repository'
 import { SessionRepository } from '@/repositories/session-repository'
 import { UserRepository } from '@/repositories/user-repository'
+import { calculateProfileCompletionScore } from '@/use-cases/utils/profile-completion-fields'
 import { resizeAndConvertImage } from '@/utils/image'
 
 interface LoginGoogleUseCaseRequest {
@@ -111,6 +112,19 @@ export class LoginGoogleUseCase {
     // 5. useCase - delete cookies
     this.cookieRepository.deleteCookie('authjs.google-email-verified')
     this.cookieRepository.deleteCookie('authjs.google-picture')
+
+    // 6. useCase - Calculate the profile_completion_score
+    if (user) {
+      const userData = await this.userRepository.getUserById(user.id)
+      if (userData) {
+        const profileCompletionScore = calculateProfileCompletionScore(userData)
+
+        await this.userRepository.updateProfileCompletionScore(
+          user.id,
+          profileCompletionScore,
+        )
+      }
+    }
 
     return {
       status: 201,

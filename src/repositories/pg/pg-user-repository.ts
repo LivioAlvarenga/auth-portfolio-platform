@@ -6,9 +6,9 @@ export class PgUserRepository implements UserRepository {
   async createUser(data: UserInput): Promise<Omit<User, 'passwordHash'>> {
     const query = {
       text: `
-        INSERT INTO users (name, nick_name, email, "emailVerified", email_verified_provider, image, password_hash, role)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-        RETURNING id, name, nick_name, email, "emailVerified", email_verified_provider, image, role, created_at, updated_at
+        INSERT INTO users (name, nick_name, email, "emailVerified", email_verified_provider, image, password_hash, role, profile_completion_score)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+        RETURNING id, name, nick_name, email, "emailVerified", email_verified_provider, image, role, profile_completion_score, created_at, updated_at
       `,
       values: [
         data.name || null,
@@ -19,6 +19,7 @@ export class PgUserRepository implements UserRepository {
         data.image || null,
         data.password_hash || null,
         data.role || 'user',
+        data.profile_completion_score,
       ],
     }
 
@@ -48,7 +49,7 @@ export class PgUserRepository implements UserRepository {
       UPDATE users
       SET ${setClause}, updated_at = NOW()
       WHERE id = $1
-      RETURNING id, name, nick_name, email, "emailVerified", email_verified_provider, image, role, updated_at
+      RETURNING id, name, nick_name, email, "emailVerified", email_verified_provider, image, role, profile_completion_score, updated_at
     `,
       values: [id, ...Object.values(data)],
     }
@@ -75,6 +76,25 @@ export class PgUserRepository implements UserRepository {
         RETURNING id
       `,
       values: [userId, passwordHash],
+    }
+
+    const result = await database.query(query)
+
+    return result.rows[0] ? { userId: result.rows[0].id } : null
+  }
+
+  async updateProfileCompletionScore(
+    userId: string,
+    score: number,
+  ): Promise<{ userId: string } | null> {
+    const query = {
+      text: `
+        UPDATE users
+        SET profile_completion_score = $2, updated_at = now() at time zone 'utc'
+        WHERE id = $1
+        RETURNING id
+      `,
+      values: [userId, score],
     }
 
     const result = await database.query(query)
