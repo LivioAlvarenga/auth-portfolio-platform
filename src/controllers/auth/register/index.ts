@@ -37,13 +37,14 @@ export async function register(req: NextRequest) {
 
       const registerUseCase = makeRegisterUserUseCase()
 
-      const { message, userId, status } =
+      const { message, userId, emailVerified, status } =
         await registerUseCase.execute(parsedData)
 
       return NextResponse.json(
         {
           message,
           userId,
+          emailVerified,
         },
         { status },
       )
