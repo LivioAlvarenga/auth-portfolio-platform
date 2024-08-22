@@ -120,20 +120,37 @@ export function RegisterForm({ className, ...props }: RegisterFormProps) {
           }),
         })
 
-        showToast({
-          message: `Usuário registrado com sucesso! Para fazer login, por favor, confirme o email enviado para ${values.email}.`,
-          duration: Infinity,
-          variant: 'success',
-          firstButton: {
-            text: 'Verificar Email Agora!',
-            variant: 'default',
-            onClick: () => handleGoVerifyEmailOpt(responseBody.userId),
-          },
-          redirect: {
-            path: `${webserver.host}/verify-email-opt?token=${responseBody.userId}`,
-            countdownSeconds: 5,
-          },
-        })
+        if (responseBody.emailVerified) {
+          showToast({
+            message: 'Usuário registrado com sucesso!',
+            duration: Infinity,
+            variant: 'success',
+            firstButton: {
+              text: 'Fazer Login Agora!',
+              variant: 'default',
+              onClick: () => handleGoToLogin(responseBody.userId),
+            },
+            redirect: {
+              path: `${webserver.host}/login?token=${responseBody.userId}`,
+              countdownSeconds: 3,
+            },
+          })
+        } else {
+          showToast({
+            message: `Usuário registrado com sucesso! Para fazer login, por favor, confirme o email enviado para ${values.email}.`,
+            duration: Infinity,
+            variant: 'success',
+            firstButton: {
+              text: 'Verificar Email Agora!',
+              variant: 'default',
+              onClick: () => handleGoVerifyEmailOpt(responseBody.userId),
+            },
+            redirect: {
+              path: `${webserver.host}/verify-email-opt?token=${responseBody.userId}`,
+              countdownSeconds: 5,
+            },
+          })
+        }
 
         form.reset()
         return

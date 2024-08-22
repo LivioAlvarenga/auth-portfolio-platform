@@ -15,6 +15,7 @@ interface RegisterUseCaseResponse {
   status: number
   message: string
   userId?: string
+  emailVerified?: boolean
 }
 
 export class RegisterUseCase {
@@ -111,6 +112,7 @@ export class RegisterUseCase {
       status: 201,
       message: 'Usuário criado com sucesso!',
       userId: user.id,
+      emailVerified: Boolean(user.emailVerified),
     }
   }
 }
