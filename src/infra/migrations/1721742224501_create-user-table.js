@@ -69,6 +69,13 @@ exports.up = (pgm) => {
       default: 'user',
     },
 
+    // Column profile_completion_score to track profile completion progress, starting with a default value of 0
+    profile_completion_score: {
+      type: 'integer',
+      notNull: false,
+      default: 0,
+    },
+
     // Why "with timezone"? https://stackoverflow.com/a/20713587
     created_at: {
       type: 'timestamp with time zone',

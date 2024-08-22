@@ -12,6 +12,7 @@ export default async function Home() {
     name: session.user?.name,
     email: session.user?.email,
     urlImage: `${process.env.NEXT_PUBLIC_BUCKET}${session.user?.image}`,
+    score: session.user?.profile_completion_score,
   }
 
   return (

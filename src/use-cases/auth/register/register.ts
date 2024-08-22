@@ -1,6 +1,7 @@
 import { hashPassword } from '@/lib/bcrypt'
 import { AccountRepository } from '@/repositories/account-repository'
 import { UserRepository } from '@/repositories/user-repository'
+import { calculateProfileCompletionScore } from '@/use-cases/utils/profile-completion-fields'
 import { sendEmail } from '@/utils/email'
 
 interface RegisterUseCaseRequest {
@@ -77,7 +78,18 @@ export class RegisterUseCase {
       })
     }
 
-    // 5. useCase - Create account for user with provider credential in accounts table
+    // 5. useCase - Calculate the profile_completion_score
+    const userData = await this.userRepository.getUserById(user.id)
+    if (userData) {
+      const profileCompletionScore = calculateProfileCompletionScore(userData)
+
+      await this.userRepository.updateProfileCompletionScore(
+        user.id,
+        profileCompletionScore,
+      )
+    }
+
+    // 6. useCase - Create account for user with provider credential in accounts table
     await this.accountRepository.createAccount({
       userId: user.id,
       type: 'credential',
@@ -85,7 +97,7 @@ export class RegisterUseCase {
       providerAccountId: user.id,
     })
 
-    // 6. useCase - send email USER_REGISTRATION_WELCOME
+    // 7. useCase - send email USER_REGISTRATION_WELCOME
     await sendEmail({
       type: 'USER_REGISTRATION_WELCOME',
       data: {

@@ -15,6 +15,7 @@ export interface Session {
     role: 'user' | 'admin'
     email: string
     image?: string | null
+    profile_completion_score?: number | null
   }
 }
 

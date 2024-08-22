@@ -138,6 +138,7 @@ describe('POST /api/v1/auth/register', () => {
       expect(user.emailVerified).toBeTruthy()
       expect(user.email_verified_provider).toBe('google')
       expect(user.image).toBe(userGoogle.image)
+      expect(user.profile_completion_score).toBe(0)
     })
 
     test('should create a new "credential" account and update user details if the user has not logged in with a other provider', async () => {
@@ -185,6 +186,7 @@ describe('POST /api/v1/auth/register', () => {
       expect(user.emailVerified).toBeFalsy()
       expect(user.email_verified_provider).toBeNull()
       expect(user.image).toBeNull()
+      expect(user.profile_completion_score).toBe(3)
     })
   })
 })

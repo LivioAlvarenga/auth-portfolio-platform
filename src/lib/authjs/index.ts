@@ -12,6 +12,7 @@ http://localhost:3000/api/auth/error - Usado para lidar com erros de autenticaç
 
 import { database } from '@/infra/database'
 import { NextCookieRepository } from '@/repositories/nextjs/next-cookie-repository'
+import type { AdapterUser } from '@auth/core/adapters'
 import PostgresAdapter from '@auth/pg-adapter'
 import NextAuth from 'next-auth'
 import Google from 'next-auth/providers/google'
@@ -74,23 +75,22 @@ export const {
   ],
   callbacks: {
     async session({ session, user }) {
-      const userSession = {
+      const userSession: AdapterUser = {
         id: user.id,
         name: user.nick_name || user.name,
         role: user.role,
         email: user.email,
+        emailVerified: null,
         image: user.image,
+        profile_completion_score: user.profile_completion_score,
       }
-      // @ts-ignore
-      session.user = userSession
-      // @ts-ignore
-      delete session.id // @ts-ignore
-      delete session.expires // @ts-ignore
-      delete session.sessionToken // @ts-ignore
-      delete session.userId // @ts-ignore
-      delete session.device_identifier // @ts-ignore
-      delete session.created_at // @ts-ignore
-      delete session.updated_at
+
+      session = {
+        expires: session.expires,
+        sessionToken: session.sessionToken,
+        userId: user.id,
+        user: userSession,
+      }
 
       return session
     },

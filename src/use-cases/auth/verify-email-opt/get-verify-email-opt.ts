@@ -1,5 +1,6 @@
 import { UserRepository } from '@/repositories/user-repository'
 import { VerificationTokenRepository } from '@/repositories/verification-token-repository'
+import { calculateProfileCompletionScore } from '@/use-cases/utils/profile-completion-fields'
 
 interface GetVerifyEmailOptUseCaseRequest {
   userId: string
@@ -64,7 +65,18 @@ export class GetVerifyEmailOptUseCase {
       email_verified_provider: 'credential',
     })
 
-    // 8. useCase - delete token
+    // 8. useCase - Calculate the profile_completion_score
+    const userData = await this.userRepository.getUserById(user.id)
+    if (userData) {
+      const profileCompletionScore = calculateProfileCompletionScore(userData)
+
+      await this.userRepository.updateProfileCompletionScore(
+        user.id,
+        profileCompletionScore,
+      )
+    }
+
+    // 9. useCase - delete token
     if (userUpdate) {
       await this.verificationTokenRepository.deleteToken(
         token.identifier,
