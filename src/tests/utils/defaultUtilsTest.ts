@@ -92,7 +92,9 @@ const createDefaultTokenWithOpt = async (): Promise<VerificationToken> => {
   return verificationTokenRepository.createToken(token)
 }
 
-const createDefaultUserWithAccount = async (): Promise<User> => {
+const createDefaultUserWithAccount = async (
+  provider: string = 'credential',
+): Promise<User> => {
   const user = {
     email: 'testuser3@example.com',
     passwordHash: await hashPassword('Password123$%$'),
@@ -103,8 +105,8 @@ const createDefaultUserWithAccount = async (): Promise<User> => {
 
   await accountRepository.createAccount({
     userId: createdUser.id,
-    type: 'credential',
-    provider: 'credential',
+    type: provider,
+    provider,
     providerAccountId: createdUser.id,
   })
 
