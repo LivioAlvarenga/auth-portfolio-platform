@@ -1,9 +1,10 @@
 export const backgroundImage = {
-  loginImage: `url('https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/login-left-container-image.svg')`,
-  registerImage: `url('https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/register-left-container-image.svg')`,
-  verifyEmailImage: `url('https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/verify-email-left-container-image.svg')`,
-  verifyEmailImageErro: `url('https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/verify-email-left-container-image-error.svg')`,
-  verifyEmailOptImage: `url('https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/verify-email-opt-left-container-image.svg')`,
-  forgotPasswordImage: `url('https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/forgot-password-left-container-image.svg')`,
-  resetPasswordImage: `url('https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/reset-password-left-container-image.svg')`,
+  loginImage: `url('${process.env.NEXT_PUBLIC_BUCKET}/login-left-container-image.svg')`,
+  registerImage: `url('${process.env.NEXT_PUBLIC_BUCKET}/register-left-container-image.svg')`,
+  verifyEmailImage: `url('${process.env.NEXT_PUBLIC_BUCKET}/verify-email-left-container-image.svg')`,
+  verifyEmailImageErro: `url('${process.env.NEXT_PUBLIC_BUCKET}/verify-email-left-container-image-error.svg')`,
+  verifyEmailOptImage: `url('${process.env.NEXT_PUBLIC_BUCKET}/verify-email-opt-left-container-image.svg')`,
+  forgotPasswordImage: `url('${process.env.NEXT_PUBLIC_BUCKET}/forgot-password-left-container-image.svg')`,
+  resetPasswordImage: `url('${process.env.NEXT_PUBLIC_BUCKET}/reset-password-left-container-image.svg')`,
+  magicLinkImage: `url('${process.env.NEXT_PUBLIC_BUCKET}/magic-link-left-container-image.svg')`,
 }
