@@ -7,7 +7,7 @@ import { cn } from '@/lib/shadcn-ui'
 import { emailValidation, passwordValidation } from '@/schemas'
 import { getDeviceInfo } from '@/utils'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Eye, EyeOff, LoaderCircle } from 'lucide-react'
+import { Eye, EyeOff, LoaderCircle, Mail } from 'lucide-react'
 import { signIn } from 'next-auth/react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -216,11 +216,15 @@ export function LoginForm({
     })
   }
 
+  async function handleGoToMagicLinkPage() {
+    router.push(`${webserver.host}/login/magic-link`)
+  }
+
   return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(submitLoginCredentials)}
-        className={cn('grid gap-4', className)}
+        className={cn('mb-5 grid gap-4', className)}
         {...props}
       >
         <FormField
@@ -302,6 +306,29 @@ export function LoginForm({
           ) : (
             'Entrar'
           )}
+        </Button>
+
+        {/* Divider */}
+        <div className="relative my-5">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t" />
+          </div>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-card px-2 text-muted-foreground">
+              ou continue com
+            </span>
+          </div>
+        </div>
+
+        {/* Login with Magic Link - Email */}
+        <Button
+          variant="outline"
+          className="w-full"
+          onClick={handleGoToMagicLinkPage}
+          type="button"
+        >
+          <Mail className="mr-4 w-5" />
+          {isLoading ? 'Carregando...' : 'Entrar com Email'}
         </Button>
 
         {/* Login with Google */}
