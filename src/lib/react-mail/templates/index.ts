@@ -1,4 +1,8 @@
 import {
+  LoginMagicLinkProps,
+  LoginMagicLinkTemplate,
+} from '../emails/LoginMagicLink'
+import {
   PasswordResetConfirmationProps,
   PasswordResetConfirmationTemplate,
 } from '../emails/PasswordResetConfirmation'
@@ -14,14 +18,14 @@ import {
   VerificationEmailWithOptProps,
   VerificationEmailWithOptTemplate,
 } from '../emails/VerificationEmailWithOpt'
-// Importe outros templates de e-mail conforme necessário
 
 export interface EmailDataMap {
   USER_REGISTRATION_WELCOME: UserRegistrationWelcomeProps
   VERIFICATION_EMAIL_WITH_OTP: VerificationEmailWithOptProps
   PASSWORD_RESET_REQUEST: PasswordResetRequestProps
   PASSWORD_RESET_CONFIRMATION: PasswordResetConfirmationProps
-  // Adicione outros mapeamentos conforme necessário
+  LOGIN_MAGIC_LINK: LoginMagicLinkProps
+  // Add other email data types as needed
 }
 
 export type EmailType = keyof EmailDataMap
@@ -41,7 +45,8 @@ const emailTemplates: EmailTemplates = {
   VERIFICATION_EMAIL_WITH_OTP: VerificationEmailWithOptTemplate,
   PASSWORD_RESET_REQUEST: PasswordResetRequestTemplate,
   PASSWORD_RESET_CONFIRMATION: PasswordResetConfirmationTemplate,
-  // Adicione outros templates aqui
+  LOGIN_MAGIC_LINK: LoginMagicLinkTemplate,
+  // Add other email templates as needed
 }
 
 export default emailTemplates
