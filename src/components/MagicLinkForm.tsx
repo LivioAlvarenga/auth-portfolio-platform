@@ -28,7 +28,12 @@ type MagicLinkFormSchemaProps = z.infer<typeof magicLinkFormSchema>
 
 type MagicLinkFormProps = React.HTMLAttributes<HTMLFormElement> & {
   className?: string
-  token?: string
+  token?: {
+    identifier: string
+    token: string
+    token_type?: string
+    expires: Date
+  }
 }
 
 export function MagicLinkForm({

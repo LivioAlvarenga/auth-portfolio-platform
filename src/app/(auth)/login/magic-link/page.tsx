@@ -12,7 +12,7 @@ import { redirect } from 'next/navigation'
 
 async function getToken(token: string) {
   const response = await fetch(
-    `${webserver.host}/api/v1/auth/verify-magic-link?token=${token}`,
+    `${webserver.host}/api/v1/auth/login/request-magic-link?token=${token}`,
     {
       cache:
         process.env.NODE_ENV === 'development' ? 'no-cache' : 'force-cache',
@@ -24,7 +24,7 @@ async function getToken(token: string) {
 
   const responseBody = await response.json()
 
-  return responseBody.user
+  return responseBody.token
 }
 
 interface MagicLinkPageProps {
@@ -36,8 +36,9 @@ interface MagicLinkPageProps {
 export default async function MagicLink({ searchParams }: MagicLinkPageProps) {
   await serverProtectedRoute({ accessIfNotAuthenticated: true })
 
-  const tokenRequest = searchParams.token
   let token = null
+
+  const tokenRequest = searchParams.token
   if (tokenRequest) {
     token = await getToken(tokenRequest)
     if (!token) {

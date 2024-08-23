@@ -1,5 +1,8 @@
-import { emailValidation } from '@/schemas'
-import { makeRequestMagicLinkUseCase } from '@/use-cases/auth/login/magic-link/make-request-magic-link'
+import { emailValidation, tokenValidation } from '@/schemas'
+import {
+  makeGetRequestMagicLinkUseCase,
+  makeRequestMagicLinkUseCase,
+} from '@/use-cases/auth/login/magic-link/make-request-magic-link'
 
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
@@ -9,7 +12,7 @@ const requestMagicLinkSchema = z.object({
 })
 
 export async function requestMagicLink(req: NextRequest) {
-  const allowedMethods = ['POST']
+  const allowedMethods = ['POST', 'GET']
   if (!allowedMethods.includes(req.method)) {
     return NextResponse.json(
       { error: `method "${req.method}" not allowed` },
@@ -33,6 +36,26 @@ export async function requestMagicLink(req: NextRequest) {
         {
           message,
           userId,
+        },
+        { status },
+      )
+    }
+
+    if (req.method === 'GET') {
+      const tokenId = req.nextUrl.searchParams.get('token')
+
+      // Sanitize token
+      const parsedData = tokenValidation.parse(tokenId)
+
+      const getRequestMagicLinkUseCase = makeGetRequestMagicLinkUseCase()
+
+      const { message, token, status } =
+        await getRequestMagicLinkUseCase.execute({ tokenId: parsedData })
+
+      return NextResponse.json(
+        {
+          message,
+          token,
         },
         { status },
       )

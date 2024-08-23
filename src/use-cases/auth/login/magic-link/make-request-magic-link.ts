@@ -1,6 +1,7 @@
 import { PgAccountRepository } from '@/repositories/pg/pg-account-repository'
 import { PgUserRepository } from '@/repositories/pg/pg-user-repository'
 import { PgVerificationTokenRepository } from '@/repositories/pg/pg-verification-token-repository'
+import { GetRequestMagicLinkUseCase } from './get-request-magic-link'
 import { RequestMagicLinkUseCase } from './request-magic-link'
 
 export function makeRequestMagicLinkUseCase() {
@@ -13,6 +14,14 @@ export function makeRequestMagicLinkUseCase() {
     accountRepository,
     verificationTokenRepository,
   )
+
+  return useCase
+}
+
+export function makeGetRequestMagicLinkUseCase() {
+  const verificationTokenRepository = new PgVerificationTokenRepository()
+
+  const useCase = new GetRequestMagicLinkUseCase(verificationTokenRepository)
 
   return useCase
 }
