@@ -129,7 +129,7 @@ export class LoginGoogleUseCase {
     return {
       status: 201,
       message: 'Usuário logado com sucesso!',
-      userId: 'user.id',
+      userId: user?.id,
     }
   }
 }

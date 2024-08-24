@@ -85,6 +85,19 @@ export class PgVerificationTokenRepository
     return result.rows[0] || null
   }
 
+  async getValidTokenByToken(token: string): Promise<VerificationToken | null> {
+    const query = {
+      text: `
+          SELECT * FROM verification_token
+          WHERE token = $1 AND expires > now() at time zone 'utc'
+        `,
+      values: [token],
+    }
+
+    const result = await database.query(query)
+    return result.rows[0] || null
+  }
+
   // Validate this method
   async deleteToken(identifier: string, token: string): Promise<boolean> {
     const query = {

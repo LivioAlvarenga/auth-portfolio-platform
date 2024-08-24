@@ -27,6 +27,7 @@ export interface VerificationTokenRepository {
     identifier: string,
     tokenType: string,
   ): Promise<VerificationToken | null>
+  getValidTokenByToken(token: string): Promise<VerificationToken | null>
   deleteToken(identifier: string, token: string): Promise<boolean>
   deleteExpiredTokens(): Promise<boolean>
 }
