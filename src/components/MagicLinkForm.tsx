@@ -5,11 +5,13 @@ import { Input } from '@/components/ui/input'
 import { webserver } from '@/infra/webserver'
 import { cn } from '@/lib/shadcn-ui'
 import { emailValidation } from '@/schemas'
+import { getDeviceInfo } from '@/utils'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { LoaderCircle } from 'lucide-react'
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
+import { LoadingScreen } from './LoadingScreen'
 import { showToast } from './ShowToast'
 import {
   Form,
@@ -32,7 +34,7 @@ type MagicLinkFormProps = React.HTMLAttributes<HTMLFormElement> & {
     identifier: string
     token: string
     token_type?: string
-    expires: Date
+    expires: string
   }
 }
 
@@ -41,8 +43,16 @@ export function MagicLinkForm({
   token,
   ...props
 }: MagicLinkFormProps) {
-  console.log('🚀 ~ MagicLinkForm ~ token:', token)
   const [isLoading, setIsLoading] = useState(false)
+  const [isPageLoading, setIsPageLoading] = useState(false)
+  const hasRunEffect = useRef(false)
+
+  useEffect(() => {
+    if (token && !hasRunEffect.current) {
+      hasRunEffect.current = true
+      magicLinkLoginCallback()
+    }
+  }, [token])
 
   const form = useForm<MagicLinkFormSchemaProps>({
     resolver: zodResolver(magicLinkFormSchema),
@@ -51,12 +61,69 @@ export function MagicLinkForm({
     },
   })
 
+  async function magicLinkLoginCallback() {
+    setIsPageLoading(true)
+
+    try {
+      const device = await getDeviceInfo()
+
+      const response = await fetch(
+        `${webserver.host}/api/v1/auth/login/magic-link/verify`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            token,
+            device,
+          }),
+        },
+      )
+
+      if (response.ok) {
+        showToast({
+          message: 'Usuário logado com sucesso!',
+          duration: 5000,
+          variant: 'success',
+          redirect: {
+            path: `${webserver.host}/`,
+            countdownSeconds: 3,
+          },
+        })
+        return
+      }
+
+      if (response.status === 404) {
+        showToast({
+          message:
+            'Erro ao realizar o login com email. Tente realizar login com email e senha.',
+          duration: Infinity,
+          variant: 'error',
+        })
+        return
+      }
+
+      console.error('💥 Erro ao realizar o Login com email')
+    } catch (error) {
+      console.error('💥 Erro ao realizar o Login com email - ', error)
+      showToast({
+        message: 'Falha ao realizar o login com email.',
+        duration: Infinity,
+        variant: 'error',
+      })
+    } finally {
+      setIsPageLoading(false)
+      hasRunEffect.current = false
+    }
+  }
+
   async function onSubmit(values: z.infer<typeof magicLinkFormSchema>) {
     setIsLoading(true)
 
     try {
       const response = await fetch(
-        `${webserver.host}/api/v1/auth/login/request-magic-link`,
+        `${webserver.host}/api/v1/auth/login/magic-link/request`,
         {
           method: 'POST',
           headers: {
@@ -108,47 +175,52 @@ export function MagicLinkForm({
   }
 
   return (
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className={cn('grid gap-4', className)}
-        {...props}
-      >
-        {/* E-mail */}
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem className="grid gap-1">
-              <FormLabel>E-mail</FormLabel>
-              <FormControl>
-                <Input
-                  type="text"
-                  autoComplete="email"
-                  placeholder="Digite seu e-mail"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+    <>
+      {/* Page loading */}
+      {isPageLoading && <LoadingScreen />}
 
-        {/* Submit button */}
-        <Button
-          type="submit"
-          disabled={form.formState.isSubmitting || isLoading}
-          className="w-full"
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className={cn('grid gap-4', className)}
+          {...props}
         >
-          {isLoading ? (
-            <>
-              <LoaderCircle className="mr-2 animate-spin" /> Processando...
-            </>
-          ) : (
-            'Enviar link de acesso'
-          )}
-        </Button>
-      </form>
-    </Form>
+          {/* E-mail */}
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem className="grid gap-1">
+                <FormLabel>E-mail</FormLabel>
+                <FormControl>
+                  <Input
+                    type="text"
+                    autoComplete="email"
+                    placeholder="Digite seu e-mail"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* Submit button */}
+          <Button
+            type="submit"
+            disabled={form.formState.isSubmitting || isLoading}
+            className="w-full"
+          >
+            {isLoading ? (
+              <>
+                <LoaderCircle className="mr-2 animate-spin" /> Processando...
+              </>
+            ) : (
+              'Enviar link de acesso'
+            )}
+          </Button>
+        </form>
+      </Form>
+    </>
   )
 }
