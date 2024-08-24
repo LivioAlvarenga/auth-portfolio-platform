@@ -17,7 +17,7 @@ afterEach(async () => {
   await database.query('DELETE FROM verification_token')
 })
 
-describe('POST /api/v1/auth/login/request-magic-link', () => {
+describe('POST /api/v1/auth/login/magic-link/request', () => {
   describe('User Login Request Magic Link Use Case', () => {
     test('should delete all expired tokens', async () => {
       // Create 10 users with expired tokens
@@ -54,7 +54,7 @@ describe('POST /api/v1/auth/login/request-magic-link', () => {
 
       expect(tokensExpired.length).toBe(10)
 
-      await fetch(`${webserver.host}/api/v1/auth/login/request-magic-link`, {
+      await fetch(`${webserver.host}/api/v1/auth/login/magic-link/request`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -80,7 +80,7 @@ describe('POST /api/v1/auth/login/request-magic-link', () => {
       const email = 'test-magic-link@test.com'
 
       const response = await fetch(
-        `${webserver.host}/api/v1/auth/login/request-magic-link`,
+        `${webserver.host}/api/v1/auth/login/magic-link/request`,
         {
           method: 'POST',
           headers: {
@@ -145,7 +145,7 @@ describe('POST /api/v1/auth/login/request-magic-link', () => {
       const email = existingUser.email
 
       const response = await fetch(
-        `${webserver.host}/api/v1/auth/login/request-magic-link`,
+        `${webserver.host}/api/v1/auth/login/magic-link/request`,
         {
           method: 'POST',
           headers: {
@@ -223,7 +223,7 @@ describe('POST /api/v1/auth/login/request-magic-link', () => {
 
       // Call the API to request a new magic link
       const response = await fetch(
-        `${webserver.host}/api/v1/auth/login/request-magic-link`,
+        `${webserver.host}/api/v1/auth/login/magic-link/request`,
         {
           method: 'POST',
           headers: {

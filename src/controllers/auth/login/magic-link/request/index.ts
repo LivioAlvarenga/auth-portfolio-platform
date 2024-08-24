@@ -2,7 +2,7 @@ import { emailValidation, tokenValidation } from '@/schemas'
 import {
   makeGetRequestMagicLinkUseCase,
   makeRequestMagicLinkUseCase,
-} from '@/use-cases/auth/login/magic-link/make-request-magic-link'
+} from '@/use-cases/auth/login/magic-link/make-magic-link'
 
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
@@ -63,7 +63,7 @@ export async function requestMagicLink(req: NextRequest) {
   } catch (error) {
     if (error instanceof z.ZodError) {
       console.error(
-        '💥 Unexpected error during data sanitization in api/v1/auth/login/request-magic-link',
+        '💥 Unexpected error during data sanitization in api/v1/auth/login/magic-link/request',
         error,
       )
 
@@ -71,7 +71,7 @@ export async function requestMagicLink(req: NextRequest) {
       return NextResponse.json({ message: firstError }, { status: 400 })
     }
     console.error(
-      '💥 Unexpected error in api/v1/auth/login/request-magic-link',
+      '💥 Unexpected error in api/v1/auth/login/magic-link/request',
       error,
     )
     return NextResponse.json({ message: 'Erro inesperado.' }, { status: 500 })

@@ -1,4 +1,4 @@
-import { requestMagicLink } from '@/controllers/auth/login/request-magic-link'
+import { requestMagicLink } from '@/controllers/auth/login/magic-link/request'
 import { type NextRequest } from 'next/server'
 
 async function handle(req: NextRequest) {

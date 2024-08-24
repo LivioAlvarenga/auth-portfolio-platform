@@ -16,13 +16,13 @@ afterEach(async () => {
   await database.query('DELETE FROM verification_token')
 })
 
-describe('GET /api/v1/auth/login/request-magic-link', () => {
+describe('GET /api/v1/auth/login/magic-link/request', () => {
   describe('User Login Get Request Magic Link Use Case', () => {
     test('should return 404 if token is not found', async () => {
       const nonExistentTokenId = v4()
 
       const response = await fetch(
-        `${webserver.host}/api/v1/auth/login/request-magic-link?token=${nonExistentTokenId}`,
+        `${webserver.host}/api/v1/auth/login/magic-link/request?token=${nonExistentTokenId}`,
       )
 
       const responseBody = await response.json()
@@ -47,7 +47,7 @@ describe('GET /api/v1/auth/login/request-magic-link', () => {
       })
 
       const response = await fetch(
-        `${webserver.host}/api/v1/auth/login/request-magic-link?token=${initialToken}`,
+        `${webserver.host}/api/v1/auth/login/magic-link/request?token=${initialToken}`,
       )
 
       const responseBody = await response.json()
