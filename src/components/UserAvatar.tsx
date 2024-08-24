@@ -8,6 +8,7 @@ import {
 } from '@/utils/textUtils'
 import { DropdownMenuArrow } from '@radix-ui/react-dropdown-menu'
 import { TooltipArrow } from '@radix-ui/react-tooltip'
+import { UserRound } from 'lucide-react'
 import { signOut } from 'next-auth/react'
 import { useState } from 'react'
 import { showToast } from './ShowToast'
@@ -43,6 +44,10 @@ export function UserAvatar({ name, email, urlImage, score }: UserAvatarProps) {
   const initials = getInitials(transformedName)
   const avatar = urlImage || ''
   const scoreText = getProfileCompletionMessage(score)
+
+  const avatarFallback = initials || (
+    <UserRound className="absolute bottom-1/2 right-1/2 translate-x-1/2 translate-y-1/2 text-accent-foreground" />
+  )
 
   const handleDropdownOpenChange = (open: boolean) => {
     if (open) {
@@ -111,7 +116,7 @@ export function UserAvatar({ name, email, urlImage, score }: UserAvatarProps) {
                       src={avatar}
                       alt={`avatar de ${transformedName}`}
                     />
-                    <AvatarFallback>{initials}</AvatarFallback>
+                    <AvatarFallback>{avatarFallback}</AvatarFallback>
                   </Avatar>
                 </TooltipTrigger>
 
