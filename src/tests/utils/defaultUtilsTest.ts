@@ -7,6 +7,7 @@ import { PgVerificationTokenRepository } from '@/repositories/pg/pg-verification
 import { Session } from '@/repositories/session-repository'
 import { User } from '@/repositories/user-repository'
 import { VerificationToken } from '@/repositories/verification-token-repository'
+import { calculateProfileCompletionScore } from '@/use-cases/utils/profile-completion-fields'
 import { generateOTP } from '@/utils/password'
 import { addDays } from 'date-fns'
 import { v4 } from 'uuid'
@@ -90,6 +91,42 @@ const createDefaultTokenWithOpt = async (): Promise<VerificationToken> => {
     opt: generateOTP(),
   }
   return verificationTokenRepository.createToken(token)
+}
+
+const createDefaultUserWithMagicLink = async (): Promise<{
+  user: Omit<User, 'passwordHash'>
+  account: Account
+  token: VerificationToken
+}> => {
+  const user = await userRepository.createUser({
+    email: 'testuser1@example.com',
+  })
+
+  const profileCompletionScore = calculateProfileCompletionScore(user)
+  await userRepository.updateProfileCompletionScore(
+    user.id,
+    profileCompletionScore,
+  )
+
+  const account = await accountRepository.createAccount({
+    userId: user.id,
+    type: 'magic-link',
+    provider: 'magic-link',
+    providerAccountId: user.id,
+  })
+
+  const token = await verificationTokenRepository.createToken({
+    identifier: user.id,
+    token: v4(),
+    expires: addDays(new Date(), 1),
+    tokenType: 'LOGIN_MAGIC_LINK',
+  })
+
+  return {
+    user,
+    account,
+    token,
+  }
 }
 
 const createDefaultUserWithAccount = async (
@@ -202,4 +239,5 @@ export const utilsTest = {
   createDefaultUserEmailVerified,
   createDefaultUserWithSession,
   createDefaultUserWithGoogleAccountFromAuthJs,
+  createDefaultUserWithMagicLink,
 }
