@@ -14,6 +14,7 @@ import { useRouter } from 'next/navigation'
 import React, { useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
+import { LoadingScreen } from './LoadingScreen'
 import { showToast } from './ShowToast'
 import { GoogleIcon } from './svg/google-icon'
 import {
@@ -49,6 +50,7 @@ export function LoginForm({
   ...props
 }: LoginFormProps) {
   const [isLoading, setIsLoading] = useState(false)
+  const [isPageLoading, setIsPageLoading] = useState(false)
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
   const [emailValue] = useState(user?.email)
   const hasRunEffect = useRef(false)
@@ -155,7 +157,7 @@ export function LoginForm({
 
   async function googleLoginCallback() {
     try {
-      setIsLoading(true)
+      setIsPageLoading(true)
       router.replace(`${webserver.host}/login`)
 
       const device = await getDeviceInfo()
@@ -205,7 +207,7 @@ export function LoginForm({
         variant: 'error',
       })
     } finally {
-      setIsLoading(false)
+      setIsPageLoading(false)
       hasRunEffect.current = false
     }
   }
@@ -221,127 +223,132 @@ export function LoginForm({
   }
 
   return (
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(submitLoginCredentials)}
-        className={cn('mb-5 grid gap-4', className)}
-        {...props}
-      >
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem className="grid gap-1">
-              <FormLabel>E-mail</FormLabel>
-              <FormControl>
-                <Input
-                  type="text"
-                  autoComplete="email"
-                  placeholder="Digite seu e-mail"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+    <>
+      {/* Page loading */}
+      {isPageLoading && <LoadingScreen />}
 
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem className="grid gap-1">
-              <div className="flex items-center">
-                <FormLabel>Senha</FormLabel>
-                <Link
-                  href={`${webserver.host}/forgot-password`}
-                  className="ml-auto inline-block rounded-sm text-[14px] leading-[20px] tracking-[0.1px] underline ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                >
-                  Esqueceu sua senha?
-                </Link>
-              </div>
-              <FormControl>
-                <div className="relative">
-                  <Button
-                    type="button"
-                    variant={'ghost'}
-                    size={'icon'}
-                    onClick={() => setIsPasswordVisible((prev) => !prev)}
-                    className="absolute right-0 text-muted-foreground/50 hover:bg-transparent hover:text-muted-foreground"
-                  >
-                    {isPasswordVisible ? (
-                      <>
-                        <Eye size={20} />
-                        <span className="sr-only">Ocultar senha</span>
-                      </>
-                    ) : (
-                      <>
-                        <EyeOff size={20} />
-                        <span className="sr-only">Mostrar senha</span>
-                      </>
-                    )}
-                  </Button>
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(submitLoginCredentials)}
+          className={cn('mb-5 grid gap-4', className)}
+          {...props}
+        >
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem className="grid gap-1">
+                <FormLabel>E-mail</FormLabel>
+                <FormControl>
                   <Input
-                    type={isPasswordVisible ? 'text' : 'password'}
+                    type="text"
+                    autoComplete="email"
+                    placeholder="Digite seu e-mail"
                     {...field}
-                    className="pr-10"
                   />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem className="grid gap-1">
+                <div className="flex items-center">
+                  <FormLabel>Senha</FormLabel>
+                  <Link
+                    href={`${webserver.host}/forgot-password`}
+                    className="ml-auto inline-block rounded-sm text-[14px] leading-[20px] tracking-[0.1px] underline ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  >
+                    Esqueceu sua senha?
+                  </Link>
                 </div>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+                <FormControl>
+                  <div className="relative">
+                    <Button
+                      type="button"
+                      variant={'ghost'}
+                      size={'icon'}
+                      onClick={() => setIsPasswordVisible((prev) => !prev)}
+                      className="absolute right-0 text-muted-foreground/50 hover:bg-transparent hover:text-muted-foreground"
+                    >
+                      {isPasswordVisible ? (
+                        <>
+                          <Eye size={20} />
+                          <span className="sr-only">Ocultar senha</span>
+                        </>
+                      ) : (
+                        <>
+                          <EyeOff size={20} />
+                          <span className="sr-only">Mostrar senha</span>
+                        </>
+                      )}
+                    </Button>
+                    <Input
+                      type={isPasswordVisible ? 'text' : 'password'}
+                      {...field}
+                      className="pr-10"
+                    />
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        {/* Submit button */}
-        <Button
-          type="submit"
-          disabled={form.formState.isSubmitting || isLoading}
-          className="w-full"
-        >
-          {isLoading ? (
-            <>
-              <LoaderCircle className="mr-2 animate-spin" /> Carregando...
-            </>
-          ) : (
-            'Entrar'
-          )}
-        </Button>
+          {/* Submit button */}
+          <Button
+            type="submit"
+            disabled={form.formState.isSubmitting || isLoading}
+            className="w-full"
+          >
+            {isLoading ? (
+              <>
+                <LoaderCircle className="mr-2 animate-spin" /> Carregando...
+              </>
+            ) : (
+              'Entrar'
+            )}
+          </Button>
 
-        {/* Divider */}
-        <div className="relative my-5">
-          <div className="absolute inset-0 flex items-center">
-            <span className="w-full border-t" />
+          {/* Divider */}
+          <div className="relative my-5">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-card px-2 text-muted-foreground">
+                ou continue com
+              </span>
+            </div>
           </div>
-          <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-card px-2 text-muted-foreground">
-              ou continue com
-            </span>
-          </div>
-        </div>
 
-        {/* Login with Magic Link - Email */}
-        <Button
-          variant="outline"
-          className="w-full"
-          onClick={handleGoToMagicLinkPage}
-          type="button"
-        >
-          <Mail className="mr-4 w-5" />
-          {isLoading ? 'Carregando...' : 'Entrar com Email'}
-        </Button>
+          {/* Login with Magic Link - Email */}
+          <Button
+            variant="outline"
+            className="w-full"
+            onClick={handleGoToMagicLinkPage}
+            type="button"
+          >
+            <Mail className="mr-4 w-5" />
+            {isLoading ? 'Carregando...' : 'Entrar com Email'}
+          </Button>
 
-        {/* Login with Google */}
-        <Button
-          variant="outline"
-          className="w-full"
-          onClick={handleGoogleLogin}
-          type="button"
-        >
-          <GoogleIcon className="mr-4 w-5" />
-          {isLoading ? 'Carregando...' : 'Entrar com Google'}
-        </Button>
-      </form>
-    </Form>
+          {/* Login with Google */}
+          <Button
+            variant="outline"
+            className="w-full"
+            onClick={handleGoogleLogin}
+            type="button"
+          >
+            <GoogleIcon className="mr-4 w-5" />
+            {isLoading ? 'Carregando...' : 'Entrar com Google'}
+          </Button>
+        </form>
+      </Form>
+    </>
   )
 }

@@ -8,6 +8,7 @@ import { emailValidation } from '@/schemas'
 import { getDeviceInfo } from '@/utils'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { LoaderCircle } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import React, { useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -46,6 +47,7 @@ export function MagicLinkForm({
   const [isLoading, setIsLoading] = useState(false)
   const [isPageLoading, setIsPageLoading] = useState(false)
   const hasRunEffect = useRef(false)
+  const router = useRouter()
 
   useEffect(() => {
     if (token && !hasRunEffect.current) {
@@ -63,6 +65,7 @@ export function MagicLinkForm({
 
   async function magicLinkLoginCallback() {
     setIsPageLoading(true)
+    router.replace(`${webserver.host}/login/magic-link`)
 
     try {
       const device = await getDeviceInfo()
