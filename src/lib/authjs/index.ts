@@ -15,6 +15,7 @@ import { NextCookieRepository } from '@/repositories/nextjs/next-cookie-reposito
 import type { AdapterUser } from '@auth/core/adapters'
 import PostgresAdapter from '@auth/pg-adapter'
 import NextAuth from 'next-auth'
+import GitHub from 'next-auth/providers/github'
 import Google from 'next-auth/providers/google'
 
 const DAYS_30_IN_SECONDS = 30 * 24 * 60 * 60
@@ -70,6 +71,27 @@ export const {
         profile.picture = undefined
 
         return profile
+      },
+    }),
+    GitHub({
+      clientId: process.env.GITHUB_CLIENT_ID,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET,
+      allowDangerousEmailAccountLinking: true,
+      profile(profile) {
+        // We store `picture` in a cookie for the same reason, allowing the `LoginGithubUseCase` to access it server-side.
+        if (profile?.avatar_url) {
+          CookieRepository.setCookie({
+            name: 'authjs.github-picture',
+            value: profile.avatar_url,
+          })
+        }
+
+        return {
+          id: profile.id.toString(),
+          name: profile.name,
+          email: profile.email,
+          image: undefined,
+        }
       },
     }),
   ],

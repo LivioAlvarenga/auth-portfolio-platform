@@ -80,8 +80,11 @@ export default async function Login({ searchParams }: LoginPageProps) {
             <Text as="h1" variant={'title-22-32-500'}>
               Entrar
             </Text>
-            <Text variant={'label-14-14-400'} className="text-muted-foreground">
-              Insira seu e-mail abaixo para acessar sua conta
+            <Text
+              variant={'label-14-14-400'}
+              className="text-pretty text-muted-foreground"
+            >
+              Insira seu e-mail e senha abaixo para acessar sua conta
             </Text>
           </CardHeader>
           <CardContent>
