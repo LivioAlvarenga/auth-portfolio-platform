@@ -16,6 +16,7 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { LoadingScreen } from './LoadingScreen'
 import { showToast } from './ShowToast'
+import { GithubIcon } from './svg/github-icon'
 import { GoogleIcon } from './svg/google-icon'
 import {
   Form,
@@ -62,6 +63,11 @@ export function LoginForm({
 
       hasRunEffect.current = true
       googleLoginCallback()
+    }
+
+    if (loginCallback === 'github' && !hasRunEffect.current) {
+      hasRunEffect.current = true
+      githubLoginCallback()
     }
   }, [loginCallback])
 
@@ -207,14 +213,81 @@ export function LoginForm({
         variant: 'error',
       })
     } finally {
+      setIsLoading(false)
       setIsPageLoading(false)
       hasRunEffect.current = false
     }
   }
 
   async function handleGoogleLogin() {
+    setIsLoading(true)
     await signIn('google', {
       callbackUrl: `${webserver.host}/login?loginCallback=google`,
+    })
+  }
+
+  async function githubLoginCallback() {
+    try {
+      setIsPageLoading(true)
+      router.replace(`${webserver.host}/login`)
+
+      const device = await getDeviceInfo()
+
+      const response = await fetch(
+        `${webserver.host}/api/v1/auth/login/github`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            device,
+          }),
+        },
+      )
+
+      if (response.ok) {
+        showToast({
+          message: 'Usuário logado com sucesso!',
+          duration: 5000,
+          variant: 'success',
+          redirect: {
+            path: `${webserver.host}/`,
+            countdownSeconds: 3,
+          },
+        })
+        return
+      }
+
+      if (response.status === 404 || response.status === 403) {
+        showToast({
+          message:
+            'Erro ao realizar o login com github. Tente realizar login com email e senha.',
+          duration: Infinity,
+          variant: 'error',
+        })
+        return
+      }
+
+      console.error('💥 Erro ao realizar o Login com github')
+    } catch (error) {
+      console.error('💥 Erro ao realizar o Login com github - ', error)
+      showToast({
+        message: 'Falha ao realizar o login com github.',
+        duration: Infinity,
+        variant: 'error',
+      })
+    } finally {
+      setIsLoading(false)
+      setIsPageLoading(false)
+      hasRunEffect.current = false
+    }
+  }
+
+  async function handleGithubLogin() {
+    setIsLoading(true)
+    await signIn('github', {
+      callbackUrl: `${webserver.host}/login?loginCallback=github`,
     })
   }
 
@@ -326,27 +399,43 @@ export function LoginForm({
             </div>
           </div>
 
-          {/* Login with Magic Link - Email */}
-          <Button
-            variant="outline"
-            className="w-full"
-            onClick={handleGoToMagicLinkPage}
-            type="button"
-          >
-            <Mail className="mr-4 w-5" />
-            {isLoading ? 'Carregando...' : 'Entrar com Email'}
-          </Button>
+          <div className="space-y-2">
+            {/* Login with Magic Link - Email */}
+            <Button
+              variant="outline"
+              className="w-full"
+              disabled={form.formState.isSubmitting || isLoading}
+              onClick={handleGoToMagicLinkPage}
+              type="button"
+            >
+              <Mail className="mr-4 w-5" />
+              {isLoading ? 'Carregando...' : 'Entrar com Email'}
+            </Button>
 
-          {/* Login with Google */}
-          <Button
-            variant="outline"
-            className="w-full"
-            onClick={handleGoogleLogin}
-            type="button"
-          >
-            <GoogleIcon className="mr-4 w-5" />
-            {isLoading ? 'Carregando...' : 'Entrar com Google'}
-          </Button>
+            {/* Login with Google */}
+            <Button
+              variant="outline"
+              className="w-full"
+              disabled={form.formState.isSubmitting || isLoading}
+              onClick={handleGoogleLogin}
+              type="button"
+            >
+              <GoogleIcon className="mr-4 w-5" />
+              {isLoading ? 'Carregando...' : 'Entrar com Google'}
+            </Button>
+
+            {/* Login with Github */}
+            <Button
+              variant="outline"
+              className="w-full"
+              disabled={form.formState.isSubmitting || isLoading}
+              onClick={handleGithubLogin}
+              type="button"
+            >
+              <GithubIcon className="mr-4 w-5" />
+              {isLoading ? 'Carregando...' : 'Entrar com Github'}
+            </Button>
+          </div>
         </form>
       </Form>
     </>
