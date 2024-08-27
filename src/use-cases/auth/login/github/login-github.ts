@@ -32,13 +32,13 @@ export class LoginGithubUseCase {
     sessionToken,
     avatarUrl,
   }: LoginGithubUseCaseRequest): Promise<LoginGithubUseCaseResponse> {
-    // 1. useCase - delete all expired sessions
+    // 1. useCase - delete all expired sessions or null deviceIdentifier
     await this.sessionRepository.deleteExpiredSessions()
 
     // 2. useCase - get session, user and account from database and update device, if not found delete session from database
     let user = null
-
     const session = await this.sessionRepository.getSessionByToken(sessionToken)
+
     if (session) {
       await this.sessionRepository.updateDeviceIdentifier(sessionToken, device)
 

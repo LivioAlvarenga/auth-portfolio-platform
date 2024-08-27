@@ -102,7 +102,7 @@ export function ResetPasswordForm({
         })
         showToast({
           message: 'As senhas não coincidem.',
-          duration: 6,
+          duration: 5000,
           variant: 'error',
         })
         return
@@ -129,6 +129,7 @@ export function ResetPasswordForm({
         showToast({
           message: `Sua senha foi atualizada com sucesso!`,
           duration: Infinity,
+          closeButton: false,
           variant: 'success',
           firstButton: {
             text: 'Fazer Login Agora!',
@@ -137,7 +138,7 @@ export function ResetPasswordForm({
           },
           redirect: {
             path: `${webserver.host}/login?token=${responseBody.userId}`,
-            countdownSeconds: 5,
+            countdownSeconds: 2,
           },
         })
 

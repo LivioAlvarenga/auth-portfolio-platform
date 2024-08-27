@@ -110,11 +110,12 @@ export function LoginForm({
       if (response.ok) {
         showToast({
           message: 'Usuário logado com sucesso!',
-          duration: 5000,
+          duration: 3000,
+          closeButton: false,
           variant: 'success',
           redirect: {
             path: `${webserver.host}/`,
-            countdownSeconds: 3,
+            countdownSeconds: 2,
           },
         })
 
@@ -184,11 +185,12 @@ export function LoginForm({
       if (response.ok) {
         showToast({
           message: 'Usuário logado com sucesso!',
-          duration: 5000,
+          duration: 3000,
+          closeButton: false,
           variant: 'success',
           redirect: {
             path: `${webserver.host}/`,
-            countdownSeconds: 3,
+            countdownSeconds: 2,
           },
         })
         return
@@ -249,11 +251,12 @@ export function LoginForm({
       if (response.ok) {
         showToast({
           message: 'Usuário logado com sucesso!',
-          duration: 5000,
+          duration: 3000,
+          closeButton: false,
           variant: 'success',
           redirect: {
             path: `${webserver.host}/`,
-            countdownSeconds: 3,
+            countdownSeconds: 2,
           },
         })
         return
@@ -286,6 +289,7 @@ export function LoginForm({
 
   async function handleGithubLogin() {
     setIsLoading(true)
+
     await signIn('github', {
       callbackUrl: `${webserver.host}/login?loginCallback=github`,
     })
