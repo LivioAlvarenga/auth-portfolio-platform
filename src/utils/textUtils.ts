@@ -1,12 +1,19 @@
 import { prepositions } from '@/schemas/textValidations'
 
 /**
- * Transforms a string by capitalizing the first letter and converting the rest to lowercase.
+ * Transforma uma string, capitalizando a primeira letra e convertendo o restante para minúsculas.
+ * Se a string de entrada estiver vazia ou indefinida, retorna uma string vazia.
  *
- * @param str - The input string.
- * @returns The input string with the first letter capitalized and the rest in lowercase.
+ * @param str - A string de entrada.
+ * @returns A string de entrada com a primeira letra capitalizada e o restante em minúsculas,
+ *          ou uma string vazia se a entrada for vazia ou indefinida.
  */
-export function transformTextIntoCapitalized(str: string) {
+export function transformTextIntoCapitalized(
+  str: string | null | undefined,
+): string {
+  if (!str) {
+    return ''
+  }
   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
 }
 

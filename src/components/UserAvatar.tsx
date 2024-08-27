@@ -1,6 +1,7 @@
 'use client'
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { webserver } from '@/infra/webserver'
 import { getProfileCompletionMessage } from '@/use-cases/utils/profile-completion-fields'
 import {
   getInitials,
@@ -10,8 +11,8 @@ import { DropdownMenuArrow } from '@radix-ui/react-dropdown-menu'
 import { TooltipArrow } from '@radix-ui/react-tooltip'
 import { UserRound } from 'lucide-react'
 import { signOut } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { showToast } from './ShowToast'
 import { Text } from './Text'
 import { Button } from './ui/button'
 import {
@@ -37,6 +38,7 @@ interface UserAvatarProps {
 }
 
 export function UserAvatar({ name, email, urlImage, score }: UserAvatarProps) {
+  const router = useRouter()
   const [isTooltipOpen, setIsTooltipOpen] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
 
@@ -74,20 +76,11 @@ export function UserAvatar({ name, email, urlImage, score }: UserAvatarProps) {
   }
 
   const handleConfigPage = () => {
-    showToast({
-      message: 'Levar para a página de configurações - Em implementação',
-      duration: 5000,
-      variant: 'warning',
-    })
+    router.push(`${webserver.host}/settings`)
   }
 
   const handleManagerAccount = () => {
-    showToast({
-      message:
-        'Levar para a página de gerenciamento de conta - Em implementação',
-      duration: 5000,
-      variant: 'warning',
-    })
+    router.push(`${webserver.host}/profile`)
   }
 
   return (
