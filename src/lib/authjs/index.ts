@@ -65,10 +65,19 @@ export const {
           })
         }
 
+        // We store `name` in a cookie for the same reason, allowing the `LoginGoogleUseCase` to access it server-side.
+        if (profile?.name) {
+          CookieRepository.setCookie({
+            name: 'authjs.google-name',
+            value: profile.name,
+          })
+        }
+
         // Remove `email_verified` and `picture` from the profile object before returning it.
         // This leaves the responsibility of handling these fields to our case use (`LoginGoogleUseCase`).
         profile.email_verified = undefined
         profile.picture = undefined
+        profile.name = undefined
 
         return profile
       },
@@ -86,9 +95,17 @@ export const {
           })
         }
 
+        // We store `name` in a cookie for the same reason, allowing the `LoginGithubUseCase` to access it server-side.
+        if (profile?.name) {
+          CookieRepository.setCookie({
+            name: 'authjs.github-name',
+            value: profile.name,
+          })
+        }
+
         return {
           id: profile.id.toString(),
-          name: profile.name,
+          name: undefined,
           email: profile.email,
           image: undefined,
         }

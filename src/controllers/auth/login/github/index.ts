@@ -7,6 +7,7 @@ const loginGithubSchema = z.object({
   device: z.string().toLowerCase(),
   sessionToken: z.string().uuid(), // get sessionToken from cookie
   avatarUrl: z.string().url().optional(), // get avatarUrl from cookie
+  name: z.string().optional(), // get name from cookie
 })
 
 const CookieRepository = new NextCookieRepository()
@@ -36,11 +37,16 @@ export async function loginGithub(req: NextRequest) {
 
       const avatarUrl = avatarUrlCookie?.value || undefined
 
+      const nameCookie = CookieRepository.getCookie('authjs.github-name')
+
+      const name = nameCookie?.value || undefined
+
       // Sanitize body
       const parsedData = loginGithubSchema.parse({
         device: body.device,
         sessionToken,
         avatarUrl,
+        name,
       })
 
       const loginGithubUseCase = makeLoginGithubUseCase()

@@ -7,6 +7,7 @@ const loginGoogleSchema = z.object({
   device: z.string().toLowerCase(),
   sessionToken: z.string().uuid(), // get sessionToken from cookie
   emailVerified: z.string().optional(), // get emailVerified from cookie
+  name: z.string().optional(), // get name from cookie
   avatarUrl: z.string().url().optional(), // get avatarUrl from cookie
 })
 
@@ -46,11 +47,16 @@ export async function loginGoogle(req: NextRequest) {
 
       const avatarUrl = avatarUrlCookie?.value || undefined
 
+      const nameCookie = CookieRepository.getCookie('authjs.google-name')
+
+      const name = nameCookie?.value || undefined
+
       // Sanitize body
       const parsedData = loginGoogleSchema.parse({
         device: body.device,
         sessionToken,
         emailVerified,
+        name,
         avatarUrl,
       })
 

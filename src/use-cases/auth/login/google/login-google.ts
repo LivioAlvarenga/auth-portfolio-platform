@@ -10,6 +10,7 @@ interface LoginGoogleUseCaseRequest {
   device: string
   sessionToken: string
   emailVerified?: string
+  name?: string
   avatarUrl?: string
 }
 
@@ -32,6 +33,7 @@ export class LoginGoogleUseCase {
     device,
     sessionToken,
     emailVerified,
+    name,
     avatarUrl,
   }: LoginGoogleUseCaseRequest): Promise<LoginGoogleUseCaseResponse> {
     // 1. useCase - delete all expired sessions
@@ -72,7 +74,14 @@ export class LoginGoogleUseCase {
       }
     }
 
-    // 4. useCase - get avatarUrl, resize, save in bucket, add url in avatars table, update users.image with avatarUrl if not exists
+    // 4. useCase - update name if not exists
+    if (name && user && !user.name) {
+      await this.userRepository.updateUser(user.id, {
+        name,
+      })
+    }
+
+    // 5. useCase - get avatarUrl, resize, save in bucket, add url in avatars table, update users.image with avatarUrl if not exists
     if (avatarUrl && user) {
       const resizeImage = await resizeAndConvertImage({ url: avatarUrl })
 
@@ -109,11 +118,12 @@ export class LoginGoogleUseCase {
       }
     }
 
-    // 5. useCase - delete cookies
+    // 6. useCase - delete cookies
     this.cookieRepository.deleteCookie('authjs.google-email-verified')
     this.cookieRepository.deleteCookie('authjs.google-picture')
+    this.cookieRepository.deleteCookie('authjs.google-name')
 
-    // 6. useCase - Calculate the profile_completion_score
+    // 7. useCase - Calculate the profile_completion_score
     if (user) {
       const userData = await this.userRepository.getUserById(user.id)
       if (userData) {
