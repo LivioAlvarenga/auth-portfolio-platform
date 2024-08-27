@@ -95,9 +95,17 @@ export const {
           })
         }
 
+        // We store `name` in a cookie for the same reason, allowing the `LoginGithubUseCase` to access it server-side.
+        if (profile?.name) {
+          CookieRepository.setCookie({
+            name: 'authjs.github-name',
+            value: profile.name,
+          })
+        }
+
         return {
           id: profile.id.toString(),
-          name: profile.name,
+          name: undefined,
           email: profile.email,
           image: undefined,
         }

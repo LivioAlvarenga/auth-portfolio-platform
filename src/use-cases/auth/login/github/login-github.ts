@@ -10,6 +10,7 @@ interface LoginGithubUseCaseRequest {
   device: string
   sessionToken: string
   avatarUrl?: string
+  name?: string
 }
 
 interface LoginGithubUseCaseResponse {
@@ -31,6 +32,7 @@ export class LoginGithubUseCase {
     device,
     sessionToken,
     avatarUrl,
+    name,
   }: LoginGithubUseCaseRequest): Promise<LoginGithubUseCaseResponse> {
     // 1. useCase - delete all expired sessions or null deviceIdentifier
     await this.sessionRepository.deleteExpiredSessions()
@@ -58,7 +60,14 @@ export class LoginGithubUseCase {
       })
     }
 
-    // 4. useCase - get avatarUrl, resize, save in bucket, add url in avatars table, update users.image with avatarUrl if not exists
+    // 4. useCase - update name if not exists
+    if (name && user && !user.name) {
+      await this.userRepository.updateUser(user.id, {
+        name,
+      })
+    }
+
+    // 5. useCase - get avatarUrl, resize, save in bucket, add url in avatars table, update users.image with avatarUrl if not exists
     if (avatarUrl && user) {
       const resizeImage = await resizeAndConvertImage({ url: avatarUrl })
 
@@ -95,10 +104,11 @@ export class LoginGithubUseCase {
       }
     }
 
-    // 5. useCase - delete cookies
+    // 6. useCase - delete cookies
     this.cookieRepository.deleteCookie('authjs.github-picture')
+    this.cookieRepository.deleteCookie('authjs.github-name')
 
-    // 6. useCase - Calculate the profile_completion_score
+    // 7. useCase - Calculate the profile_completion_score
     if (user) {
       const userData = await this.userRepository.getUserById(user.id)
       if (userData) {
