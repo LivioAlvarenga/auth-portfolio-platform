@@ -87,11 +87,11 @@ export function MagicLinkForm({
       if (response.ok) {
         showToast({
           message: 'Usuário logado com sucesso!',
-          duration: 5000,
+          duration: 3000,
           variant: 'success',
           redirect: {
             path: `${webserver.host}/`,
-            countdownSeconds: 3,
+            countdownSeconds: 2,
           },
         })
         return

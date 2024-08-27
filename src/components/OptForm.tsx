@@ -118,6 +118,7 @@ export function OptForm({ className, user, ...props }: OptFormProps) {
         showToast({
           message: `O email ${user.email} foi verificado com sucesso. Você será redirecionado para a página de login.`,
           duration: Infinity,
+          closeButton: false,
           variant: 'success',
           firstButton: {
             text: 'Fazer Login Agora!',
@@ -126,7 +127,7 @@ export function OptForm({ className, user, ...props }: OptFormProps) {
           },
           redirect: {
             path: `${webserver.host}/login?token=${user.id}`,
-            countdownSeconds: 5,
+            countdownSeconds: 2,
           },
         })
 

@@ -124,6 +124,7 @@ export function RegisterForm({ className, ...props }: RegisterFormProps) {
           showToast({
             message: 'Usuário registrado com sucesso!',
             duration: Infinity,
+            closeButton: false,
             variant: 'success',
             firstButton: {
               text: 'Fazer Login Agora!',
@@ -132,7 +133,7 @@ export function RegisterForm({ className, ...props }: RegisterFormProps) {
             },
             redirect: {
               path: `${webserver.host}/login?token=${responseBody.userId}`,
-              countdownSeconds: 3,
+              countdownSeconds: 2,
             },
           })
         } else {

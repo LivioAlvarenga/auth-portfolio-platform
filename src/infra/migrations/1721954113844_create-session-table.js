@@ -49,11 +49,6 @@ exports.up = (pgm) => {
     },
   })
 
-  // Add unique constraint on userId and device_identifier
-  pgm.addConstraint('sessions', 'unique_user_device', {
-    unique: ['userId', 'device_identifier'],
-  })
-
   // Add foreign key to users table
   pgm.addConstraint('sessions', 'fk_sessions_user_id', {
     foreignKeys: {
