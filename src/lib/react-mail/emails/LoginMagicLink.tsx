@@ -89,8 +89,8 @@ Equipe Produtivese
 
 export const LoginMagicLinkTemplate = {
   subject: 'Seu Link de Acesso à Conta - Produtivese',
-  render: (data: LoginMagicLinkProps) => ({
-    html: renderEmailComponent(LoginMagicLink(data)),
+  render: async (data: LoginMagicLinkProps) => ({
+    html: await renderEmailComponent(LoginMagicLink(data)),
     text: LoginMagicLinkText(data),
   }),
 }

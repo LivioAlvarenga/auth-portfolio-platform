@@ -24,7 +24,8 @@ async function sendEmail(req: NextRequest) {
     }
 
     const { subject, render } = emailTemplates[type as EmailType]
-    const { html, text } = render(data as any)
+    const renderedContent = await render(data as any)
+    const { html, text } = renderedContent
 
     const responseEmail = await sendMail({
       to,

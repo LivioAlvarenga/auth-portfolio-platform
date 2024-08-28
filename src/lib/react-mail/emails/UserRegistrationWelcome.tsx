@@ -101,8 +101,8 @@ Equipe Produtivese
 
 export const UserRegistrationWelcomeTemplate = {
   subject: 'Bem-vindo à Produtivese!',
-  render: (data: UserRegistrationWelcomeProps) => ({
-    html: renderEmailComponent(UserRegistrationWelcome(data)),
+  render: async (data: UserRegistrationWelcomeProps) => ({
+    html: await renderEmailComponent(UserRegistrationWelcome(data)),
     text: UserRegistrationWelcomeText(data),
   }),
 }
