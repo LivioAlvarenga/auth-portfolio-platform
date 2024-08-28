@@ -1,10 +1,10 @@
 {
-  "name": "produtivese-adm",
+  "name": "auth-portfolio-platform",
   "version": "1.0.0",
-  "description": "area administrativa de adm.produtivese.com.br",
+  "description": "AuthPortfolioPlatform é um robusto sistema de autenticação com Next.js, TypeScript e NextAuth, suportando magic links, Google, GitHub e email/senha. Inclui emails personalizados e segue os princípios SOLID.",
   "author": "Livio Alvarenga",
-  "license": "UNLICENSED",
-  "private": true,
+  "license": "MIT",
+  "private": false,
   "scripts": {
     "dev": "npm run services:up && npm run wait-for-postgres && npm run migration:up && next dev",
     "build": "next build",
