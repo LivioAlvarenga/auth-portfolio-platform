@@ -97,8 +97,8 @@ Equipe Produtivese
 
 export const PasswordResetRequestTemplate = {
   subject: 'Redefinição de Senha - Produtivese',
-  render: (data: PasswordResetRequestProps) => ({
-    html: renderEmailComponent(PasswordResetRequest(data)),
+  render: async (data: PasswordResetRequestProps) => ({
+    html: await renderEmailComponent(PasswordResetRequest(data)),
     text: PasswordResetRequestText(data),
   }),
 }

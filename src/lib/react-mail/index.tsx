@@ -5,10 +5,10 @@ interface EmailProps {
   [key: string]: any
 }
 
-export function renderEmailComponent(
+export async function renderEmailComponent(
   EmailComponentJSX: React.ReactElement<EmailProps>,
-): string {
-  const emailHtml = render(EmailComponentJSX, {
+): Promise<string> {
+  const emailHtml = await render(EmailComponentJSX, {
     pretty: true,
   })
 

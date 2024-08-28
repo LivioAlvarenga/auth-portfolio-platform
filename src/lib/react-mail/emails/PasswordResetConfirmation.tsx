@@ -62,8 +62,8 @@ Equipe Produtivese
 
 export const PasswordResetConfirmationTemplate = {
   subject: 'Confirmação de Redefinição de Senha - Produtivese',
-  render: () => ({
-    html: renderEmailComponent(PasswordResetConfirmation()),
+  render: async () => ({
+    html: await renderEmailComponent(PasswordResetConfirmation()),
     text: PasswordResetConfirmationText(),
   }),
 }

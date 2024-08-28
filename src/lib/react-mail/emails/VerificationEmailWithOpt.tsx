@@ -94,8 +94,8 @@ Equipe Produtivese
 
 export const VerificationEmailWithOptTemplate = {
   subject: 'Seu Código de Verificação - Produtivese',
-  render: (data: VerificationEmailWithOptProps) => ({
-    html: renderEmailComponent(VerificationEmailWithOpt(data)),
+  render: async (data: VerificationEmailWithOptProps) => ({
+    html: await renderEmailComponent(VerificationEmailWithOpt(data)),
     text: VerificationEmailWithOptText(data),
   }),
 }

@@ -33,7 +33,7 @@ export type EmailType = keyof EmailDataMap
 interface EmailTemplate<T> {
   subject: string
   // eslint-disable-next-line no-unused-vars
-  render: (data: T) => { html: string; text: string }
+  render: (data: T) => Promise<{ html: string; text: string }>
 }
 
 type EmailTemplates = {
