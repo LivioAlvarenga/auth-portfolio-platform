@@ -15,6 +15,7 @@
  <a href="#-ci">CD/CI</a> •
  <a href="#-solid">Princípios SOLID</a> •
  <a href="#-auth">Porque o AuthJs</a> •
+ <a href="#-contribuir">Contribuições</a> •
  <a href="#-autor">Autor</a> •
  <a href="#-licença">Licença</a>
 </p>
@@ -487,6 +488,21 @@ Todo esse sistema de autenticação é acompanhado de notificações via email p
 ---
 
 Com essas customizações, conseguimos criar um sistema de autenticação robusto, seguro e totalmente adaptado às nossas necessidades, sem depender de soluções SaaS. Além disso, o controle granular sobre sessões e a flexibilidade na integração de providers nos permitem oferecer uma experiência de usuário de alta qualidade, mantendo o controle total sobre os dados e processos.
+
+&nbsp;
+<a id="--contribuir"></a>
+
+## 👐 Contribuições
+
+Este projeto é open source sob a licença MIT, e contribuições são muito bem-vindas!
+
+Se você encontrar algum problema ou tiver uma ideia de melhoria, sinta-se à vontade para abrir uma [issue](https://github.com/seu_usuario/seu_repositorio/issues). Pull requests também são muito bem-vindos!
+
+Por favor, siga as diretrizes descritas no [CONTRIBUTING.md](./CONTRIBUTING.md) para garantir que o processo de contribuição seja o mais suave possível.
+
+### Código de Conduta
+
+Este projeto segue um [Código de Conduta](./CODE_OF_CONDUCT.md). Ao participar, você está concordando em seguir essas diretrizes.
 
 &nbsp;
 <a id="-autor"></a>
