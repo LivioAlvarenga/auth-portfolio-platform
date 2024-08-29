@@ -352,8 +352,11 @@ Adotamos o **GitHub Actions** para automatizar o processo de CI, onde várias va
 
 Essa abordagem nos dá a segurança de que o código que chega à branch principal está sempre em conformidade com os padrões de qualidade do projeto.
 
+<<<<<<< HEAD
 <img src="https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/readme/ci-gihub-actions.JPG" alt="Resultados de test do Auth Portfolio Platform" align="center" />
 
+=======
+>>>>>>> 82a9d47259b19c26d72c600e629aa683e09282ba
 ### Estratégia de Branching
 
 Optamos por uma estratégia de branching simples, onde cada nova funcionalidade é desenvolvida em uma branch específica para aquela feature. Essa estratégia é conhecida como **Feature Branching**, que não deve ser confundida com o Git Flow. Embora o Git Flow seja uma excelente estratégia, optamos pela simplicidade do Feature Branching.
