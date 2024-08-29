@@ -2,24 +2,75 @@ import AppProviders from '@/contexts/AppProviders'
 import { auth } from '@/lib/authjs'
 import { sans400, sans500, sans700 } from '@/styles/fonts'
 import '@/styles/globals.css'
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { ReactNode } from 'react'
 import { Toaster } from 'sonner'
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#FFFFFF' },
+    { media: '(prefers-color-scheme: dark)', color: '#09090B' },
+  ],
+}
+
 export const metadata: Metadata = {
-  title: 'Área administrativa Produtivese',
-  description: 'Área administrativa do Produtivese',
+  title:
+    'Auth Portfolio Platform - Segurança e Escalabilidade para Aplicações Modernas',
+  description:
+    'O Auth Portfolio Platform é uma solução robusta e escalável para autenticação de usuários, projetada para atender às necessidades de aplicações modernas com segurança e flexibilidade.',
+  openGraph: {
+    title:
+      'Auth Portfolio Platform - Segurança e Escalabilidade para Aplicações Modernas',
+    description:
+      'O Auth Portfolio Platform é uma solução robusta e escalável para autenticação de usuários, projetada para atender às necessidades de aplicações modernas com segurança e flexibilidade.',
+    url: '/',
+    siteName: 'Auth Portfolio Platform',
+    images: [
+      {
+        url: `${process.env.NEXT_PUBLIC_BUCKET}/logo-og-800-600.png`,
+        width: 800,
+        height: 600,
+        alt: 'Auth Portfolio Platform - Segurança e Escalabilidade para Aplicações Modernas',
+      },
+      {
+        url: `${process.env.NEXT_PUBLIC_BUCKET}/logo-og-1800-1600.png`,
+        width: 1800,
+        height: 1600,
+        alt: 'Auth Portfolio Platform - Segurança e Escalabilidade para Aplicações Modernas',
+      },
+    ],
+    locale: 'pt_BR',
+    type: 'website',
+  },
   robots: {
-    index: false,
-    follow: false,
+    index: true,
+    follow: true,
     googleBot: {
-      index: false,
-      follow: false,
+      index: true,
+      follow: true,
       'max-video-preview': -1,
       'max-image-preview': 'large',
       'max-snippet': -1,
     },
   },
+  twitter: {
+    card: 'summary_large_image',
+    title:
+      'Auth Portfolio Platform - Segurança e Escalabilidade para Aplicações Modernas',
+    description:
+      'O Auth Portfolio Platform é uma solução robusta e escalável para autenticação de usuários, projetada para atender às necessidades de aplicações modernas com segurança e flexibilidade.',
+    images: [`${process.env.NEXT_PUBLIC_BUCKET}/logo-og-800-600.png`],
+  },
+  verification: {
+    google: '', // Adicione o código de verificação do Google se necessário
+  },
+  metadataBase: new URL('https://auth-portfolio.livioalvarenga.com.br/'),
+  alternates: {
+    canonical: 'https://auth-portfolio.livioalvarenga.com.br/',
+  },
+  category: 'Business',
 }
 
 export default async function RootLayout({

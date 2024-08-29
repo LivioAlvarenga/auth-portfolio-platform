@@ -6,6 +6,25 @@ import { Text } from '@/components/Text'
 import { Button } from '@/components/ui/button'
 import { serverProtectedRoute } from '@/lib/authjs/serverProtectedRoute'
 import { HomeIcon } from 'lucide-react'
+import { Metadata } from 'next'
+import { metadata as metadataHome } from '../layout'
+
+export const metadata: Metadata = {
+  ...metadataHome, // extend the common metadata
+  title: 'Futura pagina de designer system',
+  description: 'Futura pagina de designer system',
+  robots: {
+    index: false,
+    follow: false,
+    googleBot: {
+      index: false,
+      follow: false,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+}
 
 export default async function HomeDesignerSystem() {
   await serverProtectedRoute({ role: 'admin' })
