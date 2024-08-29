@@ -8,8 +8,73 @@ import { UserAvatar } from '@/components/UserAvatar'
 import { webserver } from '@/infra/webserver'
 import { serverProtectedRoute } from '@/lib/authjs/serverProtectedRoute'
 import { Home, Search, Settings, User2 } from 'lucide-react'
+import { Metadata, Viewport } from 'next'
 import Link from 'next/link'
 import React from 'react'
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#FFFFFF' },
+    { media: '(prefers-color-scheme: dark)', color: '#09090B' },
+  ],
+}
+
+export const metadata: Metadata = {
+  title: 'Auth Portfolio Platform - Dashboard',
+  description:
+    'O Auth Portfolio Platform é uma solução robusta e escalável para autenticação de usuários, projetada para atender às necessidades de aplicações modernas com segurança e flexibilidade.',
+  openGraph: {
+    title: 'Auth Portfolio Platform - Dashboard',
+    description:
+      'O Auth Portfolio Platform é uma solução robusta e escalável para autenticação de usuários, projetada para atender às necessidades de aplicações modernas com segurança e flexibilidade.',
+    url: '/',
+    siteName: 'Auth Portfolio Platform',
+    images: [
+      {
+        url: `${process.env.NEXT_PUBLIC_BUCKET}/logo-og-800-600.png`,
+        width: 800,
+        height: 600,
+        alt: 'Auth Portfolio Platform - Segurança e Escalabilidade para Aplicações Modernas',
+      },
+      {
+        url: `${process.env.NEXT_PUBLIC_BUCKET}/logo-og-1800-1600.png`,
+        width: 1800,
+        height: 1600,
+        alt: 'Auth Portfolio Platform - Segurança e Escalabilidade para Aplicações Modernas',
+      },
+    ],
+    locale: 'pt_BR',
+    type: 'website',
+  },
+  robots: {
+    index: false,
+    follow: false,
+    googleBot: {
+      index: false,
+      follow: false,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Auth Portfolio Platform - Dashboard',
+    description:
+      'O Auth Portfolio Platform é uma solução robusta e escalável para autenticação de usuários, projetada para atender às necessidades de aplicações modernas com segurança e flexibilidade.',
+    images: [`${process.env.NEXT_PUBLIC_BUCKET}/logo-og-800-600.png`],
+  },
+  verification: {
+    google: '', // Adicione o código de verificação do Google se necessário
+  },
+  metadataBase: new URL('https://auth-portfolio.livioalvarenga.com.br/'),
+  alternates: {
+    canonical: 'https://auth-portfolio.livioalvarenga.com.br/',
+  },
+  category: 'Business',
+}
 
 export default async function HomeLayout({
   children,
