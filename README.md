@@ -5,10 +5,16 @@
 <p align="center">
  <a href="#-sobre-o-projeto">Sobre</a> •
  <a href="#-tecnologias">Tecnologias</a> •
+ <a href="#-emails">Emails</a> •
  <a href="#-pastas">Estrutura de Pastas</a> •
  <a href="#-script">Scripts</a> •
  <a href="#-db">Banco de Dados</a> •
  <a href="#-v-ambiente">Variáveis de Ambiente</a> •
+ <a href="#-designer-system">Designer System</a> •
+ <a href="#-tests">Testes</a> •
+ <a href="#-ci">CD/CI</a> •
+ <a href="#-solid">Princípios SOLID</a> •
+ <a href="#-auth">Porque o AuthJs</a> •
  <a href="#-autor">Autor</a> •
  <a href="#-licença">Licença</a>
 </p>
@@ -43,9 +49,9 @@ O projeto é open source e licenciado sob a MIT License, encorajando a comunidad
   <a href= "https://auth-portfolio.livioalvarenga.com.br/"><img alt="deploy badge Vercel" height=40 src="https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/readme/vercel-badge.svg?t=2024-08-28T19%3A06%3A38.548Z"></a>
 <p>
 
-&nbsp;
-
----
+|    ![Tela de Login - Auth Portfolio Platform](https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/readme/register-screen.JPG)     | ![Tela de Login - Auth Portfolio Platform](https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/readme/verify-email-opt-screen.JPG) |
+| :------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+| ![Tela de Login - Auth Portfolio Platform](https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/readme/forgot-password-screen.JPG) |  ![Tela de Login - Auth Portfolio Platform](https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/readme/reset-password-screen.JPG)  |
 
 &nbsp;
 <a id="-tecnologias"></a>
@@ -79,6 +85,45 @@ As seguintes ferramentas foram usadas na construção do projeto
   <a href= "https://prettier.io/" target="_blank" rel="noopener noreferrer"><img alt="code formatter prettier" src="https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/readme/prettier-badge.svg"></a>
   <a href= "https://eslint.org/" target="_blank" rel="noopener noreferrer"><img alt="code standardization eslint" src="https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/readme/eslint-badge.svg"></a>
 </p>
+
+&nbsp;
+
+<a id="-emails"></a>
+
+## ✉️ Emails
+
+Para garantir uma comunicação eficaz e profissional com os usuários, utilizamos a biblioteca **@react-email/components** juntamente com **react-email** para criar templates de emails personalizados. Para simular o envio de emails durante o desenvolvimento, usamos o serviço [Ethereal](https://ethereal.email/), que permite testar a funcionalidade de envio de emails sem custos e sem impactar usuários reais.
+
+|     ![Tela de Login - Auth Portfolio Platform](https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/readme/email-welcome.png)     |   ![Tela de Login - Auth Portfolio Platform](https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/readme/email-verify-opt.png)    |
+| :-----------------------------------------------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+| ![Tela de Login - Auth Portfolio Platform](https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/readme/email-forgot-password.png) | ![Tela de Login - Auth Portfolio Platform](https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/readme/email-password-change.png) |
+
+### Envio de Emails
+
+O envio dos emails é gerenciado pelo **Nodemailer**, utilizando um `transporter` configurado para enviar emails por meio do Ethereal. Criamos uma rota específica no projeto para lidar com o envio de emails, garantindo que cada tipo de email tenha seu próprio template adequado.
+
+### Armazenamento de Emails
+
+Para manter um histórico dos emails enviados e gerenciar os diferentes tipos de emails, criamos duas entidades no banco de dados:
+
+- **email_logs**: Armazena um registro de todos os emails enviados, incluindo informações como destinatário, conteúdo, e status do envio.
+- **email_types**: Contém os diferentes tipos de emails que podem ser enviados pelo sistema, como emails de boas-vindas, verificação de email, recuperação de senha, etc.
+
+### Tipos de Emails Enviados
+
+1. **Email de Boas-Vindas**: Enviado após o registro do usuário, dando as boas-vindas ao novo usuário.
+
+2. **Verificação de Email**: Enviado juntamente com o email de boas-vindas, contendo um código OTP para validação do email. O usuário precisa inserir este código para verificar seu email e ativar a conta.
+
+3. **Esqueci a Senha**: Enviado quando o usuário solicita a recuperação de senha. Este email contém um link que redireciona o usuário para a página de redefinição de senha.
+
+4. **Notificação de Modificação de Senha**: Enviado para o usuário notificando que sua senha foi modificada com sucesso, garantindo que o usuário esteja ciente de mudanças em sua conta.
+
+5. **Magic Link**: Enviado quando o usuário opta por fazer login utilizando um link mágico. O email contém um link que permite ao usuário logar-se automaticamente ao clicar nele.
+
+---
+
+Com essa estrutura, garantimos que todos os emails enviados pelo sistema sejam gerenciados de forma organizada e que o usuário tenha uma experiência consistente e segura ao interagir com nossa plataforma.
 
 &nbsp;
 
@@ -197,6 +242,249 @@ Para proteger dados sensíveis, utilizamos o arquivo `.env`, que está incluído
 ### Arquivo `.env.example`
 
 O arquivo `.env.example` serve como um guia para os desenvolvedores que precisam configurar suas próprias variáveis de ambiente locais. Ele lista todas as variáveis necessárias, mas sem os valores sensíveis, que devem ser preenchidos por cada desenvolvedor. Este exemplo inclui as variáveis necessárias para a configuração dos providers de autenticação (Google, GitHub), configuração do serviço de email, e do bucket para armazenamento de imagens. Cada desenvolvedor ou administrador deve preencher essas variáveis com os valores apropriados para seu ambiente específico.
+
+&nbsp;
+<a id="-designer-system"></a>
+
+## 🎨 Estilização e Acessibilidade
+
+Para este projeto, escolhemos utilizar **TailwindCSS** como a principal ferramenta de estilização devido à sua flexibilidade e facilidade de uso. Embora não tenhamos nada contra o uso de CSS puro, o Tailwind se mostrou uma escolha ideal, especialmente em conjunto com o **Next-Themes** para gestão de temas, permitindo uma integração eficiente e responsiva ao longo de toda a aplicação.
+
+### Estrutura de Estilos
+
+Na pasta `styles`, organizamos todos os nossos tokens de design, componentes de tipografia e configurações globais.
+
+- **Tokens de Design**: Dentro da pasta `tokens`, criamos uma série de arquivos que definem os principais tokens de design, como cores, tamanhos de fontes, espaçamentos, e muito mais. Estes tokens são projetados para serem facilmente integrados com o TailwindCSS, estendendo sua configuração para suportar o design system específico do projeto.
+
+- **Componente Text**: Desenvolvemos um componente `Text` que utiliza a biblioteca `tailwind-variants`, permitindo a aplicação de estilos de texto de forma dinâmica e responsiva. Este componente facilita a aplicação de tipografia consistente em toda a aplicação, com variantes configuradas para ajustar automaticamente os tamanhos de fontes de acordo com o dispositivo (mobile, tablet, desktop). Além disso, ele é altamente flexível, permitindo a personalização de classes e a escolha da tag HTML utilizada para renderização.
+
+### Design Responsivo
+
+O design do projeto foi pensado para ser completamente responsivo, adaptando-se perfeitamente desde dispositivos móveis até desktops. O uso de **TailwindCSS** em conjunto com nossos tokens de design permite que as classes sejam organizadas e padronizadas de maneira eficiente, utilizando o plugin `prettier-plugin-tailwindcss` para manter a consistência do código.
+
+### Temas Light e Dark
+
+Com o **Next-Themes**, oferecemos suporte completo a temas claro e escuro, proporcionando uma experiência de usuário agradável e adaptável às preferências de cada um. Todos os tokens e configurações foram projetados para se integrar perfeitamente com esta funcionalidade, garantindo uma transição suave entre os temas.
+
+| ![Tela de Boas-Vindas](https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/readme/register-screen.JPG) | ![Tela de Verificação de Email](https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/readme/register-screen-dark.JPG) |
+| :---------------------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------------------------------------------------: |
+
+### Acessibilidade
+
+A acessibilidade foi uma prioridade na construção deste projeto. Nosso design system foi criado com base em componentes do **shadcn/ui**, que oferece uma vasta gama de componentes altamente acessíveis. A escolha do Shadcn foi baseada na sua excelência em acessibilidade e na facilidade de integração com o TailwindCSS e o Next-Themes. O resultado é uma interface clean, funcional e fácil de manter, garantindo que todos os usuários possam interagir com a aplicação de maneira eficiente.
+
+O **Shadcn/UI** juntamente com nosso design system proporciona uma interface não só bonita, mas também funcional e acessível para todos os usuários, independentemente do dispositivo que estão utilizando.
+
+Em resumo, a combinação de **TailwindCSS**, **Next-Themes**, e **shadcn/ui** nos permitiu criar uma aplicação que é tanto esteticamente agradável quanto altamente funcional, mantendo a acessibilidade e a consistência como pontos centrais do nosso design.
+
+&nbsp;
+<a id="-tests"></a>
+
+## 🧪 Testes
+
+Os testes desempenham um papel crucial na qualidade e robustez deste projeto. Adotamos uma abordagem de **Test-Driven Development (TDD)** em várias APIs, onde os testes são escritos antes mesmo de começar a implementação, garantindo que as funcionalidades sejam desenvolvidas de acordo com as expectativas desde o início.
+
+<img src="https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/readme/tests-results.JPG" alt="Resultados de test do Auth Portfolio Platform" align="center" />
+
+### Tipos de Testes
+
+- **Testes de Integração**: Em nossos testes de integração, testamos os casos de uso completos, desde a API até o final do caso de uso. Isso garante que todas as partes do sistema estejam funcionando de maneira coesa, integrando corretamente os diferentes componentes e verificando que a lógica de negócios está sendo executada conforme o esperado.
+
+- **Testes Unitários**: Nos testes unitários, focamos em validar partes isoladas do código, como utilidades e schemas de sanitização utilizando o Zod. Esses testes garantem que cada componente individual funcione corretamente e ajudem a prevenir regressões em funcionalidades específicas.
+
+### Ferramentas e Integração Contínua
+
+- **Jest**: Atualmente, utilizamos o **Jest** como nossa principal ferramenta de testes, aproveitando sua ampla adoção e robustez para garantir a qualidade do código. O Jest permite criar e executar tanto testes unitários quanto de integração de maneira eficiente.
+
+- **CI com GitHub Actions**: Os testes fazem parte do nosso processo de **Integração Contínua (CI)**, sendo executados automaticamente a cada pull request ou commit. Utilizamos **GitHub Actions** para orquestrar esses testes, garantindo que apenas código que passa em todos os testes seja mesclado na base de código principal.
+
+### Prospecção Futura
+
+Estamos avaliando a adoção do **Vitest** como ferramenta de testes futura. O Vitest promete ser uma alternativa mais leve e rápida ao Jest, especialmente em grandes bases de código TypeScript, mantendo a compatibilidade com o ecossistema de ferramentas já estabelecido.
+
+Através dessa abordagem rigorosa e estruturada de testes, garantimos que a aplicação se mantém estável, segura e fácil de manter, enquanto continuamos a evoluir o código com confiança.
+
+&nbsp;
+<a id="-ci"></a>
+
+## 🚀 CI/CD (Integração e Entrega Contínuas)
+
+Neste projeto, adotamos uma abordagem rigorosa e padronizada para **CI/CD** (Integração e Entrega Contínuas), garantindo que o código seja sempre de alta qualidade antes de ser mesclado e implantado em produção.
+
+### Commits Padronizados com Husky e Commitlint
+
+Utilizamos **Husky** para configurar hooks do Git, garantindo que os commits sejam verificados antes mesmo de serem enviados. Com a integração do **Commitlint** (`npx commitlint --edit $1`), validamos os commits para que sigam o padrão **Conventional Commits**, evitando a "vergonha" de enviar commits fora do padrão para um Pull Request (PR).
+
+O padrão que seguimos para commits é o seguinte:
+
+```
+<type>[optional scope]: <description>
+
+[optional body]
+
+[optional footer(s)]
+```
+
+Exemplos de tipos de commits que utilizamos:
+
+- **feat**: Um novo recurso adicionado ao projeto
+- **fix**: Correção de um bug no projeto
+- **build**: Alterações no sistema de build ou em dependências externas (ex: gulp, npm)
+- **chore**: Tarefas que não alteram o código de produção (ex: atualizações de dependências)
+- **ci**: Alterações em arquivos de configuração e scripts de CI (ex: Travis, CircleCI)
+- **docs**: Alterações que afetam apenas a documentação
+- **style**: Alterações de estilo que não afetam o significado do código (ex: formatação)
+- **refactor**: Mudanças no código que não adicionam recursos ou corrigem bugs
+- **perf**: Alterações no código que melhoram o desempenho
+- **test**: Adição ou correção de testes
+
+### Validação Automática com GitHub Actions
+
+Adotamos o **GitHub Actions** para automatizar o processo de CI, onde várias validações são realizadas antes que um PR seja aprovado:
+
+1. **Commitlint Action**: Validamos todos os commits no PR para garantir que seguem o padrão `Conventional Commits`. O merge só é permitido se todos os commits passarem por essa validação.
+
+2. **ESLint Check**: Rodamos `npm run lint:eslint:check` para verificar a conformidade do código com as regras de lint definidas. O merge só é habilitado se o código passar nessa verificação.
+
+3. **Prettier Check**: Usamos `npm run lint:prettier:check` para garantir que o código está formatado corretamente de acordo com as regras do Prettier. O merge é bloqueado se houver problemas de formatação.
+
+4. **Testes Automatizados**: Todos os testes são executados automaticamente em uma action. Somente após a aprovação em todos os testes, o merge é permitido.
+
+Essa abordagem nos dá a segurança de que o código que chega à branch principal está sempre em conformidade com os padrões de qualidade do projeto.
+
+### Estratégia de Branching
+
+Optamos por uma estratégia de branching simples, onde cada nova funcionalidade é desenvolvida em uma branch específica para aquela feature. Essa estratégia é conhecida como **Feature Branching**, que não deve ser confundida com o Git Flow. Embora o Git Flow seja uma excelente estratégia, optamos pela simplicidade do Feature Branching.
+
+Além das feature branches, mantemos uma branch fixa para ajustes rápidos, garantindo que correções urgentes possam ser aplicadas rapidamente.
+
+### Deploy com Vercel
+
+O deploy do projeto é realizado automaticamente na **Vercel**, uma plataforma otimizada para projetos Next.js, que facilita o processo de entrega contínua, garantindo que as mudanças aprovadas na branch principal sejam implantadas imediatamente.
+
+### Conclusão
+
+Com essa estrutura de CI/CD bem definida, conseguimos manter um alto padrão de qualidade no código e nos processos de desenvolvimento, minimizando a possibilidade de erros e garantindo a estabilidade e a escalabilidade do projeto.
+
+&nbsp;
+<a id="-solid"></a>
+
+## 🧩 Princípios SOLID no Projeto
+
+Os princípios SOLID são fundamentais para criar sistemas escaláveis, fáceis de manter e com baixo acoplamento. A seguir, detalharemos como cada um desses princípios foi aplicado em uma rota específica do projeto.
+
+### 1. **Princípio da Responsabilidade Única (SRP - Single Responsibility Principle)**
+
+**Aplicação no Projeto:**
+
+- **Route Handler (`route.ts`)**: Este arquivo é responsável apenas por mapear os métodos HTTP (`GET`, `POST`, `PUT`, `DELETE`, etc.) para a função que manipula a lógica associada à rota, delegando o trabalho ao controller.
+- **Controller (`index.ts`)**: O controller tem a responsabilidade única de gerir as requisições e respostas HTTP. Ele não lida com lógica de negócios complexa ou com interações diretas com o banco de dados, mas sim com a sanitização de dados, tratamento de erros e chamada das factories e use cases.
+- **Factory (`make-login-credential.ts`)**: A factory é responsável por compor o caso de uso, montando suas dependências (repositories, por exemplo). Ela encapsula o processo de criação dos objetos necessários para o caso de uso.
+- **Use Case (`login-credential.ts`)**: O caso de uso concentra toda a lógica de negócio para o login de um usuário. Ele é responsável por todas as etapas do processo de login, desde a verificação de credenciais até a criação de sessões e cookies.
+- **Repositories (`pg-user-repository.ts`)**: Os repositórios implementam a interação direta com o banco de dados. Eles têm a responsabilidade única de realizar operações de CRUD (Create, Read, Update, Delete) sobre as entidades.
+
+**Benefício**: Cada parte do sistema tem uma responsabilidade claramente definida, o que facilita a manutenção e a evolução do código sem introduzir efeitos colaterais indesejados.
+
+### 2. **Princípio do Aberto/Fechado (OCP - Open/Closed Principle)**
+
+**Aplicação no Projeto:**
+
+- **Factories e Repositories**: A implementação de repositórios segue este princípio, onde o repositório base (`UserRepository`) define as operações a serem implementadas. Novas funcionalidades podem ser adicionadas ao sistema sem modificar o código existente, simplesmente criando novas implementações de repositórios (por exemplo, utilizando outro banco de dados ou outro ORM).
+- **Use Cases**: Novos casos de uso podem ser adicionados sem alterar o código existente, apenas criando novas classes de use cases que implementem as regras de negócio desejadas.
+
+**Benefício**: O sistema é extensível sem precisar modificar o código existente, o que reduz a probabilidade de introduzir bugs e facilita a adição de novas funcionalidades.
+
+### 3. **Princípio da Substituição de Liskov (LSP - Liskov Substitution Principle)**
+
+**Aplicação no Projeto:**
+
+- **Interfaces de Repositórios**: As interfaces definidas para os repositórios (ex.: `UserRepository`) garantem que qualquer implementação concreta (como `PgUserRepository`) possa ser substituída por outra implementação (como uma que use MongoDB, por exemplo) sem quebrar o código que depende dela.
+
+**Benefício**: Facilita a troca e a substituição de componentes do sistema sem necessitar alterações significativas no código que os utiliza, mantendo a compatibilidade e a previsibilidade do comportamento do sistema.
+
+### 4. **Princípio da Segregação de Interfaces (ISP - Interface Segregation Principle)**
+
+**Aplicação no Projeto:**
+
+- **Interfaces Específicas**: Cada repositório implementa interfaces específicas para as operações necessárias, evitando que uma classe seja forçada a implementar métodos que não utiliza. Por exemplo, a interface `UserRepository` contém apenas métodos relacionados aos usuários, sem misturar outras responsabilidades.
+
+**Benefício**: As classes que implementam as interfaces não são sobrecarregadas com métodos desnecessários, o que torna o código mais limpo, fácil de entender e manter.
+
+### 5. **Princípio da Inversão de Dependência (DIP - Dependency Inversion Principle)**
+
+**Aplicação no Projeto:**
+
+- **Use Cases e Repositories**: No caso de uso (`LoginCredentialUseCase`), as dependências (repositories e cookie management) são injetadas através do construtor, o que permite a inversão de controle. Isso significa que o caso de uso não depende diretamente de implementações concretas, mas sim de abstrações (interfaces). A factory é responsável por fornecer as implementações corretas para as interfaces.
+- **Factories**: As factories invertem o controle da criação das dependências, permitindo que o código de alto nível (casos de uso) dependa de abstrações e não de implementações concretas.
+
+**Benefício**: Isso facilita o teste unitário e a substituição de componentes por mocks ou outras implementações sem alterar o código principal. Também promove a criação de código mais modular e desacoplado.
+
+---
+
+**Resumo dos Benefícios:**
+
+- **Manutenção Simplificada**: Ao aplicar SOLID, o sistema é dividido em partes menores e mais gerenciáveis, onde cada parte tem uma responsabilidade bem definida.
+- **Facilidade de Evolução**: O código é aberto para extensão e fechado para modificação, permitindo que novas funcionalidades sejam adicionadas sem impactar o que já foi implementado.
+- **Flexibilidade e Reusabilidade**: Componentes podem ser facilmente substituídos ou reutilizados em diferentes partes do sistema, promovendo a modularidade e a flexibilidade.
+- **Testabilidade**: O desacoplamento entre os componentes facilita a criação de testes unitários e de integração, aumentando a confiabilidade do código.
+
+&nbsp;
+<a id="-auth"></a>
+
+## 🔑 Por que o AuthJs (NextAuth)?
+
+Quando decidimos implementar a autenticação no **Auth Portfolio Platform**, queríamos evitar a dependência de plataformas SaaS para gerenciar credenciais de usuários. A ideia de ficar preso a um serviço externo, com suas próprias limitações e custos, não era atraente. Por isso, optamos pelo **NextAuth**.
+
+### Vantagens do NextAuth
+
+O NextAuth foi escolhido por várias razões:
+
+- **Variedade de Providers**: O NextAuth oferece uma ampla gama de providers (Google, GitHub, etc.), o que facilita a integração com várias plataformas populares.
+- **Robustez**: É uma solução robusta e madura, com boas práticas de autenticação já incorporadas, o que nos deu uma base sólida para trabalhar.
+- **Extensibilidade**: Embora tenhamos feito várias personalizações, o NextAuth foi flexível o suficiente para nos permitir integrar essas modificações sem grandes complicações.
+
+### Customizações Realizadas
+
+Apesar das vantagens, fizemos algumas mudanças importantes para adaptar o NextAuth às nossas necessidades específicas:
+
+#### 1. **Estratégia de Autenticação Baseada em Banco de Dados**
+
+Optamos por gerenciar as sessões diretamente no banco de dados. Isso nos dá mais controle sobre as sessões de usuário, permitindo, por exemplo, encerrar sessões de maneira centralizada. Embora isso pudesse ser feito com JWT, a complexidade aumentaria, e ter as sessões no banco de dados nos permite uma visualização mais clara e intuitiva. Um dos nossos requisitos é mostrar ao usuário suas sessões ativas, permitindo que ele feche qualquer uma delas, exceto a atual, o que é mais fácil de implementar com sessões no banco de dados.
+
+#### 2. **Autenticação com Email e Senha**
+
+O NextAuth não facilita o uso de autenticação com email e senha, chegando até a desencorajá-la. Por isso, implementamos manualmente toda a lógica necessária para:
+
+- **Registro de Usuário (Register)**
+- **Esqueci Minha Senha (Forgot Password)**
+- **Redefinição de Senha (Reset Password)**
+- **Verificação de Email (Verify Email OTP)**
+- **Login**
+
+Após o login, criamos a sessão manualmente, gerando e gerenciando os tokens. Todas essas funcionalidades foram desenvolvidas de forma separada, cada uma com seu próprio caso de uso, garantindo um sistema modular e desacoplado.
+
+#### 3. **Magic Link**
+
+Implementamos o login via Magic Link de forma manual, integrando-o ao nosso processo de autenticação para fornecer uma experiência de usuário fluida e segura.
+
+#### 4. **Integração com Providers (Google e GitHub)**
+
+Utilizamos os providers do NextAuth, como Google e GitHub, mas integramos profundamente esses processos com nosso sistema:
+
+- **Callback Personalizado**: No callback do NextAuth, coletamos os dados do usuário e os adicionamos em cookies personalizados. O NextAuth adiciona as informações nas tabelas padrão e retorna, mas interceptamos esse processo para integrar com nossos casos de uso.
+- **União de Contas**: Se um usuário já tiver uma conta criada com credenciais (email e senha) e depois tentar entrar com Google ou GitHub, nossa lógica personalizada edita o usuário e cria uma nova conta ligada à mesma identidade, gerenciando as sessões conforme necessário.
+
+#### 5. **Gerenciamento de Sessões por Dispositivo**
+
+Adicionamos uma funcionalidade que o NextAuth não implementa nativamente: o controle de sessões por dispositivo. Cada sessão é associada a um dispositivo específico, permitindo ao usuário ver suas sessões ativas e encerrar qualquer uma delas de forma granular.
+
+### Emails de Notificação
+
+Todo esse sistema de autenticação é acompanhado de notificações via email para garantir que o fluxo seja o mais amigável e seguro possível para o usuário. Os emails são enviados utilizando **React Mail**, garantindo uma apresentação profissional e consistente.
+
+---
+
+Com essas customizações, conseguimos criar um sistema de autenticação robusto, seguro e totalmente adaptado às nossas necessidades, sem depender de soluções SaaS. Além disso, o controle granular sobre sessões e a flexibilidade na integração de providers nos permitem oferecer uma experiência de usuário de alta qualidade, mantendo o controle total sobre os dados e processos.
 
 &nbsp;
 <a id="-autor"></a>
