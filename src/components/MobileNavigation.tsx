@@ -58,7 +58,7 @@ export const MobileNavigation: React.FC = () => {
           </NavigationLink>
 
           <NavigationLink
-            href={`${webserver.host}/profile`}
+            href={`${webserver.host}/account-management`}
             title="Gerenciamento da Conta"
             onClick={handleCloseMenu}
           >

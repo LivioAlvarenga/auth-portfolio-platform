@@ -18,8 +18,8 @@ interface BreadcrumbNavigatorProps {
 }
 
 const routeMap: { [key: string]: string } = {
-  dashboard: 'Dashboard',
-  profile: 'Gerenciamento da Conta',
+  dashboard: 'Home',
+  'account-management': 'Gerenciamento da Conta',
   settings: 'Configurações',
   // Add more routes here
 }

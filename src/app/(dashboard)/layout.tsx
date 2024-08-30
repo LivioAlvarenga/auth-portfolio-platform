@@ -107,7 +107,7 @@ export default async function HomeLayout({
           </TooltipLink>
 
           <TooltipLink
-            href={`${webserver.host}/profile`}
+            href={`${webserver.host}/account-management`}
             title="Gerenciamento da Conta"
           >
             <User2 className="h-5 w-5" />
