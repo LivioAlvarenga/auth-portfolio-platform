@@ -67,15 +67,13 @@ const TwoFactorAuthSwitch: React.FC<TwoFactorAuthSwitchProps> = ({
           <div className={cn('relative', className)}>
             <Button
               variant={'outline'}
-              className="absolute -left-[10px] -top-[14px] h-7 w-7 rounded-full p-0 lg:hidden"
+              className={cn(
+                'absolute -left-[10px] -top-[14px] h-7 w-7 rounded-full p-0 font-sans700 text-base text-muted-foreground/60 transition-all lg:hidden',
+                isTooltipOpen && 'text-lg !text-primary',
+              )}
               onClick={handleButtonClick}
             >
-              <HelpCircle
-                size={20}
-                className={cn(
-                  isTooltipOpen ? 'text-primary' : 'text-muted-foreground/60',
-                )}
-              />
+              ?
             </Button>
             <div
               className={cn(
