@@ -94,23 +94,26 @@ export function RegisterForm({ className, ...props }: RegisterFormProps) {
     setIsLoading(true)
 
     try {
-      const response = await fetch(`${webserver.host}/api/v1/auth/register`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        `${webserver.host}/api/v1/public/auth/register`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: values.email,
+            password: values.password,
+            name: values.fullName,
+            nick_name: values.nickName,
+          }),
         },
-        body: JSON.stringify({
-          email: values.email,
-          password: values.password,
-          name: values.fullName,
-          nick_name: values.nickName,
-        }),
-      })
+      )
       const responseBody = await response.json()
 
       if (response.status === 201 && responseBody) {
         // Create opt token and send email verification
-        await fetch(`${webserver.host}/api/v1/auth/verify-email-opt`, {
+        await fetch(`${webserver.host}/api/v1/public/auth/verify-email-opt`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

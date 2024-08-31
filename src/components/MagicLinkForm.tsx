@@ -71,7 +71,7 @@ export function MagicLinkForm({
       const device = await getDeviceInfo()
 
       const response = await fetch(
-        `${webserver.host}/api/v1/auth/login/magic-link/verify`,
+        `${webserver.host}/api/v1/public/auth/login/magic-link/verify`,
         {
           method: 'POST',
           headers: {
@@ -126,7 +126,7 @@ export function MagicLinkForm({
 
     try {
       const response = await fetch(
-        `${webserver.host}/api/v1/auth/login/magic-link/request`,
+        `${webserver.host}/api/v1/public/auth/login/magic-link/request`,
         {
           method: 'POST',
           headers: {

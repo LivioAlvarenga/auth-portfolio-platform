@@ -80,7 +80,7 @@ export function UserAvatar({ name, email, urlImage, score }: UserAvatarProps) {
   }
 
   const handleManagerAccount = () => {
-    router.push(`${webserver.host}/profile`)
+    router.push(`${webserver.host}/account-management`)
   }
 
   return (

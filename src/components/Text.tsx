@@ -40,12 +40,20 @@ export const text = tv({
         'font-sans700 text-[18px] leading-[24px] tracking-[0.15px] md:text-[22px] md:leading-[28px] md:tracking-normal lg:text-[24px] lg:leading-[32px]',
       'title-18-24-400':
         'font-sans400 text-[18px] leading-[24px] tracking-[0.15px] md:text-[22px] md:leading-[28px] md:tracking-normal lg:text-[24px] lg:leading-[32px]',
+      'title-16-18-500':
+        'font-sans500 text-[16px] leading-[24px] tracking-[0.15px] lg:text-[18px]',
+      'title-16-16-500':
+        'font-sans500 text-[16px] leading-[24px] tracking-[0.15px]',
+      'title-14-16-500':
+        'font-sans500 text-[14px] leading-[20px] tracking-[0.1px] lg:text-[16px] lg:leading-[24px] lg:tracking-[0.15px]',
       'body-16-24-400':
         'font-sans400 text-[16px] leading-[24px] tracking-[0.5px] lg:text-[24px] lg:leading-[32px] lg:tracking-normal',
       'body-16-18-400':
         'font-sans400 text-[16px] leading-[24px] tracking-[0.5px] lg:text-[18px] lg:tracking-[0.15px]',
       'body-16-16-400':
         'font-sans400 text-[16px] leading-[24px] tracking-[0.5px]',
+      'label-14-16-400':
+        'font-sans400 text-[14px] leading-[20px] tracking-[0.1px] lg:text-[16px] lg:leading-[24px] lg:tracking-[0.5px]',
       'label-14-14-400':
         'font-sans400 text-[14px] leading-[20px] tracking-[0.1px]',
       'button-14-14-500':

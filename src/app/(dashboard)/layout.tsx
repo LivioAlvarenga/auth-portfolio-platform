@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input'
 import { UserAvatar } from '@/components/UserAvatar'
 import { webserver } from '@/infra/webserver'
 import { serverProtectedRoute } from '@/lib/authjs/serverProtectedRoute'
-import { Home, Search, Settings, User2 } from 'lucide-react'
+import { Home, Search, Settings, UserCog2 } from 'lucide-react'
 import { Metadata, Viewport } from 'next'
 import Link from 'next/link'
 import React from 'react'
@@ -83,10 +83,10 @@ export default async function HomeLayout({
 }) {
   const session = await serverProtectedRoute()
   const avatarOptions = {
-    name: session.user?.name,
-    email: session.user?.email,
-    urlImage: `${process.env.NEXT_PUBLIC_BUCKET}${session.user?.image}`,
-    score: session.user?.profile_completion_score,
+    name: session?.user?.name,
+    email: session?.user?.email,
+    urlImage: `${process.env.NEXT_PUBLIC_BUCKET}${session?.user?.image}`,
+    score: session?.user?.profile_completion_score,
   }
 
   return (
@@ -107,10 +107,10 @@ export default async function HomeLayout({
           </TooltipLink>
 
           <TooltipLink
-            href={`${webserver.host}/profile`}
+            href={`${webserver.host}/account-management`}
             title="Gerenciamento da Conta"
           >
-            <User2 className="h-5 w-5" />
+            <UserCog2 className="h-5 w-5" />
           </TooltipLink>
         </nav>
         <nav className="mt-auto flex flex-col items-center gap-4 px-2 sm:py-5">

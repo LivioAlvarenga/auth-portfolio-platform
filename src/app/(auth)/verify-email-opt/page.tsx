@@ -12,7 +12,7 @@ import { redirect } from 'next/navigation'
 
 async function getData(token: string) {
   const response = await fetch(
-    `${webserver.host}/api/v1/auth/register?token=${token}`,
+    `${webserver.host}/api/v1/public/auth/register?token=${token}`,
     {
       cache:
         process.env.NODE_ENV === 'development' ? 'no-cache' : 'force-cache',
