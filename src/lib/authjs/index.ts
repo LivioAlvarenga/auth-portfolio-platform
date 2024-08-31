@@ -122,6 +122,7 @@ export const {
         emailVerified: null,
         image: user.image,
         profile_completion_score: user.profile_completion_score,
+        two_factor_enabled: user.two_factor_enabled,
       }
 
       session = {

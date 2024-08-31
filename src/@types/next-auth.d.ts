@@ -8,6 +8,7 @@ declare module 'next-auth' {
     password_hash?: string | null
     role?: string
     profile_completion_score?: number | null
+    two_factor_enabled?: boolean
     created_at?: Date
     updated_at?: Date
   }

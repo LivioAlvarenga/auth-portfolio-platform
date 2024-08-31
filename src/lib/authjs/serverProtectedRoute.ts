@@ -8,17 +8,6 @@ interface ServerProtectedRouteProps {
   accessIfNotAuthenticated?: boolean
 }
 
-export interface Session {
-  user?: {
-    id: string
-    name?: string | null
-    role: 'user' | 'admin'
-    email: string
-    image?: string | null
-    profile_completion_score?: number | null
-  }
-}
-
 /**
  * serverProtectedRoute is a function that protects routes based on user authentication and roles.
  * It can either restrict access to authenticated users with specific roles or restrict access
@@ -70,5 +59,5 @@ export async function serverProtectedRoute({
     }
   }
 
-  return session as Session
+  return session
 }

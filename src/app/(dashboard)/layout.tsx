@@ -83,10 +83,10 @@ export default async function HomeLayout({
 }) {
   const session = await serverProtectedRoute()
   const avatarOptions = {
-    name: session.user?.name,
-    email: session.user?.email,
-    urlImage: `${process.env.NEXT_PUBLIC_BUCKET}${session.user?.image}`,
-    score: session.user?.profile_completion_score,
+    name: session?.user?.name,
+    email: session?.user?.email,
+    urlImage: `${process.env.NEXT_PUBLIC_BUCKET}${session?.user?.image}`,
+    score: session?.user?.profile_completion_score,
   }
 
   return (
