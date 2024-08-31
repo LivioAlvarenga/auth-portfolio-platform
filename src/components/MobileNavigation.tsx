@@ -2,7 +2,7 @@
 
 import { NavigationLink } from '@/components/NavigationLink'
 import { webserver } from '@/infra/webserver'
-import { Home, PanelLeft, Settings, User2 } from 'lucide-react'
+import { Home, PanelLeft, Settings, UserCog2 } from 'lucide-react'
 import Link from 'next/link'
 import React, { useState } from 'react'
 import { Icon } from './svg/icon'
@@ -62,7 +62,7 @@ export const MobileNavigation: React.FC = () => {
             title="Gerenciamento da Conta"
             onClick={handleCloseMenu}
           >
-            <User2 className="h-5 w-5" />
+            <UserCog2 className="h-5 w-5" />
           </NavigationLink>
           <NavigationLink
             href={`${webserver.host}/settings`}
