@@ -14,13 +14,13 @@ afterEach(async () => {
   await database.query('DELETE FROM users')
 })
 
-describe('GET /api/v1/auth/register', () => {
+describe('GET /api/v1/public/auth/register', () => {
   describe('Get User Register Use Case', () => {
     test('should return 404 if userId is invalid', async () => {
       const userId = v4()
 
       const response = await fetch(
-        `${webserver.host}/api/v1/auth/register?token=${userId}`,
+        `${webserver.host}/api/v1/public/auth/register?token=${userId}`,
       )
 
       const responseBody = await response.json()
@@ -33,7 +33,7 @@ describe('GET /api/v1/auth/register', () => {
       const user = await utilsTest.createDefaultUser()
 
       const response = await fetch(
-        `${webserver.host}/api/v1/auth/register?token=${user.id}`,
+        `${webserver.host}/api/v1/public/auth/register?token=${user.id}`,
       )
 
       const responseBody = await response.json()

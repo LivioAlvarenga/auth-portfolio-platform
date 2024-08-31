@@ -17,7 +17,7 @@ afterEach(async () => {
   await database.query('DELETE FROM verification_token')
 })
 
-describe('POST /api/v1/auth/login/magic-link/request', () => {
+describe('POST /api/v1/public/auth/login/magic-link/request', () => {
   describe('User Login Request Magic Link Use Case', () => {
     test('should delete all expired tokens', async () => {
       // Create 10 users with expired tokens
@@ -54,15 +54,18 @@ describe('POST /api/v1/auth/login/magic-link/request', () => {
 
       expect(tokensExpired.length).toBe(10)
 
-      await fetch(`${webserver.host}/api/v1/auth/login/magic-link/request`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      await fetch(
+        `${webserver.host}/api/v1/public/auth/login/magic-link/request`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: user.email,
+          }),
         },
-        body: JSON.stringify({
-          email: user.email,
-        }),
-      })
+      )
 
       const tokesResult = await database.query({
         text: `
@@ -80,7 +83,7 @@ describe('POST /api/v1/auth/login/magic-link/request', () => {
       const email = 'test-magic-link@test.com'
 
       const response = await fetch(
-        `${webserver.host}/api/v1/auth/login/magic-link/request`,
+        `${webserver.host}/api/v1/public/auth/login/magic-link/request`,
         {
           method: 'POST',
           headers: {
@@ -105,7 +108,7 @@ describe('POST /api/v1/auth/login/magic-link/request', () => {
       const user = userResult.rows[0]
 
       expect(user.role).toBe('user')
-      expect(user.profile_completion_score).toBe(6)
+      expect(user.profile_completion_score).toBe(7)
 
       const accountResult = await database.query({
         text: 'SELECT * FROM accounts WHERE "userId" = $1 AND provider = $2',
@@ -145,7 +148,7 @@ describe('POST /api/v1/auth/login/magic-link/request', () => {
       const email = existingUser.email
 
       const response = await fetch(
-        `${webserver.host}/api/v1/auth/login/magic-link/request`,
+        `${webserver.host}/api/v1/public/auth/login/magic-link/request`,
         {
           method: 'POST',
           headers: {
@@ -171,7 +174,7 @@ describe('POST /api/v1/auth/login/magic-link/request', () => {
 
       expect(user.id).toBe(existingUser.id) // User should not change
       expect(user.role).toBe('user')
-      expect(user.profile_completion_score).toBe(5)
+      expect(user.profile_completion_score).toBe(6)
 
       const accountResult = await database.query({
         text: 'SELECT * FROM accounts WHERE "userId" = $1 AND provider = $2',
@@ -223,7 +226,7 @@ describe('POST /api/v1/auth/login/magic-link/request', () => {
 
       // Call the API to request a new magic link
       const response = await fetch(
-        `${webserver.host}/api/v1/auth/login/magic-link/request`,
+        `${webserver.host}/api/v1/public/auth/login/magic-link/request`,
         {
           method: 'POST',
           headers: {
@@ -249,7 +252,7 @@ describe('POST /api/v1/auth/login/magic-link/request', () => {
 
       expect(user.id).toBe(existingUser.id) // User should not change
       expect(user.role).toBe('user')
-      expect(user.profile_completion_score).toBe(5)
+      expect(user.profile_completion_score).toBe(6)
 
       const accountResult = await database.query({
         text: 'SELECT * FROM accounts WHERE "userId" = $1 AND provider = $2',

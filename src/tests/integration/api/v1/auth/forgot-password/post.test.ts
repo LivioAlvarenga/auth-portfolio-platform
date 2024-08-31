@@ -17,13 +17,13 @@ afterEach(async () => {
   await database.query('DELETE FROM verification_token')
 })
 
-describe('POST /api/v1/auth/forgot-password', () => {
+describe('POST /api/v1/public/auth/forgot-password', () => {
   describe('Forgot Password Use Case', () => {
     test('should return 404 if user not found', async () => {
       const email = 'notfoundemail@test.com'
 
       const response = await fetch(
-        `${webserver.host}/api/v1/auth/forgot-password`,
+        `${webserver.host}/api/v1/public/auth/forgot-password`,
         {
           method: 'POST',
           headers: {
@@ -45,7 +45,7 @@ describe('POST /api/v1/auth/forgot-password', () => {
       const user = await utilsTest.createDefaultUser()
 
       const response = await fetch(
-        `${webserver.host}/api/v1/auth/forgot-password`,
+        `${webserver.host}/api/v1/public/auth/forgot-password`,
         {
           method: 'POST',
           headers: {
@@ -93,7 +93,7 @@ describe('POST /api/v1/auth/forgot-password', () => {
       const token = tokenResult.rows[0]
 
       const response = await fetch(
-        `${webserver.host}/api/v1/auth/forgot-password`,
+        `${webserver.host}/api/v1/public/auth/forgot-password`,
         {
           method: 'POST',
           headers: {
@@ -163,7 +163,7 @@ describe('POST /api/v1/auth/forgot-password', () => {
 
       expect(tokensExpired.length).toBe(10)
 
-      await fetch(`${webserver.host}/api/v1/auth/forgot-password`, {
+      await fetch(`${webserver.host}/api/v1/public/auth/forgot-password`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

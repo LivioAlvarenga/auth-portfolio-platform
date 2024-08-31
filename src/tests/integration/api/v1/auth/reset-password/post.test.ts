@@ -17,13 +17,13 @@ afterEach(async () => {
   await database.query('DELETE FROM users')
 })
 
-describe('POST /api/v1/auth/reset-password', () => {
+describe('POST /api/v1/public/auth/reset-password', () => {
   test('should return 404 if user not found', async () => {
     const identifier = v4()
     const password = 'Password23@#!'
 
     const response = await fetch(
-      `${webserver.host}/api/v1/auth/reset-password`,
+      `${webserver.host}/api/v1/public/auth/reset-password`,
       {
         method: 'POST',
         headers: {
@@ -47,7 +47,7 @@ describe('POST /api/v1/auth/reset-password', () => {
     const newPassword = 'Password123$%$'
 
     const response = await fetch(
-      `${webserver.host}/api/v1/auth/reset-password`,
+      `${webserver.host}/api/v1/public/auth/reset-password`,
       {
         method: 'POST',
         headers: {
@@ -71,7 +71,7 @@ describe('POST /api/v1/auth/reset-password', () => {
     const newPassword = 'Password123$%$'
 
     const response = await fetch(
-      `${webserver.host}/api/v1/auth/reset-password`,
+      `${webserver.host}/api/v1/public/auth/reset-password`,
       {
         method: 'POST',
         headers: {

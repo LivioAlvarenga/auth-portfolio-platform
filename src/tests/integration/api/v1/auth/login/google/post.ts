@@ -17,7 +17,7 @@ afterEach(async () => {
   await database.query('DELETE FROM avatars')
 })
 
-describe('POST /api/v1/auth/login/google', () => {
+describe('POST /api/v1/public/auth/login/google', () => {
   describe('User Login Google Use Case', () => {
     test('should return 404 if session not found', async () => {
       const differentCookie = `authjs.session-token=${v4()}; Path=/; SameSite=Lax; HttpOnly; Secure`
@@ -25,7 +25,7 @@ describe('POST /api/v1/auth/login/google', () => {
       const device = 'device-id'
 
       const response = await fetch(
-        `${webserver.host}/api/v1/auth/login/google`,
+        `${webserver.host}/api/v1/public/auth/login/google`,
         {
           method: 'POST',
           headers: {
@@ -53,7 +53,7 @@ describe('POST /api/v1/auth/login/google', () => {
       const device = 'device-id'
 
       const response = await fetch(
-        `${webserver.host}/api/v1/auth/login/google`,
+        `${webserver.host}/api/v1/public/auth/login/google`,
         {
           method: 'POST',
           headers: {

@@ -17,21 +17,24 @@ afterEach(async () => {
   await database.query('DELETE FROM verification_token')
 })
 
-describe('POST /api/v1/auth/register', () => {
+describe('POST /api/v1/public/auth/register', () => {
   describe('User Register Use Case', () => {
     test('should return error for already registered email', async () => {
       const createdUser = await utilsTest.createDefaultUserWithAccount()
 
-      const response = await fetch(`${webserver.host}/api/v1/auth/register`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        `${webserver.host}/api/v1/public/auth/register`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: createdUser.email,
+            password: 'Valid1Password!',
+          }),
         },
-        body: JSON.stringify({
-          email: createdUser.email,
-          password: 'Valid1Password!',
-        }),
-      })
+      )
 
       const responseBody = await response.json()
 
@@ -46,13 +49,16 @@ describe('POST /api/v1/auth/register', () => {
         name: 'New User',
       }
 
-      const response = await fetch(`${webserver.host}/api/v1/auth/register`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        `${webserver.host}/api/v1/public/auth/register`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(newUser),
         },
-        body: JSON.stringify(newUser),
-      })
+      )
 
       expect(response.status).toBe(201)
 
@@ -76,13 +82,16 @@ describe('POST /api/v1/auth/register', () => {
         // Missing name
       }
 
-      const response = await fetch(`${webserver.host}/api/v1/auth/register`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        `${webserver.host}/api/v1/public/auth/register`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(newUser),
         },
-        body: JSON.stringify(newUser),
-      })
+      )
 
       const responseBody = await response.json()
 
@@ -100,13 +109,16 @@ describe('POST /api/v1/auth/register', () => {
         nick_name: 'Credential User nickname',
       }
 
-      const response = await fetch(`${webserver.host}/api/v1/auth/register`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        `${webserver.host}/api/v1/public/auth/register`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(newUser),
         },
-        body: JSON.stringify(newUser),
-      })
+      )
       const responseBody = await response.json()
 
       expect(response.status).toBe(201)
@@ -138,7 +150,7 @@ describe('POST /api/v1/auth/register', () => {
       expect(user.emailVerified).toBeTruthy()
       expect(user.email_verified_provider).toBe('google')
       expect(user.image).toBe(userGoogle.image)
-      expect(user.profile_completion_score).toBe(0)
+      expect(user.profile_completion_score).toBe(1)
     })
 
     test('should create a new "credential" account and update user details if the user has not logged in with a other provider', async () => {
@@ -149,13 +161,16 @@ describe('POST /api/v1/auth/register', () => {
         nick_name: 'Credential User nickname',
       }
 
-      const response = await fetch(`${webserver.host}/api/v1/auth/register`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        `${webserver.host}/api/v1/public/auth/register`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(newUser),
         },
-        body: JSON.stringify(newUser),
-      })
+      )
       const responseBody = await response.json()
 
       expect(response.status).toBe(201)
@@ -186,7 +201,7 @@ describe('POST /api/v1/auth/register', () => {
       expect(user.emailVerified).toBeFalsy()
       expect(user.email_verified_provider).toBeNull()
       expect(user.image).toBeNull()
-      expect(user.profile_completion_score).toBe(3)
+      expect(user.profile_completion_score).toBe(4)
     })
   })
 })

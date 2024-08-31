@@ -16,14 +16,14 @@ afterEach(async () => {
   await database.query('DELETE FROM verification_token')
 })
 
-describe('GET /api/v1/auth/verify-email-opt', () => {
+describe('GET /api/v1/public/auth/verify-email-opt', () => {
   describe('Get Verify Email Use Case', () => {
     test('should return 404 if user not found', async () => {
       const userId = v4() // random user id
       const opt = '123456' // example opt
 
       const response = await fetch(
-        `${webserver.host}/api/v1/auth/verify-email-opt?token=${userId}&opt=${opt}`,
+        `${webserver.host}/api/v1/public/auth/verify-email-opt?token=${userId}&opt=${opt}`,
         {
           method: 'GET',
         },
@@ -40,7 +40,7 @@ describe('GET /api/v1/auth/verify-email-opt', () => {
       const opt = '123456' // example opt
 
       const response = await fetch(
-        `${webserver.host}/api/v1/auth/verify-email-opt?token=${user.id}&opt=${opt}`,
+        `${webserver.host}/api/v1/public/auth/verify-email-opt?token=${user.id}&opt=${opt}`,
         {
           method: 'GET',
         },
@@ -57,7 +57,7 @@ describe('GET /api/v1/auth/verify-email-opt', () => {
       const opt = '123456' // example opt
 
       const response = await fetch(
-        `${webserver.host}/api/v1/auth/verify-email-opt?token=${token.identifier}&opt=${opt}`,
+        `${webserver.host}/api/v1/public/auth/verify-email-opt?token=${token.identifier}&opt=${opt}`,
         {
           method: 'GET',
         },
@@ -73,7 +73,7 @@ describe('GET /api/v1/auth/verify-email-opt', () => {
       const token = await utilsTest.createDefaultTokenWithOpt()
 
       const response = await fetch(
-        `${webserver.host}/api/v1/auth/verify-email-opt?token=${token.identifier}&opt=${token.opt}`,
+        `${webserver.host}/api/v1/public/auth/verify-email-opt?token=${token.identifier}&opt=${token.opt}`,
         {
           method: 'GET',
         },
@@ -96,7 +96,7 @@ describe('GET /api/v1/auth/verify-email-opt', () => {
 
       expect(user.emailVerified).toBeDefined()
       expect(user.email_verified_provider).toBe('credential')
-      expect(user.profile_completion_score).toBe(3)
+      expect(user.profile_completion_score).toBe(4)
 
       const tokenResult = await database.query({
         text: `
@@ -145,7 +145,7 @@ describe('GET /api/v1/auth/verify-email-opt', () => {
       expect(tokensExpired.length).toBe(10)
 
       await fetch(
-        `${webserver.host}/api/v1/auth/verify-email-opt?token=${user.id}&opt=123456`,
+        `${webserver.host}/api/v1/public/auth/verify-email-opt?token=${user.id}&opt=123456`,
         {
           method: 'GET',
         },

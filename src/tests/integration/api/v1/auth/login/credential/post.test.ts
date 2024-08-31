@@ -16,7 +16,7 @@ afterEach(async () => {
   await database.query('DELETE FROM verification_token')
 })
 
-describe('POST /api/v1/auth/login/credential', () => {
+describe('POST /api/v1/public/auth/login/credential', () => {
   describe('User Login Credential Use Case', () => {
     test('should return 404 if user not found', async () => {
       const email = 'no-exist@email.com'
@@ -24,7 +24,7 @@ describe('POST /api/v1/auth/login/credential', () => {
       const device = 'device-id'
 
       const response = await fetch(
-        `${webserver.host}/api/v1/auth/login/credential`,
+        `${webserver.host}/api/v1/public/auth/login/credential`,
         {
           method: 'POST',
           headers: {
@@ -50,7 +50,7 @@ describe('POST /api/v1/auth/login/credential', () => {
       const device = 'device-id'
 
       const response = await fetch(
-        `${webserver.host}/api/v1/auth/login/credential`,
+        `${webserver.host}/api/v1/public/auth/login/credential`,
         {
           method: 'POST',
           headers: {
@@ -76,7 +76,7 @@ describe('POST /api/v1/auth/login/credential', () => {
       const device = 'device-id'
 
       const response = await fetch(
-        `${webserver.host}/api/v1/auth/login/credential`,
+        `${webserver.host}/api/v1/public/auth/login/credential`,
         {
           method: 'POST',
           headers: {
@@ -100,7 +100,7 @@ describe('POST /api/v1/auth/login/credential', () => {
       const session = await utilsTest.createDefaultUserWithSession()
 
       const response = await fetch(
-        `${webserver.host}/api/v1/auth/login/credential`,
+        `${webserver.host}/api/v1/public/auth/login/credential`,
         {
           method: 'POST',
           headers: {
@@ -169,7 +169,7 @@ describe('POST /api/v1/auth/login/credential', () => {
       })
 
       const response = await fetch(
-        `${webserver.host}/api/v1/auth/login/credential`,
+        `${webserver.host}/api/v1/public/auth/login/credential`,
         {
           method: 'POST',
           headers: {
@@ -264,7 +264,7 @@ describe('POST /api/v1/auth/login/credential', () => {
 
       expect(sessionsExpired.length).toBe(10)
 
-      await fetch(`${webserver.host}/api/v1/auth/login/credential`, {
+      await fetch(`${webserver.host}/api/v1/public/auth/login/credential`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

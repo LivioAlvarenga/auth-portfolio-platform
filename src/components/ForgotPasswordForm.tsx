@@ -48,7 +48,7 @@ export function ForgotPasswordForm({
 
     try {
       const response = await fetch(
-        `${webserver.host}/api/v1/auth/forgot-password`,
+        `${webserver.host}/api/v1/public/auth/forgot-password`,
         {
           method: 'POST',
           headers: {

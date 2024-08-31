@@ -110,7 +110,7 @@ export function ResetPasswordForm({
 
       // reset password
       const response = await fetch(
-        `${webserver.host}/api/v1/auth/reset-password`,
+        `${webserver.host}/api/v1/public/auth/reset-password`,
         {
           method: 'POST',
           headers: {

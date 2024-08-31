@@ -16,7 +16,7 @@ afterEach(async () => {
   await database.query('DELETE FROM verification_token')
 })
 
-describe('POST /api/v1/auth/login/magic-link/verify', () => {
+describe('POST /api/v1/public/auth/login/magic-link/verify', () => {
   describe('User Login Verify Magic Link Use Case', () => {
     test('should delete all expired tokens', async () => {
       // Create 10 users with expired tokens
@@ -53,16 +53,19 @@ describe('POST /api/v1/auth/login/magic-link/verify', () => {
 
       expect(tokensExpired.length).toBe(10)
 
-      await fetch(`${webserver.host}/api/v1/auth/login/magic-link/verify`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      await fetch(
+        `${webserver.host}/api/v1/public/auth/login/magic-link/verify`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            token,
+            device: 'device-id',
+          }),
         },
-        body: JSON.stringify({
-          token,
-          device: 'device-id',
-        }),
-      })
+      )
 
       const tokesResult = await database.query({
         text: `
@@ -112,16 +115,19 @@ describe('POST /api/v1/auth/login/magic-link/verify', () => {
 
       expect(sessionsExpired.length).toBe(10)
 
-      await fetch(`${webserver.host}/api/v1/auth/login/magic-link/verify`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      await fetch(
+        `${webserver.host}/api/v1/public/auth/login/magic-link/verify`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            token,
+            device: 'device-id',
+          }),
         },
-        body: JSON.stringify({
-          token,
-          device: 'device-id',
-        }),
-      })
+      )
 
       const sessionsResult = await database.query({
         text: `
@@ -149,7 +155,7 @@ describe('POST /api/v1/auth/login/magic-link/verify', () => {
 
       // Attempt to verify the deleted token
       const response = await fetch(
-        `${webserver.host}/api/v1/auth/login/magic-link/verify`,
+        `${webserver.host}/api/v1/public/auth/login/magic-link/verify`,
         {
           method: 'POST',
           headers: {
@@ -174,7 +180,7 @@ describe('POST /api/v1/auth/login/magic-link/verify', () => {
 
       // Verify the magic link
       const response = await fetch(
-        `${webserver.host}/api/v1/auth/login/magic-link/verify`,
+        `${webserver.host}/api/v1/public/auth/login/magic-link/verify`,
         {
           method: 'POST',
           headers: {
@@ -220,7 +226,7 @@ describe('POST /api/v1/auth/login/magic-link/verify', () => {
 
       const profileCompletionScore =
         profileScoreResult.rows[0].profile_completion_score
-      expect(profileCompletionScore).toBe(4)
+      expect(profileCompletionScore).toBe(5)
 
       // Check that a session was created
       const sessionResult = await database.query({

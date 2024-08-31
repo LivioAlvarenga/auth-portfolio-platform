@@ -91,7 +91,7 @@ export function LoginForm({
     try {
       const device = await getDeviceInfo()
       const response = await fetch(
-        `${webserver.host}/api/v1/auth/login/credential`,
+        `${webserver.host}/api/v1/public/auth/login/credential`,
         {
           method: 'POST',
           headers: {
@@ -170,7 +170,7 @@ export function LoginForm({
       const device = await getDeviceInfo()
 
       const response = await fetch(
-        `${webserver.host}/api/v1/auth/login/google`,
+        `${webserver.host}/api/v1/public/auth/login/google`,
         {
           method: 'POST',
           headers: {
@@ -236,7 +236,7 @@ export function LoginForm({
       const device = await getDeviceInfo()
 
       const response = await fetch(
-        `${webserver.host}/api/v1/auth/login/github`,
+        `${webserver.host}/api/v1/public/auth/login/github`,
         {
           method: 'POST',
           headers: {
