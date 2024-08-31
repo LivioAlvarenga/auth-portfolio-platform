@@ -11,6 +11,7 @@ export const PROFILE_COMPLETION_FIELDS = [
   'email',
   'nick_name',
   'name',
+  'two_factor_enabled',
 ]
 
 /**
