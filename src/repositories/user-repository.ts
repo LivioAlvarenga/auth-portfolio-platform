@@ -9,6 +9,7 @@ export interface User {
   password_hash?: string
   role: 'admin' | 'user'
   profile_completion_score?: number
+  two_factor_enabled?: boolean
   created_at: Date
   updated_at: Date
 }
@@ -23,6 +24,7 @@ export interface UserInput {
   password_hash?: string
   role?: 'admin' | 'user'
   profile_completion_score?: number
+  two_factor_enabled?: boolean
   updated_at?: Date
 }
 

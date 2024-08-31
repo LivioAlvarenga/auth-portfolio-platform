@@ -49,7 +49,7 @@ export class PgUserRepository implements UserRepository {
       UPDATE users
       SET ${setClause}, updated_at = NOW()
       WHERE id = $1
-      RETURNING id, name, nick_name, email, "emailVerified", email_verified_provider, image, role, profile_completion_score, updated_at
+      RETURNING id, name, nick_name, email, "emailVerified", email_verified_provider, image, role, profile_completion_score, updated_at, two_factor_enabled
     `,
       values: [id, ...Object.values(data)],
     }
