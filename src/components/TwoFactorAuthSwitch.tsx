@@ -16,12 +16,16 @@ import { Button } from './ui/button'
 
 interface TwoFactorAuthSwitchProps {
   className?: string
+  two_factor_enabled?: boolean
 }
 
 const TwoFactorAuthSwitch: React.FC<TwoFactorAuthSwitchProps> = ({
   className,
+  two_factor_enabled,
 }) => {
-  const [isChecked, setIsChecked] = useState<boolean>(false)
+  const [isChecked, setIsChecked] = useState<boolean>(
+    Boolean(two_factor_enabled),
+  )
   const [isTooltipOpen, setIsTooltipOpen] = useState<boolean>(false)
 
   const handleCheckedChange = (checked: boolean) => {

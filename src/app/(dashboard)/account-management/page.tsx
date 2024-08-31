@@ -14,7 +14,9 @@ export default async function AccountManagement() {
       >
         Gerencie Suas Configurações de Conta e Segurança
       </Text>
-      <TwoFactorAuthSwitch />
+      <TwoFactorAuthSwitch
+        two_factor_enabled={session?.user?.two_factor_enabled}
+      />
     </div>
   )
 }
