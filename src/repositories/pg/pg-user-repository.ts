@@ -6,9 +6,9 @@ export class PgUserRepository implements UserRepository {
   async createUser(data: UserInput): Promise<Omit<User, 'passwordHash'>> {
     const query = {
       text: `
-        INSERT INTO users (name, nick_name, email, "emailVerified", email_verified_provider, image, password_hash, role, profile_completion_score)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-        RETURNING id, name, nick_name, email, "emailVerified", email_verified_provider, image, role, profile_completion_score, created_at, updated_at
+        INSERT INTO users (name, nick_name, email, "emailVerified", email_verified_provider, image, password_hash, role, profile_completion_score, two_factor_enabled)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+        RETURNING id, name, nick_name, email, "emailVerified", email_verified_provider, image, role, profile_completion_score, two_factor_enabled, created_at, updated_at
       `,
       values: [
         data.name || null,
@@ -20,6 +20,7 @@ export class PgUserRepository implements UserRepository {
         data.password_hash || null,
         data.role || 'user',
         data.profile_completion_score,
+        data.two_factor_enabled || false,
       ],
     }
 

@@ -46,7 +46,7 @@ describe('POST /api/v1/public/auth/login/credential', () => {
 
     test('should return 403 if email not verified', async () => {
       const user = await utilsTest.createDefaultUser() // this user is not email verified
-      const password = 'Password23@#!'
+      const password = 'Password123$%$'
       const device = 'device-id'
 
       const response = await fetch(
@@ -226,6 +226,35 @@ describe('POST /api/v1/public/auth/login/credential', () => {
         (expires.getTime() - now.getTime()) / (1000 * 60 * 60 * 24),
       )
       expect(diffDays).toBe(30)
+    })
+
+    test('should return 200 and send two-factor token when user has two_factor_enabled true', async () => {
+      const user = await utilsTest.createDefaultUserTwoFactor()
+
+      const password = 'Password123$%$'
+      const device = 'device-id'
+
+      const response = await fetch(
+        `${webserver.host}/api/v1/public/auth/login/credential`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: user.email,
+            password,
+            device,
+          }),
+        },
+      )
+
+      const responseBody = await response.json()
+
+      expect(response.status).toBe(200)
+      expect(responseBody.message).toBe(
+        'Token de autenticação de dois fatores enviado com sucesso!',
+      )
     })
 
     test('should delete all expired sessions', async () => {

@@ -15,6 +15,10 @@ import {
   UserRegistrationWelcomeTemplate,
 } from '../emails/UserRegistrationWelcome'
 import {
+  VerificationEmailTwoFactorProps,
+  VerificationEmailTwoFactorTemplate,
+} from '../emails/VerificationEmailTwoFactor'
+import {
   VerificationEmailWithOptProps,
   VerificationEmailWithOptTemplate,
 } from '../emails/VerificationEmailWithOpt'
@@ -25,6 +29,7 @@ export interface EmailDataMap {
   PASSWORD_RESET_REQUEST: PasswordResetRequestProps
   PASSWORD_RESET_CONFIRMATION: PasswordResetConfirmationProps
   LOGIN_MAGIC_LINK: LoginMagicLinkProps
+  VERIFICATION_EMAIL_TWO_FACTOR: VerificationEmailTwoFactorProps
   // Add other email data types as needed
 }
 
@@ -46,6 +51,7 @@ const emailTemplates: EmailTemplates = {
   PASSWORD_RESET_REQUEST: PasswordResetRequestTemplate,
   PASSWORD_RESET_CONFIRMATION: PasswordResetConfirmationTemplate,
   LOGIN_MAGIC_LINK: LoginMagicLinkTemplate,
+  VERIFICATION_EMAIL_TWO_FACTOR: VerificationEmailTwoFactorTemplate,
   // Add other email templates as needed
 }
 

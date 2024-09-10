@@ -12,6 +12,7 @@ interface GetRegisterUseCaseResponse {
     email: string
     name?: string
     emailVerified?: string
+    two_factor_enabled?: boolean
   }
 }
 
@@ -39,6 +40,7 @@ export class GetRegisterUseCase {
         email: userAlreadyExists.email,
         name: userAlreadyExists.nick_name || userAlreadyExists.name,
         emailVerified: userAlreadyExists.emailVerified,
+        two_factor_enabled: userAlreadyExists.two_factor_enabled,
       },
     }
   }

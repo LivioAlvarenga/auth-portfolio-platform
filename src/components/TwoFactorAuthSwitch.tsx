@@ -12,24 +12,23 @@ import { cn } from '@/lib/shadcn-ui'
 
 import { webserver } from '@/infra/webserver'
 import { HelpCircle, Loader2, Lock } from 'lucide-react'
-import { useSession } from 'next-auth/react'
+import { Session } from 'next-auth'
 import React, { useState } from 'react'
 import { showToast } from './ShowToast'
 import { Button } from './ui/button'
 
 interface TwoFactorAuthSwitchProps {
   className?: string
-  two_factor_enabled?: boolean
+  session: Session | null
 }
 
 const TwoFactorAuthSwitch: React.FC<TwoFactorAuthSwitchProps> = ({
   className,
-  two_factor_enabled,
+  session,
 }) => {
-  const session = useSession()
   const [isLoading, setIsLoading] = useState(false)
   const [isChecked, setIsChecked] = useState<boolean>(
-    Boolean(two_factor_enabled),
+    Boolean(session?.user?.two_factor_enabled),
   )
   const [isTooltipOpen, setIsTooltipOpen] = useState<boolean>(false)
 
@@ -46,7 +45,7 @@ const TwoFactorAuthSwitch: React.FC<TwoFactorAuthSwitchProps> = ({
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            userId: session.data?.user?.id,
+            userId: session?.user?.id,
           }),
         },
       )

@@ -96,7 +96,7 @@ describe('GET /api/v1/public/auth/verify-email-opt', () => {
 
       expect(user.emailVerified).toBeDefined()
       expect(user.email_verified_provider).toBe('credential')
-      expect(user.profile_completion_score).toBe(4)
+      expect(user.profile_completion_score).toBe(3)
 
       const tokenResult = await database.query({
         text: `

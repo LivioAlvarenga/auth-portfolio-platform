@@ -2,26 +2,27 @@ import { Button, Heading, Section, Text } from '@react-email/components'
 import { renderEmailComponent } from '..'
 import { LayoutEmail } from '../components/LayoutEmail'
 
-export interface VerificationEmailWithOptProps {
+export interface VerificationEmailTwoFactorProps {
   opt: string
   url: string
 }
 
-export function VerificationEmailWithOpt({
+export function VerificationEmailTwoFactor({
   opt,
   url,
-}: VerificationEmailWithOptProps) {
-  const previewText = 'Confirme sua conta - Código de Verificação'
+}: VerificationEmailTwoFactorProps) {
+  const previewText =
+    'Código de Verificação - Finalize seu login com a autenticação de dois fatores'
 
   return (
     <LayoutEmail previewText={previewText}>
       <Section className="mt-[20px] px-5">
         <Heading className="mx-0 my-[10px] p-0 text-center text-[22px] font-bold leading-[28px] tracking-normal text-black">
-          Seu código de verificação
+          Seu código de verificação de dois fatores
         </Heading>
 
         <Text className="mt-8 text-center text-[18px] leading-[24px] tracking-[0.15px] text-black">
-          Para concluir a verificação da sua conta, insira este código no site
+          Para concluir o login em sua conta, insira este código no site
           adm.produtivese.com.br:
         </Text>
 
@@ -34,7 +35,7 @@ export function VerificationEmailWithOpt({
             className="rounded bg-[#0866FF] px-5 py-3 text-center text-sm font-medium text-white no-underline"
             href={url}
           >
-            Clique aqui para validar seu e-mail
+            Clique aqui para validar seu login
           </Button>
         </Section>
 
@@ -44,7 +45,7 @@ export function VerificationEmailWithOpt({
         </Text>
 
         <Text className="text-[14px] leading-[24px] text-black">
-          O código é válido por <strong>24 horas</strong> e não deve ser
+          O código é válido por <strong>10 minutos</strong> e não deve ser
           compartilhado.
         </Text>
 
@@ -63,27 +64,28 @@ export function VerificationEmailWithOpt({
   )
 }
 
-export function VerificationEmailWithOptText({
+export function VerificationEmailTwoFactorText({
   opt,
   url,
-}: VerificationEmailWithOptProps): string {
-  const previewText = 'Confirme sua conta - Código de Verificação'
+}: VerificationEmailTwoFactorProps): string {
+  const previewText =
+    'Código de Verificação - Finalize seu login com a autenticação de dois fatores'
 
   return `
 ${previewText}
 
-Seu Código de Verificação
+Seu código de verificação de dois fatores
 
-Para concluir a verificação da sua conta, insira este código no site adm.produtivese.com.br:
+Para concluir o login em sua conta, insira este código no site adm.produtivese.com.br:
 
 ${opt}
 
-Copie e cole o seguinte endereço no seu navegador para validar seu email:
+Copie e cole o seguinte endereço no seu navegador para validar seu login:
 ${url}
 
 Caso você não tenha solicitado esse código, simplesmente ignore esta mensagem.
 
-O código é válido por 24 horas e não deve ser compartilhado.
+O código é válido por 10 minutos e não deve ser compartilhado.
 
 Este é um e-mail automático, não responda.
 
@@ -92,10 +94,10 @@ Equipe Produtivese
 `
 }
 
-export const VerificationEmailWithOptTemplate = {
-  subject: 'Seu Código de Verificação - Produtivese',
-  render: async (data: VerificationEmailWithOptProps) => ({
-    html: await renderEmailComponent(VerificationEmailWithOpt(data)),
-    text: VerificationEmailWithOptText(data),
+export const VerificationEmailTwoFactorTemplate = {
+  subject: 'Seu código de verificação de dois fatores - Produtivese',
+  render: async (data: VerificationEmailTwoFactorProps) => ({
+    html: await renderEmailComponent(VerificationEmailTwoFactor(data)),
+    text: VerificationEmailTwoFactorText(data),
   }),
 }

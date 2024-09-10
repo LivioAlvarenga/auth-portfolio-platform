@@ -9,7 +9,7 @@ import { User } from '@/repositories/user-repository'
 import { VerificationToken } from '@/repositories/verification-token-repository'
 import { calculateProfileCompletionScore } from '@/use-cases/utils/profile-completion-fields'
 import { generateOTP } from '@/utils/password'
-import { addDays } from 'date-fns'
+import { addDays, addMinutes } from 'date-fns'
 import { v4 } from 'uuid'
 
 const userRepository = new PgUserRepository()
@@ -25,8 +25,18 @@ const DAYS_30_IN_MILLISECONDS =
 const createDefaultUser = async (): Promise<User> => {
   const user = {
     email: 'testuser1@example.com',
-    passwordHash: await hashPassword('Password123$%$'),
+    password_hash: await hashPassword('Password123$%$'),
     name: 'Test User',
+  }
+  return userRepository.createUser(user)
+}
+
+const createDefaultUserTwoFactor = async (): Promise<User> => {
+  const user = {
+    email: 'testuser1@example.com',
+    password_hash: await hashPassword('Password123$%$'),
+    name: 'Test User',
+    two_factor_enabled: true,
   }
   return userRepository.createUser(user)
 }
@@ -91,6 +101,38 @@ const createDefaultTokenWithOpt = async (): Promise<VerificationToken> => {
     opt: generateOTP(),
   }
   return verificationTokenRepository.createToken(token)
+}
+
+const createDefaultTokenWithTwoFactorOpt = async ({
+  emailVerified = false,
+  two_factor_enabled = true,
+}): Promise<{
+  token: VerificationToken
+  user: User
+}> => {
+  const userOptions = {
+    email: 'testuser1@example.com',
+    password_hash: await hashPassword('Password123$%$'),
+    name: 'Test User',
+    two_factor_enabled,
+    emailVerified: emailVerified ? new Date() : undefined,
+    email_verified_provider: emailVerified ? 'credential' : undefined,
+  }
+  const user = await userRepository.createUser(userOptions)
+
+  const tokenOptions = {
+    identifier: user.id,
+    token: v4(),
+    expires: addMinutes(new Date(), 10),
+    tokenType: 'TWO_FACTOR_VERIFICATION',
+    opt: generateOTP(),
+  }
+  const token = await verificationTokenRepository.createToken(tokenOptions)
+
+  return {
+    token,
+    user,
+  }
 }
 
 const createDefaultUserWithMagicLink = async (): Promise<{
@@ -232,10 +274,12 @@ const createDefaultUserWithGoogleAccountFromAuthJs = async ({
 
 export const utilsTest = {
   createDefaultUser,
+  createDefaultUserTwoFactor,
   createDefaultResetPasswordToken,
   createDefaultUserWithAccount,
   createDefaultUserWithAccountGoggle,
   createDefaultTokenWithOpt,
+  createDefaultTokenWithTwoFactorOpt,
   createDefaultUserEmailVerified,
   createDefaultUserWithSession,
   createDefaultUserWithGoogleAccountFromAuthJs,
