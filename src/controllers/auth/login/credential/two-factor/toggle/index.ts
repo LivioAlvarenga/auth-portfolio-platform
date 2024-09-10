@@ -1,6 +1,6 @@
 import { NextCookieRepository } from '@/repositories/nextjs/next-cookie-repository'
 import { tokenValidation } from '@/schemas'
-import { makeTwoFactorToggleUseCase } from '@/use-cases/auth/login/credential/two-factor/toggle/make-two-factor-toggle'
+import { makeTwoFactorToggleUseCase } from '@/use-cases/auth/login/credential/two-factor/make-two-factor'
 
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
