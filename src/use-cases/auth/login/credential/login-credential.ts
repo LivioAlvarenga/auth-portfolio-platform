@@ -2,7 +2,9 @@ import { comparePassword } from '@/lib/bcrypt'
 import { CookieRepository } from '@/repositories/cookie-repository'
 import { SessionRepository } from '@/repositories/session-repository'
 import { UserRepository } from '@/repositories/user-repository'
+import { VerificationTokenRepository } from '@/repositories/verification-token-repository'
 import { v4 } from 'uuid'
+import { generateAndSendTwoFactorToken } from './two-factor/send-token/two-factor-send-token'
 
 interface LoginCredentialUseCaseRequest {
   email: string
@@ -25,6 +27,7 @@ export class LoginCredentialUseCase {
   constructor(
     private userRepository: UserRepository,
     private sessionRepository: SessionRepository,
+    private verificationTokenRepository: VerificationTokenRepository,
     private cookieRepository: CookieRepository,
   ) {}
 
@@ -46,16 +49,7 @@ export class LoginCredentialUseCase {
       }
     }
 
-    // 3. useCase - check if email was verified
-    if (!user.emailVerified) {
-      return {
-        status: 403,
-        message: 'Email não verificado.',
-        userId: user.id,
-      }
-    }
-
-    // 4. useCase - check if password is correct
+    // 3. useCase - check if password is correct
     const isPasswordCorrect = await comparePassword(
       password,
       user.password_hash as string,
@@ -68,41 +62,67 @@ export class LoginCredentialUseCase {
       }
     }
 
-    // 5. useCase - create session token
-    const sessionToken = v4()
-    const sessionExpiry = new Date(Date.now() + DAYS_30_IN_MILLISECONDS)
+    // 4. useCase - check if user is two factor enabled
+    if (user.two_factor_enabled) {
+      // 5. useCase - Generate and send two-factor token
+      await generateAndSendTwoFactorToken({
+        userId: user.id,
+        userEmail: user.email,
+        verificationTokenRepository: this.verificationTokenRepository,
+        tokenType: 'TWO_FACTOR_VERIFICATION',
+      })
 
-    // 6. useCase - check if exist a session with userId and device, if exist delete the session and create new other, if not create a new session
-    const sessionExists =
-      await this.sessionRepository.getSessionByUserIdAndDevice(
-        user.id,
-        device || '',
-      )
+      return {
+        status: 200,
+        message: 'Token de autenticação de dois fatores enviado com sucesso!',
+        userId: user.id,
+      }
+    } else {
+      // 5. useCase - check if email was verified
+      if (!user.emailVerified) {
+        return {
+          status: 403,
+          message: 'Email não verificado.',
+          userId: user.id,
+        }
+      }
 
-    if (sessionExists) {
-      await this.sessionRepository.deleteSessionByToken(
-        sessionExists.sessionToken,
-      )
-    }
+      // 6. useCase - create session token
+      const sessionToken = v4()
+      const sessionExpiry = new Date(Date.now() + DAYS_30_IN_MILLISECONDS)
 
-    await this.sessionRepository.createSession({
-      sessionToken,
-      userId: user.id,
-      expires: sessionExpiry,
-      device_identifier: device,
-    })
+      // 7. useCase - check if exist a session with userId and device, if exist delete the session and create new other, if not create a new session
+      const sessionExists =
+        await this.sessionRepository.getSessionByUserIdAndDevice(
+          user.id,
+          device || '',
+        )
 
-    // 7. useCase - set session token cookie with the appropriate name and security settings
-    this.cookieRepository.setCookie({
-      name: 'authjs.session-token',
-      value: sessionToken,
-      expires: sessionExpiry,
-    })
+      if (sessionExists) {
+        await this.sessionRepository.deleteSessionByToken(
+          sessionExists.sessionToken,
+        )
+      }
 
-    return {
-      status: 201,
-      message: 'Usuário logado com sucesso!',
-      userId: user.id,
+      await this.sessionRepository.createSession({
+        sessionToken,
+        userId: user.id,
+        expires: sessionExpiry,
+        device_identifier: device,
+      })
+
+      // 8. useCase - set session token cookie with the appropriate name and security settings
+      this.cookieRepository.setCookie({
+        name: 'authjs.session-token',
+        value: sessionToken,
+        expires: sessionExpiry,
+      })
+
+      return {
+        status: 201,
+        message: 'Usuário logado com sucesso!',
+        userId: user.id,
+      }
     }
   }
 }

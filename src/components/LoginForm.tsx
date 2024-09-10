@@ -107,7 +107,7 @@ export function LoginForm({
 
       const responseBody = await response.json()
 
-      if (response.ok) {
+      if (response.status === 201) {
         showToast({
           message: 'Usuário logado com sucesso!',
           duration: 3000,
@@ -115,6 +115,22 @@ export function LoginForm({
           variant: 'success',
           redirect: {
             path: `${webserver.host}/`,
+            countdownSeconds: 2,
+          },
+        })
+
+        form.reset()
+        return
+      }
+
+      if (response.status === 200) {
+        showToast({
+          message: 'Autenticação de dois fatores necessária.',
+          duration: 3000,
+          variant: 'info',
+          closeButton: false,
+          redirect: {
+            path: `${webserver.host}/verify-two-factor-opt?token=${responseBody.userId}`,
             countdownSeconds: 2,
           },
         })
