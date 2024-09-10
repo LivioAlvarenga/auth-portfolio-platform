@@ -78,7 +78,7 @@ Para concluir a verificação da sua conta, insira este código no site adm.prod
 
 ${opt}
 
-clique aqui para validar seu e-mail:
+Copie e cole o seguinte endereço no seu navegador para validar seu email:
 ${url}
 
 Caso você não tenha solicitado esse código, simplesmente ignore esta mensagem.
