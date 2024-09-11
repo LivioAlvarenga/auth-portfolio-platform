@@ -5,6 +5,7 @@
 <p align="center">
  <a href="#-sobre-o-projeto">Sobre</a> •
  <a href="#-tecnologias">Tecnologias</a> •
+ <a href="#-funcionalidades">Funcionalidades do Projeto</a> •
  <a href="#-emails">Emails</a> •
  <a href="#-pastas">Estrutura de Pastas</a> •
  <a href="#-script">Scripts</a> •
@@ -39,11 +40,16 @@ O projeto é open source e licenciado sob a MIT License, encorajando a comunidad
 &nbsp;
 
 <p align="center">
-  <a href="#license"><img src="https://img.shields.io/github/license/LivioAlvarenga/auth-portfolio-platform?color=ff0000"></a>
+  <a href="https://github.com/LivioAlvarenga/auth-portfolio-platform/network/members"><img src="https://img.shields.io/github/forks/LivioAlvarenga/auth-portfolio-platform" alt="forks"></a>
+  <a href="https://github.com/LivioAlvarenga/auth-portfolio-platform/stargazers"><img src="https://img.shields.io/github/stars/LivioAlvarenga/auth-portfolio-platform" alt="stars"></a>
   <a href="https://github.com/LivioAlvarenga/auth-portfolio-platform/issues"><img src="https://img.shields.io/github/issues/LivioAlvarenga/auth-portfolio-platform" alt="issue site auth-portfolio-platform" /></a>
+  <a href="https://github.com/LivioAlvarenga/auth-portfolio-platform/pulls"><img src="https://img.shields.io/github/issues-pr/LivioAlvarenga/auth-portfolio-platform" alt="open pull requests"></a>
+  <a href="https://github.com/LivioAlvarenga/auth-portfolio-platform/commits/main"><img src="https://img.shields.io/github/commit-activity/m/LivioAlvarenga/auth-portfolio-platform" alt="commit activity"></a>
+  <a href="https://github.com/LivioAlvarenga/auth-portfolio-platform/commits/main"><img src="https://img.shields.io/github/last-commit/LivioAlvarenga/auth-portfolio-platform" alt="last commit"></a>
   <a href="https://github.com/LivioAlvarenga/auth-portfolio-platform"><img src="https://img.shields.io/github/languages/count/LivioAlvarenga/auth-portfolio-platform" alt="total amount of programming languages used in the project" /></a>
   <a href="https://github.com/LivioAlvarenga/auth-portfolio-platform"><img src="https://img.shields.io/github/languages/top/LivioAlvarenga/auth-portfolio-platform" alt="most used language in the projects" /></a>
   <a href="https://github.com/LivioAlvarenga/auth-portfolio-platform"><img src="https://img.shields.io/github/repo-size/LivioAlvarenga/auth-portfolio-platform" alt="repository size" /></a>
+  <a href="#license"><img src="https://img.shields.io/github/license/LivioAlvarenga/auth-portfolio-platform?color=ff0000"></a>
 <p>
 
 <p align="center">
@@ -86,6 +92,439 @@ As seguintes ferramentas foram usadas na construção do projeto
   <a href= "https://prettier.io/" target="_blank" rel="noopener noreferrer"><img alt="code formatter prettier" src="https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/readme/prettier-badge.svg"></a>
   <a href= "https://eslint.org/" target="_blank" rel="noopener noreferrer"><img alt="code standardization eslint" src="https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/readme/eslint-badge.svg"></a>
 </p>
+
+&nbsp;
+<a id="-funcionalidades"></a>
+
+## ⚙️ Funcionalidades do Projeto e Recursos Avançados
+
+O **Auth Portfolio Platform** oferece uma série de funcionalidades essenciais para a autenticação de usuários em aplicações modernas, incluindo:
+
+<table>
+  <tr>
+    <!-- Primeira coluna: ícone e texto -->
+    <td width="50%" align="left">
+      <h3>📝 Registro de Usuário</h3>
+      <p>Crie sua conta de forma rápida e segura, com suporte para geração automática de senhas, notificações intuitivas e emails interativos.</p>
+      <ul>
+        <li><strong>Gerador de Senha</strong> - Gere senhas seguras automaticamente com apenas um clique, garantindo mais segurança.</li>
+        <li><strong>Botão de Ocultar/Mostrar Senha</strong> - Veja ou oculte sua senha facilmente enquanto a digita.</li>
+        <li><strong>Botão para Copiar Senha</strong> - Copie sua senha rapidamente com um clique e receba uma confirmação via toast.</li>
+        <li><strong>Notificações (Toasts) Modernas</strong> - Feedback visual para ações importantes:
+          <ul>
+            <li><strong>Registro Confirmado</strong> - Sucesso ao criar sua conta.</li>
+            <li><strong>Erro de Registro</strong> - Alerta se ocorrer um problema.</li>
+            <li><strong>Senha Copiada</strong> - Confirmação rápida após copiar.</li>
+          </ul>
+        </li>
+        <li><strong>Envio de Email</strong> - Enviamos emails modernos e interativos com código OTP para verificar seu email e concluir o registro.</li>
+      </ul>
+    </td>
+    <!-- Segunda coluna: imagem -->
+    <td width="50%" height align="center">
+      <img src="https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/readme/registrar-usuario.png" alt="Registrar usuário" width="300px">
+    </td>
+  </tr>
+  <tr>
+    <!-- Segunda linha: uma única coluna para as imagens dos toasts -->
+    <td colspan="2" align="center">
+      <img src="https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/readme/toast-registro-sucesso.JPG" alt="Toast de sucesso" width="200px">
+      <img src="https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/readme/toast-registro-advertencia.JPG" alt="Toast de erro" width="200px">
+      <img src="https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/readme/toast-senha-copiada.JPG" alt="Toast de cópia" width="200px">
+    </td>
+  </tr>
+</table>
+
+&nbsp;
+
+---
+
+&nbsp;
+
+<table>
+  <tr>
+    <!-- Primeira coluna: imagem -->
+    <td width="50%" align="center">
+      <img src="https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/readme/login-com-credenciais.png" alt="Login com credenciais" width="300px">
+    </td>
+    <!-- Segunda coluna: textos -->
+    <td width="50%" align="left">
+      <h3>🔐 Login com Credenciais</h3>
+      <p>Faça login de forma segura com email e senha, oferecendo várias funcionalidades práticas.</p>
+      <ul>
+        <li><strong>Esqueceu a Senha?</strong> - Link direto para recuperação de senha, facilitando a restauração de credenciais.</li>
+        <li><strong>Botão de Ocultar/Mostrar Senha</strong> - Veja ou oculte sua senha durante a digitação para maior conveniência.</li>
+        <li><strong>Autenticação em Dois Fatores</strong> - Possibilidade de habilitar 2FA para aumentar a segurança da conta.</li>
+        <li><strong>Notificações (Toasts) Modernas</strong> - Feedback visual para diferentes ações importantes:
+          <ul>
+            <li><strong>Sucesso</strong> - Login realizado com sucesso.</li>
+            <li><strong>Erro</strong> - Alerta em caso de erro no login.</li>
+            <li><strong>Erro de Verificação de Email</strong> - Notificação se o email não estiver verificado.</li>
+            <li><strong>Autenticação em Dois Fatores</strong> - Aviso para autenticar com 2FA quando habilitado.</li>
+          </ul>
+        </li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <!-- Segunda linha: uma única coluna para as imagens dos toasts -->
+    <td colspan="2" align="center">
+      <img src="https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/readme/toast-login-sucesso.JPG" alt="Toast de sucesso" width="200px">
+      <img src="https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/readme/toast-login-erro.JPG" alt="Toast de erro" width="200px">
+      <img src="https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/readme/toast-login-erro-verificar-email.JPG" alt="Toast erro verificar email" width="200px">
+      <img src="https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/readme/toast-login-verificacao-dois-fatores.JPG" alt="Toast autenticação 2FA" width="200px">
+    </td>
+  </tr>
+</table>
+
+&nbsp;
+
+---
+
+&nbsp;
+
+<table>
+  <tr>
+    <!-- Primeira coluna: textos -->
+    <td width="50%" align="left">
+      <h3>🔑 Esqueceu a Senha?</h3>
+      <p>Recupere facilmente o acesso à sua conta. Um email é enviado com um link para redefinir sua senha.</p>
+      <ul>
+        <li><strong>Envio de Email</strong> - Um email com link de redefinição de senha é enviado ao usuário.</li>
+        <li><strong>Link para Redefinir a Senha</strong> - O link leva o usuário à página de redefinição segura.</li>
+        <li><strong>Notificações (Toasts) Modernas</strong> - Feedback visual para as ações:
+          <ul>
+            <li><strong>Sucesso</strong> - Email enviado com sucesso, pronto para redefinir a senha.</li>
+            <li><strong>Erro</strong> - Alerta de erro caso o email informado não esteja cadastrado.</li>
+          </ul>
+        </li>
+        <li><strong>Link para Fazer Login</strong> - Um link para retornar à página de login é fornecido após a redefinição.</li>
+      </ul>
+    </td>
+    <!-- Segunda coluna: imagem -->
+    <td width="50%" align="center">
+      <img src="https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/readme/esqueceu-senha.png" alt="Esqueceu a senha" width="300px">
+    </td>
+  </tr>
+  <tr>
+    <!-- Segunda linha: uma única coluna para as imagens dos toasts -->
+    <td colspan="2" align="center">
+      <img src="https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/readme/toast-esqueceu-senha-sucesso.JPG" alt="Toast de sucesso" width="200px">
+      <img src="https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/readme/toast-esqueceu-senha-erro.JPG" alt="Toast de erro" width="200px">
+    </td>
+  </tr>
+</table>
+
+&nbsp;
+
+---
+
+&nbsp;
+
+<table>
+  <tr>
+    <!-- Primeira coluna: imagem -->
+    <td width="50%" align="center">
+      <img src="https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/readme/recuperar-senha.png" alt="Recuperar Senha" width="300px">
+    </td>
+    <!-- Segunda coluna: textos -->
+    <td width="50%" align="left">
+      <h3>🔑 Recuperar Senha</h3>
+      <p>Redefina sua senha de forma segura após receber o link de recuperação por email.</p>
+      <ul>
+        <li><strong>Página Segura de Redefinição</strong> - Ao clicar no link enviado por email, você acessa uma página segura para redefinir sua senha.</li>
+        <li><strong>Gerador de Senha</strong> - Gera uma nova senha forte automaticamente com um clique.</li>
+        <li><strong>Botão de Ocultar/Mostrar Senha</strong> - Veja ou oculte a senha enquanto a digita.</li>
+        <li><strong>Botão para Copiar Senha</strong> - Copie sua nova senha para o clipboard com facilidade.</li>
+        <li><strong>Notificações (Toasts) Modernas</strong> - Feedback visual para ações:
+          <ul>
+            <li><strong>Erro de Senhas Diferentes</strong> - Alerta se as senhas inseridas não forem iguais.</li>
+            <li><strong>Sucesso</strong> - Senha redefinida com sucesso.</li>
+            <li><strong>Senha Copiada</strong> - Confirmação após copiar a nova senha.</li>
+          </ul>
+        </li>
+        <li><strong>Email de Confirmação</strong> - Um email é enviado confirmando que a senha foi redefinida com sucesso.</li>
+        <li><strong>Link para Fazer Login</strong> - Após redefinir a senha, há um link para voltar à página de login.</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <!-- Segunda linha: imagens dos toasts -->
+    <td colspan="2" align="center">
+      <img src="https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/readme/toast-recuperar-senha-erro-senha-diferente.JPG" alt="Toast de erro de senhas diferentes" width="200px">
+      <img src="https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/readme/toast-recuperar-senha-sucesso.JPG" alt="Toast de sucesso" width="200px">
+      <img src="https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/readme/toast-recuperar-senha-advertencia-senha-copiada.JPG" alt="Toast de senha copiada" width="200px">
+    </td>
+  </tr>
+</table>
+
+&nbsp;
+
+---
+
+&nbsp;
+
+<table>
+  <tr>
+    <!-- Primeira coluna: textos -->
+    <td width="50%" align="left">
+      <h3>📧 Verificar Email</h3>
+      <p>Após o registro, ao tentar fazer login, se o email não estiver verificado, o usuário será direcionado para esta tela para inserir o código OTP enviado.</p>
+      <ul>
+        <li><strong>Inserir Código OTP</strong> - O usuário deve inserir o código enviado por email para verificar o email.</li>
+        <li><strong>Botão para Reenviar Código</strong> - Se o código não for recebido, o usuário pode solicitar o reenvio com um clique.</li>
+        <li><strong>Notificações (Toasts) Modernas</strong> - Feedback visual em tempo real para guiar o usuário:
+          <ul>
+            <li><strong>Sucesso</strong> - Notificação ao verificar o email com sucesso.</li>
+            <li><strong>Erro de Código OTP</strong> - Alerta caso o código inserido esteja incorreto ou inválido.</li>
+            <li><strong>Reenvio de Código OTP</strong> - Confirmação quando o código é reenviado com sucesso.</li>
+          </ul>
+        </li>
+      </ul>
+    </td>
+    <!-- Segunda coluna: imagem -->
+    <td width="50%" align="center">
+      <img src="https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/readme/verificar-email.png" alt="Verificar Email" width="300px">
+    </td>
+  </tr>
+  <tr>
+    <!-- Segunda linha: imagens dos toasts -->
+    <td colspan="2" align="center">
+      <img src="https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/readme/toast-verificar-email-sucesso.JPG" alt="Toast de sucesso" width="200px">
+      <img src="https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/readme/toast-verificar-email-erro-opt-diferente.JPG" alt="Toast de erro de código OTP" width="200px">
+      <img src="https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/readme/toast-verificar-email-reenviar-opt.JPG" alt="Toast de reenvio de código OTP" width="200px">
+    </td>
+  </tr>
+</table>
+
+&nbsp;
+
+---
+
+&nbsp;
+
+<table>
+  <tr>
+    <!-- Primeira linha: uma única coluna com a imagem do toggle -->
+    <td colspan="2" align="center">
+      <img src="https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/readme/auteticacao-2-fatores-toggle.JPG" alt="Toggle Autenticação de Dois Fatores" style="width: 100%;">
+    </td>
+  </tr>
+  <tr>
+    <!-- Segunda linha: duas colunas, imagem à esquerda e texto à direita -->
+    <td width="50%" align="center">
+      <img src="https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/readme/autenticacao-2-fatores.png" alt="Tela Autenticação de Dois Fatores" width="300px">
+    </td>
+    <td width="50%" align="left">
+      <h3>🔐 Autenticação de Dois Fatores (2FA)</h3>
+      <p>Nas configurações de conta, você pode habilitar ou desabilitar a autenticação de dois fatores para aumentar a segurança de sua conta.</p>
+      <ul>
+        <li><strong>Toggle de Habilitação</strong> - O usuário pode ativar/desativar a autenticação de dois fatores com um clique. A tooltip explica por que a autenticação de 2FA é recomendada.</li>
+        <li><strong>Autenticação no Próximo Login</strong> - Após habilitar, no próximo login, o usuário será direcionado para a página de inserção de código OTP.</li>
+        <li><strong>Reenvio de Código</strong> - Se o usuário não receber o código, ele pode solicitar o reenvio na página de autenticação.</li>
+        <li><strong>Notificações (Toasts) Modernas</strong> - Feedback visual para ações importantes:
+          <ul>
+            <li><strong>Sucesso</strong> - 2FA habilitada com sucesso.</li>
+            <li><strong>Erro de Código Diferente</strong> - Alerta se o código OTP inserido estiver incorreto.</li>
+            <li><strong>Código Reenviado</strong> - Confirmação quando o código é reenviado com sucesso.</li>
+            <li><strong>Advertência</strong> - Aviso de que o código deve ser preenchido ao tentar fazer login.</li>
+            <li><strong>Login com Sucesso</strong> - Notificação ao completar a autenticação de 2FA com sucesso.</li>
+          </ul>
+        </li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <!-- Terceira linha: cinco imagens dos toasts -->
+    <td colspan="2" align="center">
+      <img src="https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/readme/toast-autenticacao-2-fatores-toggle-sucesso.JPG" alt="Toast de sucesso 2FA habilitada" width="150px">
+      <img src="https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/readme/toast-autenticacao-2-fatores-erro-codigo-invalido.JPG" alt="Toast de erro de código OTP" width="150px">
+      <img src="https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/readme/toast-autenticacao-2-fatores-reenviar-codigo.JPG" alt="Toast de código reenviado" width="150px">
+      <img src="https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/readme/toast-autenticacao-2-fatores-login-advertencia.JPG" alt="Toast de advertência" width="150px">
+      <img src="https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/readme/toast-autenticacao-2-fatores-sucesso.JPG" alt="Toast de login com sucesso" width="150px">
+    </td>
+  </tr>
+</table>
+
+&nbsp;
+
+---
+
+&nbsp;
+
+<table>
+  <tr>
+    <!-- Segunda linha: coluna com texto à esquerda e imagem de toast à direita -->
+    <td width="50%" align="left">
+      <h3>✉️ Login com Magic Link</h3>
+      <p>O usuário pode fazer login apenas com o email. Ao inserir o email, um link de login é enviado para o email informado.</p>
+      <ul>
+        <li><strong>Inserir Email</strong> - O usuário adiciona o email na página e clica para enviar o link de login.</li>
+        <li><strong>Email com Link</strong> - Um email com um botão de login é enviado ao usuário.</li>
+        <li><strong>Redirecionamento com Loader</strong> - Ao clicar no link do email, o usuário é redirecionado para a aplicação com um loader enquanto o processo de login é completado.</li>
+        <li><strong>Link para Login</strong> - A página de inserção de email inclui um link para acessar a tela de login convencional.</li>
+        <li><strong>Toasts Avançados</strong> - Notificações instantâneas:
+          <ul>
+            <li><strong>Sucesso</strong> - Toast de sucesso ao enviar o email com o link de login.</li>
+            <li><strong>Erro</strong> - Notificação de erro caso o email inserido seja inválido ou não encontrado.</li>
+          </ul>
+        </li>
+      </ul>
+    </td>
+    <!-- Imagem do toast à direita -->
+    <td width="50%" align="center">
+      <img src="https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/readme/login-magic-link.png" width="300px">
+    </td>
+  </tr>
+  <tr>
+    <!-- Primeira linha: duas colunas com imagens -->
+    <td width="50%" align="center">
+      <img src="https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/readme/login-magic-link-page.JPG" alt="Página de Login com Magic Link" width="300px">
+    </td>
+    <td width="50%" align="center">
+      <img src="https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/readme/toast-magic-link-enviado-email.JPG" alt="Email com Magic Link" width="300px">
+    </td>
+  </tr>
+</table>
+
+&nbsp;
+
+---
+
+&nbsp;
+
+<table>
+  <tr>
+    <!-- Primeira linha: imagem à esquerda e texto à direita -->
+    <td width="50%" align="center">
+      <img src="https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/readme/login-google.png" alt="Login com Conta Google" width="300px">
+    </td>
+    <td width="50%" align="left">
+      <h3>🔓 Login com Conta Google</h3>
+      <p>Permite ao usuário fazer login rapidamente utilizando sua conta Google.</p>
+      <ul>
+        <li><strong>Abrir Janela de Login Google</strong> - Ao clicar para fazer login, abre-se uma janela para o usuário escolher sua conta Google.</li>
+        <li><strong>Autorização e Confirmação</strong> - O usuário confirma e autoriza o login com sua conta Google.</li>
+        <li><strong>Redirecionamento e Loader</strong> - Após a confirmação, o usuário é redirecionado para um loader enquanto o login é processado.</li>
+        <li><strong>Captura de Dados</strong> - Nome, email, e foto de perfil são extraídos da conta Google.</li>
+        <li><strong>Armazenamento da Imagem</strong> - A imagem de perfil é salva em nosso storage e vinculada à tabela de avatares.</li>
+        <li><strong>Notificação de Login</strong> - Um toast avançado informa que o login foi realizado com sucesso.</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <!-- Segunda linha: duas imagens ocupando 100% da largura -->
+    <td colspan="2" align="center">
+      <img src="https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/readme/login-google-autorizacao.JPG" alt="Escolha de Conta Google" style="width: 100%;">
+      <img src="https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/readme/login-google-autorizacao-confirmacao.JPG" alt="Toast de Sucesso de Login com Google" style="width: 100%;">
+    </td>
+  </tr>
+</table>
+
+&nbsp;
+
+---
+
+&nbsp;
+
+<table>
+  <tr>
+    <!-- Primeira linha: texto à esquerda e imagem à direita -->
+    <td width="50%" align="left">
+      <h3>🌞🌙 Escolha de Temas Light e Dark</h3>
+      <p>A aplicação oferece três opções de temas: Light, Dark e System, permitindo que o usuário escolha o que mais se adapta ao seu ambiente.</p>
+      <ul>
+        <li><strong>Temas Disponíveis</strong> - O usuário pode alternar entre os temas Light, Dark, ou deixar o sistema decidir automaticamente (System).</li>
+        <li><strong>Ícone de Sol/Lua</strong> - Um ícone de sol/lua está disponível tanto em páginas públicas quanto privadas para alternar facilmente entre os temas.</li>
+        <li><strong>Configuração Global</strong> - O tema escolhido é aplicado em toda a aplicação, proporcionando uma experiência de usuário personalizada e consistente.</li>
+      </ul>
+    </td>
+    <td width="50%" align="center">
+      <img src="https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/readme/login-escolher-tema.JPG" alt="Tema Light e Dark" width="200px">
+    </td>
+  </tr>
+  <tr>
+    <!-- Segunda linha: duas imagens -->
+    <td width="50%" align="center">
+      <img src="https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/readme/login-light.JPG" alt="Tema Light" style="width: 100%;">
+    </td>
+    <td width="50%" align="center">
+      <img src="https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/readme/login-dark.JPG" alt="Tema Dark" style="width: 100%;">
+    </td>
+  </tr>
+</table>
+
+&nbsp;
+
+---
+
+&nbsp;
+
+<table>
+  <!-- Primeira linha: imagem à esquerda e texto à direita sobre responsividade -->
+  <tr>
+    <td width="50%" align="center">
+      <img src="https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/readme/dashboard-mobile.JPG" alt="Responsividade Mobile, Tablet e Desktop" width="300px">
+    </td>
+    <td width="50%" align="left">
+      <h3>📱 Responsividade</h3>
+      <p>Toda a aplicação foi desenvolvida com responsividade, garantindo uma experiência consistente e otimizada em <strong>mobile</strong>, <strong>tablet</strong> e <strong>desktop</strong>.</p>
+    </td>
+  </tr>
+
+  <!-- Segunda linha: duas imagens sobre responsividade -->
+  <tr>
+    <td width="50%" align="center">
+      <img src="https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/readme/dashboard-tablet.JPG" alt="Visualização Mobile" style="width: 100%;">
+    </td>
+    <td width="50%" align="center">
+      <img src="https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/readme/dashboard.JPG" alt="Visualização Desktop" style="width: 100%;">
+    </td>
+  </tr>
+
+  <!-- Terceira linha: texto à esquerda sobre Profile Completion Score e imagem à direita -->
+  <tr>
+    <td width="50%" align="left">
+      <h3>🎯 Profile Completion Score</h3>
+      <p>O sistema de <strong>Profile Completion Score</strong> mede o quanto o perfil do usuário está completo. Uma pequena bola vermelha aparece sobre o avatar caso o perfil não esteja 100% preenchido. Ao passar o mouse, um texto vermelho informa a porcentagem que falta para completar o perfil.</p>
+    </td>
+    <td width="50%" align="center">
+      <img src="https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/readme/profile_completion_score.JPG?t=2024-09-11T16%3A59%3A02.897Z" alt="Profile Completion" width="200px">
+    </td>
+  </tr>
+
+  <!-- Quarta linha: imagem à esquerda e texto à direita sobre atalhos e navegação no dashboard -->
+  <tr>
+    <td width="50%" align="center">
+      <img src="https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/readme/avatar-opcoes.JPG" alt="Atalhos e Navegação no Dashboard" width="200px">
+    </td>
+    <td width="50%" align="left">
+      <h3>🧭 Atalhos e Navegação no Dashboard</h3>
+      <p>Ao clicar no avatar, são exibidas informações do usuário, como nome e email, além de opções para <strong>Gerenciamento de Conta</strong>, <strong>Configurações</strong> e <strong>Sair da Conta</strong>. A navegação no dashboard é facilitada com um <strong>BreadcrumbNavigator</strong>, mostrando a navegação atual (ex: <em>Home > Gerenciamento da Conta</em>), com links clicáveis. No <strong>header</strong>, também há um <strong>aside</strong> com atalhos e a logo da empresa para navegação rápida.</p>
+    </td>
+  </tr>
+
+  <!-- Quinta linha: imagem à esquerda e texto à direita sobre atalhos no dashboard -->
+  <tr>
+    <td width="50%" align="center">
+      <img src="https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/readme/dashboard-aside.JPG" alt="Atalhos no Dashboard" width="300px">
+    </td>
+    <td width="50%" align="left">
+      <h3>🔄 Navegação Rápida</h3>
+      <p>O <strong>aside</strong> oferece atalhos rápidos para as principais funcionalidades do dashboard, como gerenciamento de conta, configurações e sair, além de facilitar o acesso às áreas mais importantes com um layout intuitivo e organizado.</p>
+    </td>
+  </tr>
+</table>
+
+&nbsp;
+
+Auth Portfolio Platform 🚀🔐
+
+O **Auth Portfolio Platform** é uma solução de autenticação poderosa e escalável, projetada para facilitar a vida de desenvolvedores e empresas que precisam de uma plataforma segura e flexível para gerenciar o login e os dados dos usuários.
+
+Com suporte a diversas funcionalidades, como login com credenciais, autenticação com Google, magic link, autenticação em dois fatores, escolha de temas e responsividade completa, o Auth Portfolio Platform garante segurança e personalização, sem depender de serviços de terceiros.
+
+Explore a praticidade e eficiência da nossa plataforma! Teste agora mesmo: [Auth Portfolio Platform](https://auth-portfolio.livioalvarenga.com.br/) 🚀🔐
 
 &nbsp;
 
