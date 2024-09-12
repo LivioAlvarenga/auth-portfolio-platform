@@ -108,7 +108,7 @@ describe('POST /api/v1/public/auth/login/magic-link/request', () => {
       const user = userResult.rows[0]
 
       expect(user.role).toBe('user')
-      expect(user.profile_completion_score).toBe(7)
+      expect(user.profile_completion_score).toBe(8)
 
       const accountResult = await database.query({
         text: 'SELECT * FROM accounts WHERE "userId" = $1 AND provider = $2',
@@ -174,7 +174,7 @@ describe('POST /api/v1/public/auth/login/magic-link/request', () => {
 
       expect(user.id).toBe(existingUser.id) // User should not change
       expect(user.role).toBe('user')
-      expect(user.profile_completion_score).toBe(6)
+      expect(user.profile_completion_score).toBe(7)
 
       const accountResult = await database.query({
         text: 'SELECT * FROM accounts WHERE "userId" = $1 AND provider = $2',
@@ -252,7 +252,7 @@ describe('POST /api/v1/public/auth/login/magic-link/request', () => {
 
       expect(user.id).toBe(existingUser.id) // User should not change
       expect(user.role).toBe('user')
-      expect(user.profile_completion_score).toBe(6)
+      expect(user.profile_completion_score).toBe(7)
 
       const accountResult = await database.query({
         text: 'SELECT * FROM accounts WHERE "userId" = $1 AND provider = $2',

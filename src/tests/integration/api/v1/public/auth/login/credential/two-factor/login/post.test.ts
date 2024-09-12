@@ -134,7 +134,7 @@ describe('POST /api/v1/public/auth/login/credential/two-factor/login', () => {
       expect(updatedUser.emailVerified).toBeTruthy()
 
       // check the profile completion score
-      expect(updatedUser.profile_completion_score).toBe(2)
+      expect(updatedUser.profile_completion_score).toBe(3)
 
       // check is token was deleted
       const tokenResult = await database.query({

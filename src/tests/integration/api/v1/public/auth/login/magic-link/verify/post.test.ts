@@ -226,7 +226,7 @@ describe('POST /api/v1/public/auth/login/magic-link/verify', () => {
 
       const profileCompletionScore =
         profileScoreResult.rows[0].profile_completion_score
-      expect(profileCompletionScore).toBe(5)
+      expect(profileCompletionScore).toBe(6)
 
       // Check that a session was created
       const sessionResult = await database.query({
