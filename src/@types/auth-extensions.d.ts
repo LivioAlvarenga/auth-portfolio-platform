@@ -8,5 +8,6 @@ declare module '@auth/core/adapters' {
     role?: string
     profile_completion_score?: number | null
     two_factor_enabled?: boolean
+    location_collection_consent?: boolean
   }
 }

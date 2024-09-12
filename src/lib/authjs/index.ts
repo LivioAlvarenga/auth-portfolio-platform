@@ -123,6 +123,7 @@ export const {
         image: user.image,
         profile_completion_score: user.profile_completion_score,
         two_factor_enabled: user.two_factor_enabled,
+        location_collection_consent: user.location_collection_consent,
       }
 
       session = {

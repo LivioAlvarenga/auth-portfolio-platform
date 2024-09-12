@@ -6,9 +6,9 @@ export class PgUserRepository implements UserRepository {
   async createUser(data: UserInput): Promise<Omit<User, 'passwordHash'>> {
     const query = {
       text: `
-        INSERT INTO users (name, nick_name, email, "emailVerified", email_verified_provider, image, password_hash, role, profile_completion_score, two_factor_enabled)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
-        RETURNING id, name, nick_name, email, "emailVerified", email_verified_provider, image, role, profile_completion_score, two_factor_enabled, created_at, updated_at
+        INSERT INTO users (name, nick_name, email, "emailVerified", email_verified_provider, image, password_hash, role, profile_completion_score, two_factor_enabled, location_collection_consent)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+        RETURNING id, name, nick_name, email, "emailVerified", email_verified_provider, image, role, profile_completion_score, two_factor_enabled, location_collection_consent, created_at, updated_at
       `,
       values: [
         data.name || null,
@@ -21,6 +21,7 @@ export class PgUserRepository implements UserRepository {
         data.role || 'user',
         data.profile_completion_score,
         data.two_factor_enabled || false,
+        data.location_collection_consent || false,
       ],
     }
 
@@ -50,7 +51,7 @@ export class PgUserRepository implements UserRepository {
       UPDATE users
       SET ${setClause}, updated_at = NOW()
       WHERE id = $1
-      RETURNING id, name, nick_name, email, "emailVerified", email_verified_provider, image, role, profile_completion_score, updated_at, two_factor_enabled
+      RETURNING id, name, nick_name, email, "emailVerified", email_verified_provider, image, role, profile_completion_score, updated_at, two_factor_enabled, location_collection_consent
     `,
       values: [id, ...Object.values(data)],
     }

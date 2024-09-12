@@ -10,6 +10,7 @@ export interface User {
   role: 'admin' | 'user'
   profile_completion_score?: number
   two_factor_enabled?: boolean
+  location_collection_consent?: boolean
   created_at: Date
   updated_at: Date
 }
@@ -25,6 +26,7 @@ export interface UserInput {
   role?: 'admin' | 'user'
   profile_completion_score?: number
   two_factor_enabled?: boolean
+  location_collection_consent?: boolean
   updated_at?: Date
 }
 
