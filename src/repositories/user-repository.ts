@@ -11,6 +11,7 @@ export interface User {
   profile_completion_score?: number
   two_factor_enabled?: boolean
   location_collection_consent?: boolean
+  location_consent_given_at?: string
   created_at: Date
   updated_at: Date
 }
@@ -27,6 +28,7 @@ export interface UserInput {
   profile_completion_score?: number
   two_factor_enabled?: boolean
   location_collection_consent?: boolean
+  location_consent_given_at?: Date
   updated_at?: Date
 }
 
