@@ -54,3 +54,22 @@ export const tokenValidation = z.string().refine(
     message: 'Token deve ser um UUID válido ou um código OTP de 6 dígitos',
   },
 )
+
+export const ipValidation = z.string().refine(
+  (value) => {
+    const ipv4Regex =
+      /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/
+
+    const ipv6Regex =
+      /^((?:[a-fA-F0-9]{1,4}:){7}[a-fA-F0-9]{1,4}|(?:[a-fA-F0-9]{1,4}:){1,7}:|(?:[a-fA-F0-9]{1,4}:){1,6}:[a-fA-F0-9]{1,4}|(?:[a-fA-F0-9]{1,4}:){1,5}(?::[a-fA-F0-9]{1,4}){1,2}|(?:[a-fA-F0-9]{1,4}:){1,4}(?::[a-fA-F0-9]{1,4}){1,3}|(?:[a-fA-F0-9]{1,4}:){1,3}(?::[a-fA-F0-9]{1,4}){1,4}|(?:[a-fA-F0-9]{1,4}:){1,2}(?::[a-fA-F0-9]{1,4}){1,5}|[a-fA-F0-9]{1,4}:(?::[a-fA-F0-9]{1,4}){1,6}|:(?::[a-fA-F0-9]{1,4}){1,7}|::)$/
+
+    // Check if the value matches IPv4 or IPv6 regex
+    const isIPv4 = ipv4Regex.test(value)
+    const isIPv6 = ipv6Regex.test(value)
+
+    return isIPv4 || isIPv6
+  },
+  {
+    message: 'O endereço IP deve ser um IPv4 ou IPv6 válido',
+  },
+)

@@ -1,3 +1,4 @@
+import { NextRequest } from 'next/server'
 import { IPinfoWrapper } from 'node-ipinfo'
 
 const token = process.env.IPINFO_TOKEN
@@ -28,7 +29,8 @@ export const getLocationDataFromIP = async (ip: string) => {
       timezone: details.timezone || 'unknown',
     }
   } catch (error) {
-    console.log('💥 Error retrieving location data wit ipInfo:', error)
+    // Log the error for debugging purposes
+    console.error('💥 Error retrieving location data:', error)
 
     // Return default "unknown" data to prevent breaking the app
     return {
@@ -39,4 +41,22 @@ export const getLocationDataFromIP = async (ip: string) => {
       timezone: 'unknown',
     }
   }
+}
+
+/**
+ * Retrieves the IP address from the request or uses a simulated IP for localhost.
+ *
+ * @param {NextRequest} req - The incoming Next.js request object.
+ * @returns {string} - The real IP address or the simulated IP if in a localhost environment.
+ */
+export const getClientIp = (req: NextRequest): string => {
+  // Retrieve the IP from the 'x-forwarded-for' header or use req.ip
+  const ip = req.headers.get('x-forwarded-for') || req.ip || 'unknown'
+
+  // Check if the IP is from localhost (IPv6 `::1` or IPv4 `127.0.0.1`)
+  const isLocalhost = ip === '::1' || ip === '127.0.0.1'
+  const localhostIp = process.env.LOCALHOST_SIMULATED_IP || '127.0.0.1'
+
+  // Return the simulated IP for localhost or the real IP if not localhost
+  return isLocalhost ? localhostIp : ip
 }
