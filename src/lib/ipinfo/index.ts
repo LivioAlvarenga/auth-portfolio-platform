@@ -30,7 +30,9 @@ export const getLocationDataFromIP = async (ip: string) => {
     }
   } catch (error) {
     // Log the error for debugging purposes
-    console.error('💥 Error retrieving location data:', error)
+    if (process.env.NODE_ENV !== 'test') {
+      console.error('💥 Error retrieving location data:', error)
+    }
 
     // Return default "unknown" data to prevent breaking the app
     return {
