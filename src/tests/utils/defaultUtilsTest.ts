@@ -117,6 +117,7 @@ const createDefaultTokenWithOpt = async (): Promise<VerificationToken> => {
 const createDefaultTokenWithTwoFactorOpt = async ({
   emailVerified = false,
   two_factor_enabled = true,
+  location_collection_consent = false,
 }): Promise<{
   token: VerificationToken
   user: User
@@ -128,6 +129,7 @@ const createDefaultTokenWithTwoFactorOpt = async ({
     two_factor_enabled,
     emailVerified: emailVerified ? new Date() : undefined,
     email_verified_provider: emailVerified ? 'credential' : undefined,
+    location_collection_consent,
   }
   const user = await userRepository.createUser(userOptions)
 

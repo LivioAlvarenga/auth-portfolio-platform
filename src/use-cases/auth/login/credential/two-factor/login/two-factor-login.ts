@@ -1,3 +1,4 @@
+import { getLocationDataFromIP } from '@/lib/ipinfo'
 import { CookieRepository } from '@/repositories/cookie-repository'
 import { SessionRepository } from '@/repositories/session-repository'
 import { UserRepository } from '@/repositories/user-repository'
@@ -9,6 +10,7 @@ interface TwoFactorLoginUseCaseRequest {
   userId: string
   opt: string
   device?: string
+  ip: string
 }
 
 interface TwoFactorLoginUseCaseResponse {
@@ -34,6 +36,7 @@ export class TwoFactorLoginUseCase {
     userId,
     opt,
     device,
+    ip,
   }: TwoFactorLoginUseCaseRequest): Promise<TwoFactorLoginUseCaseResponse> {
     // 1. useCase - delete all expired tokens
     await this.verificationTokenRepository.deleteExpiredTokens()
@@ -100,7 +103,13 @@ export class TwoFactorLoginUseCase {
     const sessionToken = v4()
     const sessionExpiry = new Date(Date.now() + DAYS_30_IN_MILLISECONDS)
 
-    // 9. useCase - check if exist a session with userId and device, if exist delete the session and create new other, if not create a new session
+    // 9. useCase - check if location_collection_consent is true, if true, update the user's location data
+    let locationData
+    if (user.location_collection_consent) {
+      locationData = await getLocationDataFromIP(ip)
+    }
+
+    // 10. useCase - check if exist a session with userId and device, if exist delete the session and create new other, if not create a new session
     const sessionExists =
       await this.sessionRepository.getSessionByUserIdAndDevice(
         user.id,
@@ -118,9 +127,10 @@ export class TwoFactorLoginUseCase {
       userId: user.id,
       expires: sessionExpiry,
       device_identifier: device,
+      ...locationData,
     })
 
-    // 10. useCase - set session token cookie with the appropriate name and security settings
+    // 11. useCase - set session token cookie with the appropriate name and security settings
     this.cookieRepository.setCookie({
       name: 'authjs.session-token',
       value: sessionToken,

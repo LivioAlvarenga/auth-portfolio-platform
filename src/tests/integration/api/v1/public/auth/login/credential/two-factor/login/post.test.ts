@@ -184,5 +184,78 @@ describe('POST /api/v1/public/auth/login/credential/two-factor/login', () => {
       )
       expect(diffDays).toBe(30)
     })
+
+    test('should log in the user with two-factor authentication and collect location data if consent is given', async () => {
+      // Create a user with consent to location data collection
+      const { user, token } =
+        await utilsTest.createDefaultTokenWithTwoFactorOpt({
+          emailVerified: false,
+          location_collection_consent: true,
+        })
+
+      const device = 'device'
+
+      const response = await fetch(
+        `${webserver.host}/api/v1/public/auth/login/credential/two-factor/login`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            userId: user.id,
+            opt: token.opt,
+            device,
+          }),
+        },
+      )
+
+      const responseBody = await response.json()
+
+      expect(response.status).toBe(201)
+      expect(responseBody.message).toBe('Usuário logado com sucesso!')
+
+      // Verify if location data was collected and stored correctly
+      const sessionResult = await database.query({
+        text: 'SELECT * FROM sessions WHERE "userId" = $1',
+        values: [responseBody.userId],
+      })
+
+      expect(sessionResult.rows.length).toBe(1)
+
+      const session = sessionResult.rows[0]
+
+      // Check if location data was stored in the session
+      expect(session.ip).toBeDefined() // Verifies if the IP was correctly stored
+      expect(session.country).toBeDefined() // Country from IPinfo
+      expect(session.region).toBeDefined() // Region from IPinfo
+      expect(session.city).toBeDefined() // City from IPinfo
+      expect(session.timezone).toBeDefined() // Timezone from IPinfo
+
+      // Verify if the session cookie was set correctly
+      const cookies = response.headers.get('set-cookie') as string
+      expect(cookies).not.toBeNull()
+
+      // Check if the cookie is HttpOnly
+      expect(cookies).toContain('HttpOnly')
+
+      // Check if the cookie value is the new session token
+      const tokenCookie = cookies
+        .split(';')
+        .find((cookie) =>
+          cookie.trim().startsWith('authjs.session-token'),
+        ) as string
+      const tokenValue = tokenCookie.split('=')[1]
+
+      expect(tokenValue).toBe(session.sessionToken)
+
+      // Check if the cookie expires in 30 days
+      const expires = new Date(session.expires)
+      const now = new Date()
+      const diffDays = Math.round(
+        (expires.getTime() - now.getTime()) / (1000 * 60 * 60 * 24),
+      )
+      expect(diffDays).toBe(30)
+    })
   })
 })
