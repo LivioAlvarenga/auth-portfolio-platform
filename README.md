@@ -518,6 +518,40 @@ O **Auth Portfolio Platform** oferece uma série de funcionalidades essenciais p
 
 &nbsp;
 
+---
+
+&nbsp;
+
+<table>
+  <tr>
+    <!-- Primeira linha: imagem -->
+    <td colspan="2" align="center">
+      <img src="https://chpfldfxmaovtlouzcwg.supabase.co/storage/v1/object/public/assets-public/images/readme/coleta-localizacao-ip.JPG" alt="Coleta de Dados de Localização" style="width: 100%;">
+    </td>
+  </tr>
+  <tr>
+    <!-- Segunda linha: textos -->
+    <td colspan="2" align="left">
+      <h3>🌍 Coleta de Localização para Segurança</h3>
+      <p>Agora é possível aumentar a segurança da sua conta autorizando a coleta de dados de localização, como IP, país, região, cidade e fuso horário, ao realizar login.</p>
+      <ul>
+        <li><strong>Coleta de Localização</strong> - Esses dados serão coletados e salvos apenas com sua autorização explícita.</li>
+        <li><strong>Toggle de Autorização</strong> - Nas configurações da conta, você pode ativar ou desativar essa funcionalidade através de um switch (toggle).</li>
+        <li><strong>Segurança Aprimorada</strong> - Ao ativar a coleta de localização, você receberá alertas de login com informações de onde o acesso foi realizado, ajudando a identificar atividades suspeitas.</li>
+        <li><strong>Privacidade e Controle</strong> - Respeitamos sua privacidade. Você pode habilitar ou desabilitar essa funcionalidade a qualquer momento e os dados só serão coletados com seu consentimento.</li>
+        <li><strong>Notificações Modernas</strong> - Receba feedback visual sobre o status da coleta de dados:
+          <ul>
+            <li><strong>Sucesso</strong> - Coleta de localização ativada com sucesso.</li>
+            <li><strong>Erro</strong> - Falha ao ativar a coleta de localização.</li>
+          </ul>
+        </li>
+      </ul>
+    </td>
+  </tr>
+</table>
+
+&nbsp;
+
 Auth Portfolio Platform 🚀🔐
 
 O **Auth Portfolio Platform** é uma solução de autenticação poderosa e escalável, projetada para facilitar a vida de desenvolvedores e empresas que precisam de uma plataforma segura e flexível para gerenciar o login e os dados dos usuários.
