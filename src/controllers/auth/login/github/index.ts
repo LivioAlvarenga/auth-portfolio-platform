@@ -1,4 +1,6 @@
+import { getClientIp } from '@/lib/ipinfo'
 import { NextCookieRepository } from '@/repositories/nextjs/next-cookie-repository'
+import { ipValidation } from '@/schemas'
 import { makeLoginGithubUseCase } from '@/use-cases/auth/login/github/make-login-github'
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
@@ -8,6 +10,7 @@ const loginGithubSchema = z.object({
   sessionToken: z.string().uuid(), // get sessionToken from cookie
   avatarUrl: z.string().url().optional(), // get avatarUrl from cookie
   name: z.string().optional(), // get name from cookie
+  ip: ipValidation,
 })
 
 const CookieRepository = new NextCookieRepository()
@@ -24,6 +27,8 @@ export async function loginGithub(req: NextRequest) {
   try {
     if (req.method === 'POST') {
       const body = await req.json()
+
+      const ip = getClientIp(req)
 
       const sessionTokenCookie = CookieRepository.getCookie(
         'authjs.session-token',
@@ -47,6 +52,7 @@ export async function loginGithub(req: NextRequest) {
         sessionToken,
         avatarUrl,
         name,
+        ip,
       })
 
       const loginGithubUseCase = makeLoginGithubUseCase()

@@ -44,6 +44,28 @@ export class PgSessionRepository implements SessionRepository {
     return result.rows[0] || null
   }
 
+  async updateLocationData(
+    sessionToken: string,
+    ip: string,
+    country: string,
+    region: string,
+    city: string,
+    timezone: string,
+  ): Promise<Session | null> {
+    const query = {
+      text: `
+        UPDATE sessions
+        SET country = $2, region = $3, city = $4, timezone = $5, ip = $6, updated_at = NOW() AT TIME ZONE 'utc'
+        WHERE "sessionToken" = $1
+        RETURNING id, "sessionToken", "userId", expires, device_identifier
+      `,
+      values: [sessionToken, country, region, city, timezone, ip],
+    }
+
+    const result = await database.query(query)
+    return result.rows[0] || null
+  }
+
   async deleteExpiredSessions(): Promise<boolean> {
     const query = {
       text: `

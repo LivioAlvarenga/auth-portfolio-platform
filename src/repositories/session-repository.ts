@@ -31,6 +31,14 @@ export interface SessionRepository {
     sessionToken: string,
     device_identifier: string,
   ): Promise<Session | null>
+  updateLocationData(
+    sessionToken: string,
+    ip: string,
+    country: string,
+    region: string,
+    city: string,
+    timezone: string,
+  ): Promise<Session | null>
   deleteExpiredSessions(): Promise<boolean>
   deleteSessionByToken(sessionToken: string): Promise<boolean>
   getSessionByUserIdAndDevice(
