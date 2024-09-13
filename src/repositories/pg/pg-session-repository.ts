@@ -5,8 +5,8 @@ export class PgSessionRepository implements SessionRepository {
   async createSession(data: SessionInput): Promise<Session> {
     const query = {
       text: `
-        INSERT INTO sessions ("sessionToken", "userId", expires, device_identifier)
-        VALUES ($1, $2, $3, $4)
+        INSERT INTO sessions ("sessionToken", "userId", expires, device_identifier, ip, country, region, city, timezone)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
         RETURNING id, "sessionToken", "userId", expires, device_identifier
       `,
       values: [
@@ -14,6 +14,11 @@ export class PgSessionRepository implements SessionRepository {
         data.userId,
         data.expires,
         data.device_identifier,
+        data.ip,
+        data.country,
+        data.region,
+        data.city,
+        data.timezone,
       ],
     }
 

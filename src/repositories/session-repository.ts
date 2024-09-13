@@ -4,6 +4,11 @@ export interface Session {
   userId: string
   expires: string
   device_identifier: string
+  ip?: string
+  country?: string
+  region?: string
+  city?: string
+  timezone?: string
   created_at: Date
   updated_at: Date
 }
@@ -13,6 +18,11 @@ export interface SessionInput {
   userId: string
   expires: Date
   device_identifier?: string
+  ip?: string
+  country?: string
+  region?: string
+  city?: string
+  timezone?: string
 }
 
 export interface SessionRepository {
