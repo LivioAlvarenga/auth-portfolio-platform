@@ -1,4 +1,5 @@
-import { tokenValidation } from '@/schemas'
+import { getClientIp } from '@/lib/ipinfo'
+import { ipValidation, tokenValidation } from '@/schemas'
 import { makeVerifyMagicLinkUseCase } from '@/use-cases/auth/login/magic-link/make-magic-link'
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
@@ -11,6 +12,7 @@ const verifyMagicLinkSchema = z.object({
     expires: z.string(),
   }),
   device: z.string().toLowerCase(),
+  ip: ipValidation,
 })
 
 export async function verifyMagicLink(req: NextRequest) {
@@ -26,8 +28,10 @@ export async function verifyMagicLink(req: NextRequest) {
     if (req.method === 'POST') {
       const body = await req.json()
 
+      const ip = getClientIp(req)
+
       // Sanitize body
-      const parsedData = verifyMagicLinkSchema.parse(body)
+      const parsedData = verifyMagicLinkSchema.parse({ ...body, ip })
 
       const verifyMagicLinkUseCase = makeVerifyMagicLinkUseCase()
 
