@@ -1,4 +1,5 @@
-import { emailValidation, passwordValidation } from '@/schemas'
+import { getClientIp } from '@/lib/ipinfo'
+import { emailValidation, ipValidation, passwordValidation } from '@/schemas'
 import { makeLoginCredentialUseCase } from '@/use-cases/auth/login/credential/make-login-credential'
 
 import { NextRequest, NextResponse } from 'next/server'
@@ -8,6 +9,7 @@ const loginSchema = z.object({
   email: emailValidation,
   password: passwordValidation,
   device: z.string().toLowerCase().optional(),
+  ip: ipValidation,
 })
 
 export async function loginCredential(req: NextRequest) {
@@ -23,8 +25,11 @@ export async function loginCredential(req: NextRequest) {
     if (req.method === 'POST') {
       const body = await req.json()
 
+      // Get client IP address from the request headers or socket
+      const ip = getClientIp(req)
+
       // Sanitize body
-      const parsedData = loginSchema.parse(body)
+      const parsedData = loginSchema.parse({ ...body, ip })
 
       const loginUseCase = makeLoginCredentialUseCase()
 

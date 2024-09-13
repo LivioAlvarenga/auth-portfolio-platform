@@ -41,6 +41,17 @@ const createDefaultUserTwoFactor = async (): Promise<User> => {
   return userRepository.createUser(user)
 }
 
+const createDefaultUserWithLocationConsent = async (): Promise<User> => {
+  const user = {
+    email: 'testuser1@example.com',
+    password_hash: await hashPassword('Password123$%$'),
+    name: 'Test User',
+    emailVerified: new Date(),
+    location_collection_consent: true,
+  }
+  return userRepository.createUser(user)
+}
+
 const createDefaultUserEmailVerified = async (): Promise<User> => {
   const user = {
     email: 'testuser2@example.com',
@@ -275,6 +286,7 @@ const createDefaultUserWithGoogleAccountFromAuthJs = async ({
 export const utilsTest = {
   createDefaultUser,
   createDefaultUserTwoFactor,
+  createDefaultUserWithLocationConsent,
   createDefaultResetPasswordToken,
   createDefaultUserWithAccount,
   createDefaultUserWithAccountGoggle,
