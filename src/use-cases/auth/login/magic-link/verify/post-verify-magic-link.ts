@@ -1,3 +1,4 @@
+import { getLocationDataFromIP } from '@/lib/ipinfo'
 import { CookieRepository } from '@/repositories/cookie-repository'
 import { SessionRepository } from '@/repositories/session-repository'
 import { UserRepository } from '@/repositories/user-repository'
@@ -13,6 +14,7 @@ interface VerifyMagicLinkUseCaseRequest {
     expires: string
   }
   device: string
+  ip: string
 }
 
 interface VerifyMagicLinkUseCaseResponse {
@@ -37,6 +39,7 @@ export class VerifyMagicLinkUseCase {
   async execute({
     token: { token },
     device,
+    ip,
   }: VerifyMagicLinkUseCaseRequest): Promise<VerifyMagicLinkUseCaseResponse> {
     // 1. useCase - delete all expired tokens
     await this.verificationTokenRepository.deleteExpiredTokens()
@@ -88,7 +91,13 @@ export class VerifyMagicLinkUseCase {
     const sessionToken = v4()
     const sessionExpiry = new Date(Date.now() + DAYS_30_IN_MILLISECONDS)
 
-    // 7. useCase - check if exist a session with userId and device, if exist delete the session and create new other, if not create a new session
+    // 7. useCase - check if location_collection_consent is true, if true, update the user's location data
+    let locationData
+    if (user.location_collection_consent) {
+      locationData = await getLocationDataFromIP(ip)
+    }
+
+    // 8. useCase - check if exist a session with userId and device, if exist delete the session and create new other, if not create a new session
     const sessionExists =
       await this.sessionRepository.getSessionByUserIdAndDevice(
         user.id,
@@ -106,16 +115,17 @@ export class VerifyMagicLinkUseCase {
       userId: user.id,
       expires: sessionExpiry,
       device_identifier: device,
+      ...locationData,
     })
 
-    // 8. useCase - set session token cookie with the appropriate name and security settings
+    // 9. useCase - set session token cookie with the appropriate name and security settings
     this.cookieRepository.setCookie({
       name: 'authjs.session-token',
       value: sessionToken,
       expires: sessionExpiry,
     })
 
-    // 9. useCase - delete verification token
+    // 10. useCase - delete verification token
     await this.verificationTokenRepository.deleteToken(
       verificationToken.identifier,
       verificationToken.token,

@@ -5,8 +5,8 @@ export class PgSessionRepository implements SessionRepository {
   async createSession(data: SessionInput): Promise<Session> {
     const query = {
       text: `
-        INSERT INTO sessions ("sessionToken", "userId", expires, device_identifier)
-        VALUES ($1, $2, $3, $4)
+        INSERT INTO sessions ("sessionToken", "userId", expires, device_identifier, ip, country, region, city, timezone)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
         RETURNING id, "sessionToken", "userId", expires, device_identifier
       `,
       values: [
@@ -14,6 +14,11 @@ export class PgSessionRepository implements SessionRepository {
         data.userId,
         data.expires,
         data.device_identifier,
+        data.ip,
+        data.country,
+        data.region,
+        data.city,
+        data.timezone,
       ],
     }
 
@@ -33,6 +38,28 @@ export class PgSessionRepository implements SessionRepository {
         RETURNING id, "sessionToken", "userId", expires, device_identifier
       `,
       values: [sessionToken, device_identifier],
+    }
+
+    const result = await database.query(query)
+    return result.rows[0] || null
+  }
+
+  async updateLocationData(
+    sessionToken: string,
+    ip: string,
+    country: string,
+    region: string,
+    city: string,
+    timezone: string,
+  ): Promise<Session | null> {
+    const query = {
+      text: `
+        UPDATE sessions
+        SET country = $2, region = $3, city = $4, timezone = $5, ip = $6, updated_at = NOW() AT TIME ZONE 'utc'
+        WHERE "sessionToken" = $1
+        RETURNING id, "sessionToken", "userId", expires, device_identifier
+      `,
+      values: [sessionToken, country, region, city, timezone, ip],
     }
 
     const result = await database.query(query)

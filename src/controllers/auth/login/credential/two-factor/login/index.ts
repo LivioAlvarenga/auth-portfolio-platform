@@ -1,4 +1,5 @@
-import { tokenValidation } from '@/schemas'
+import { getClientIp } from '@/lib/ipinfo'
+import { ipValidation, tokenValidation } from '@/schemas'
 import { makeTwoFactorLoginUseCase } from '@/use-cases/auth/login/credential/two-factor/make-two-factor'
 
 import { NextResponse, type NextRequest } from 'next/server'
@@ -8,6 +9,7 @@ const twoFactorLoginSchema = z.object({
   userId: tokenValidation,
   opt: tokenValidation,
   device: z.string().toLowerCase().optional(),
+  ip: ipValidation,
 })
 
 export async function twoFactorLogin(req: NextRequest) {
@@ -23,7 +25,9 @@ export async function twoFactorLogin(req: NextRequest) {
     if (req.method === 'POST') {
       const body = await req.json()
 
-      const parsedData = twoFactorLoginSchema.parse(body)
+      const ip = getClientIp(req)
+
+      const parsedData = twoFactorLoginSchema.parse({ ...body, ip })
 
       const twoFactorLoginUseCase = makeTwoFactorLoginUseCase()
 

@@ -1,5 +1,9 @@
 name: Automated Tests
 
+env:
+  IPINFO_TOKEN: ${{secrets.IPINFO_TOKEN}}
+  LOCALHOST_SIMULATED_IP: ${{secrets.LOCALHOST_SIMULATED_IP}}
+
 on: pull_request
 
 jobs:

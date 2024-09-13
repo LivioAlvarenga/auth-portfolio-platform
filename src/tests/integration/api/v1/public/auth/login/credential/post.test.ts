@@ -257,6 +257,78 @@ describe('POST /api/v1/public/auth/login/credential', () => {
       )
     })
 
+    test('should return 201 and create a new session with location data when user consents to location collection', async () => {
+      // Create a user with consent to location collection
+      const user = await utilsTest.createDefaultUserWithLocationConsent()
+
+      const password = 'Password123$%$'
+      const device = 'device-id'
+
+      // Make the login request
+      const response = await fetch(
+        `${webserver.host}/api/v1/public/auth/login/credential`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: user.email,
+            password,
+            device,
+          }),
+        },
+      )
+
+      expect(response.status).toBe(201)
+
+      // Verify the session creation and location data
+      const responseBody = await response.json()
+      const newSessionResult = await database.query({
+        text: 'SELECT * FROM sessions WHERE "userId" = $1',
+        values: [responseBody.userId],
+      })
+
+      expect(newSessionResult.rows.length).toBe(1)
+
+      const newSession = newSessionResult.rows[0]
+
+      // Verify if location data was collected and stored correctly
+      expect(newSession.ip).toBeDefined()
+      expect(newSession.country).toBeDefined()
+      expect(newSession.region).toBeDefined()
+      expect(newSession.city).toBeDefined()
+      expect(newSession.timezone).toBeDefined()
+
+      // Verify if the session contains the correct device identifier
+      expect(newSession.device_identifier).toBe(device)
+
+      // Verify if the cookie was set
+      const cookies = response.headers.get('set-cookie') as string
+      expect(cookies).not.toBeNull()
+
+      // Verify if the cookie is HttpOnly
+      expect(cookies).toContain('HttpOnly')
+
+      // Verify if cookie value is the new session token
+      const tokenCookie = cookies
+        .split(';')
+        .find((cookie) =>
+          cookie.trim().startsWith('authjs.session-token'),
+        ) as string
+      const tokenValue = tokenCookie.split('=')[1]
+
+      expect(tokenValue).toBe(newSession.sessionToken)
+
+      // Verify if cookie expires in 30 days
+      const expires = new Date(newSession.expires)
+      const now = new Date()
+      const diffDays = Math.round(
+        (expires.getTime() - now.getTime()) / (1000 * 60 * 60 * 24),
+      )
+      expect(diffDays).toBe(30)
+    })
+
     test('should delete all expired sessions', async () => {
       // Create 10 sessions with expired tokens
       for (let i = 0; i < 10; i++) {

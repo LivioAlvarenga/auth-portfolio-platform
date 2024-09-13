@@ -1,3 +1,4 @@
+import { getLocationDataFromIP } from '@/lib/ipinfo'
 import { AvatarRepository } from '@/repositories/avatar-repository'
 import { CookieRepository } from '@/repositories/cookie-repository'
 import { ImageRepository } from '@/repositories/image-repository'
@@ -11,6 +12,7 @@ interface LoginGithubUseCaseRequest {
   sessionToken: string
   avatarUrl?: string
   name?: string
+  ip: string
 }
 
 interface LoginGithubUseCaseResponse {
@@ -33,6 +35,7 @@ export class LoginGithubUseCase {
     sessionToken,
     avatarUrl,
     name,
+    ip,
   }: LoginGithubUseCaseRequest): Promise<LoginGithubUseCaseResponse> {
     // 1. useCase - delete all expired sessions or null deviceIdentifier
     await this.sessionRepository.deleteExpiredSessions()
@@ -52,7 +55,22 @@ export class LoginGithubUseCase {
       }
     }
 
-    // 3. useCase - check if email was verified and update emailVerified and email_verified_provider
+    // 3. useCase - check if location_collection_consent is true, if true, update the user's location data and session
+    let locationData
+    if (user && user.location_collection_consent) {
+      locationData = await getLocationDataFromIP(ip)
+
+      await this.sessionRepository.updateLocationData(
+        sessionToken,
+        locationData.ip,
+        locationData.country,
+        locationData.region,
+        locationData.city,
+        locationData.timezone,
+      )
+    }
+
+    // 4. useCase - check if email was verified and update emailVerified and email_verified_provider
     if (user && !user.emailVerified) {
       await this.userRepository.updateUser(user.id, {
         emailVerified: new Date(),
@@ -60,14 +78,14 @@ export class LoginGithubUseCase {
       })
     }
 
-    // 4. useCase - update name if not exists
+    // 5. useCase - update name if not exists
     if (name && user && !user.name) {
       await this.userRepository.updateUser(user.id, {
         name,
       })
     }
 
-    // 5. useCase - get avatarUrl, resize, save in bucket, add url in avatars table, update users.image with avatarUrl if not exists
+    // 6. useCase - get avatarUrl, resize, save in bucket, add url in avatars table, update users.image with avatarUrl if not exists
     if (avatarUrl && user) {
       const resizeImage = await resizeAndConvertImage({ url: avatarUrl })
 
@@ -104,11 +122,11 @@ export class LoginGithubUseCase {
       }
     }
 
-    // 6. useCase - delete cookies
+    // 7. useCase - delete cookies
     this.cookieRepository.deleteCookie('authjs.github-picture')
     this.cookieRepository.deleteCookie('authjs.github-name')
 
-    // 7. useCase - Calculate the profile_completion_score
+    // 8. useCase - Calculate the profile_completion_score
     if (user) {
       const userData = await this.userRepository.getUserById(user.id)
       if (userData) {

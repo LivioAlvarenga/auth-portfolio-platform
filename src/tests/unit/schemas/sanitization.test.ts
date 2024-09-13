@@ -1,6 +1,7 @@
 import {
   emailValidation,
   fullNameValidation,
+  ipValidation,
   nickNameValidation,
   passwordValidation,
   tokenValidation,
@@ -198,5 +199,41 @@ describe('Token Validation', () => {
     expect(issues).toContain(
       'Token deve ser um UUID válido ou um código OTP de 6 dígitos',
     )
+  })
+})
+
+describe('IP Validation', () => {
+  test('should validate a valid IPv4 address', async () => {
+    const ipv4 = '192.168.0.1'
+    const result = ipValidation.safeParse(ipv4)
+
+    expect(result.success).toBe(true)
+  })
+
+  test('should validate a valid IPv6 address', async () => {
+    const ipv6 = '::1'
+    const result = ipValidation.safeParse(ipv6)
+
+    expect(result.success).toBe(true)
+  })
+
+  test('should return error for an invalid IP address', async () => {
+    const invalidIp = '999.999.999.999'
+    const result = ipValidation.safeParse(invalidIp)
+
+    const issues = result?.error?.issues?.[0]?.message
+
+    expect(result.success).toBe(false)
+    expect(issues).toContain('O endereço IP deve ser um IPv4 ou IPv6 válido')
+  })
+
+  test('should return error for a malformed IP address', async () => {
+    const malformedIp = 'abc.def.ghi.jkl'
+    const result = ipValidation.safeParse(malformedIp)
+
+    const issues = result?.error?.issues?.[0]?.message
+
+    expect(result.success).toBe(false)
+    expect(issues).toContain('O endereço IP deve ser um IPv4 ou IPv6 válido')
   })
 })

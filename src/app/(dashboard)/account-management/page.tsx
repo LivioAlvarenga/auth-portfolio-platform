@@ -1,3 +1,4 @@
+import LocationCollectionConsentSwitch from '@/components/LocationCollectionConsentSwitch'
 import { Text } from '@/components/Text'
 import TwoFactorAuthSwitch from '@/components/TwoFactorAuthSwitch'
 import { serverProtectedRoute } from '@/lib/authjs/serverProtectedRoute'
@@ -15,6 +16,10 @@ export default async function AccountManagement() {
         Gerencie Suas Configurações de Conta e Segurança
       </Text>
       <TwoFactorAuthSwitch session={session} />
+      <LocationCollectionConsentSwitch
+        session={session}
+        className="mt-2 lg:mt-0"
+      />
     </div>
   )
 }
