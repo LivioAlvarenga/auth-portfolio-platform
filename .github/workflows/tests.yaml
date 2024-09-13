@@ -1,5 +1,8 @@
 name: Automated Tests
 
+env:
+  IPINFO_TOKEN: ${{secrets.IPINFO_TOKEN}}
+
 on: pull_request
 
 jobs:
