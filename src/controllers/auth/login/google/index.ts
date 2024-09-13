@@ -1,4 +1,6 @@
+import { getClientIp } from '@/lib/ipinfo'
 import { NextCookieRepository } from '@/repositories/nextjs/next-cookie-repository'
+import { ipValidation } from '@/schemas'
 import { makeLoginGoogleUseCase } from '@/use-cases/auth/login/google/make-login-google'
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
@@ -9,6 +11,7 @@ const loginGoogleSchema = z.object({
   emailVerified: z.string().optional(), // get emailVerified from cookie
   name: z.string().optional(), // get name from cookie
   avatarUrl: z.string().url().optional(), // get avatarUrl from cookie
+  ip: ipValidation,
 })
 
 const CookieRepository = new NextCookieRepository()
@@ -25,6 +28,8 @@ export async function loginGoogle(req: NextRequest) {
   try {
     if (req.method === 'POST') {
       const body = await req.json()
+
+      const ip = getClientIp(req)
 
       const googleEmailVerified = CookieRepository.getCookie(
         'authjs.google-email-verified',
@@ -58,6 +63,7 @@ export async function loginGoogle(req: NextRequest) {
         emailVerified,
         name,
         avatarUrl,
+        ip,
       })
 
       const loginGoogleUseCase = makeLoginGoogleUseCase()
